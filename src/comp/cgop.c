@@ -51,9 +51,6 @@ void gopl(k, l) char k, *l;
     prcode(k);
     printf(" %lx", l);
 #endif
-#ifdef PDP
-    jvir(); /* vyravnivanie */
-#endif
     jbyte(k);
     j3addr(l);
 }
@@ -74,10 +71,8 @@ void gsymbol(code) struct linkti* code;
     if(code->tagg == 0) {
         jbyte(*r);
         jbyte(*(r + 1));
-#ifndef PDP
         jbyte('\0');
         jbyte('\0');
-#endif
     } else
         for(i = 0; i < LBLL; i++)
             jbyte(*(r + i));
@@ -89,9 +84,6 @@ struct linkti* code;
 #ifdef PRCODE
     prcode(k);
     prstruct(code);
-#endif
-#ifdef PDP
-    jvir(); /* vyravnivanie */
 #endif
     jbyte(k);
     gsymbol(code);

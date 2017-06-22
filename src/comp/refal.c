@@ -79,11 +79,7 @@ struct linkt {
     int tagg;
     union {
         char* pinf;
-#ifdef PDP
-        int intinf;
-#else
         long intinf;
-#endif
         char chinf[2];
     } infoo;
 };
@@ -1124,10 +1120,6 @@ SPCR3:
 SPCESC:
     if(get_csmb(&code, id, &lid) == 0)
         goto OSH200;
-#ifdef PDP
-    if(left_part == 1)
-        jvir();
-#endif
     gsp(ns_sc);
     if(left_part == 1)
         gsymbol(&code);
@@ -1139,10 +1131,6 @@ SPCSP:
     if(strncmp(stmlbl, id, lid) == 0 && stmlbl[lid] == ' ')
         pchosh("209 specifier is defined through itself");
     p = spref(id, lid, tail);
-#ifdef PDP
-    if(left_part == 1)
-        jvir();
-#endif
     gsp(ns_cll);
     if(left_part == 1)
         j3addr(p);
@@ -1430,19 +1418,6 @@ CSMBN2:
     goto CSMBEND;
 CSMBN3:
     code->tagg = TAGN;
-#ifdef PDP
-    {
-        long ll;
-        union {
-            char ccc[2];
-            int sss;
-        } un;
-        un.sss = code->tagg;
-        ll = k >> 16;
-        un.ccc[1] = ll;
-        code->tagg = un.sss;
-    }
-#endif
     code->infoo.intinf = k;
 CSMBEND:
     if(c[m] != '/')

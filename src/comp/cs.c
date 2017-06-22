@@ -113,9 +113,6 @@ struct i_lbl* alloc_lbl()
     struct i_lbl* p;
     if(n_lbl == 15) {
         q = calloc(1, sizeof(T_ARR_LBL));
-#ifdef mdebug
-        printf("\ncalloc(cs)_lbl: q=%lx", q);
-#endif
         if(q == NULL)
             Uns_sto();
         q->nextl = first_arr_lbl;
@@ -374,9 +371,6 @@ void s_term()
     p = first_arr_lbl;
     while(p != NULL) {
         p1 = p->nextl;
-#ifdef mdebug
-        printf("\nfree(cs): p=%lx", p);
-#endif
         free(p);
         p = p1;
     }

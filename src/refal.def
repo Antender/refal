@@ -1,6 +1,6 @@
 /*--------------- file -- REFAL.DEF -----------------*/
 /*          Select from IBM_PC, PDP, VAX             */
-/* For IBM_PC turn on/off: STTIME, QC, turbo, VIDEO  */
+/* For IBM_PC turn on/off: STTIME, QC */
 /*          Last modification : 28.05.2005 (BLF)     */
 /*---------------------------------------------------*/
 #define IBM_PC
@@ -20,9 +20,7 @@
 /* BLF -  PRINT_CODE - for print operation code, see rfrun1.c */
 /*#define PRINT_CODE*/
 
-/*#define mdebug*/
 /*#define VAX*/
-/*#define PDP*/
 
 #define TAGO  0
 #define TAGF  2
@@ -96,8 +94,6 @@
 #ifdef IBM_PC
 /* #define STTIME */
 #define QC			/* BLF */
-/* #define turbo	*/
-/* #define mdebug	*/
 
 #ifdef QC
 
@@ -149,4 +145,3 @@
 #define LBLL sizeof(POINT)
 #define SMBL (sizeof(short) + LBLL)
 #endif
-/*-------  end of file REFAL.DEF ---------*/

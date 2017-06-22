@@ -213,15 +213,9 @@ BU* b;
     long lon;
     if(b->nam != NULL) {
         free(b->nam);
-#ifdef mdebug
-        printf("\nfree(cj) b->nam=%lx", b->nam);
-#endif
     }
     if((b->nam = (char*)malloc(strlen(s) + 1)) == NULL)
         oshex();
-#ifdef mdebug
-    printf("\nmalloc(cj): b->nam=%lx", b->nam);
-#endif
     strcpy(b->nam, s);
     if(b->buf == NULL) {
         if(options.mincomp == 1) {
@@ -237,9 +231,6 @@ BU* b;
         }
         while(TRUE) {
             if((b->buf = (char*)malloc(un)) != NULL) {
-#ifdef mdebug
-                printf("\nmalloc(cj): b->buf=%lx un=%u", b->buf, un);
-#endif
                 break;
             } else {
                 lon = un;
@@ -290,10 +281,6 @@ void sfclr(b) BU* b;
         unlink(b->nam);
     free(b->nam);
     free(b->buf);
-#ifdef mdebug
-    printf("\nfree(sfclr) b->nam(c 0)=%lx", b->nam);
-    printf("\n            b->buf(c 0)=%lx", b->buf);
-#endif
     b->nam = NULL;
     b->buf = NULL;
 }
@@ -313,10 +300,6 @@ void sfclose(b) BU* b;
     fclose(b->fil);
     free(b->nam);
     free(b->buf);
-#ifdef mdebug
-    printf("\nfree(sfclose) b->nam(c 0)=%lx", b->nam);
-    printf("\n              b->buf(c 0)=%lx", b->buf);
-#endif
     b->nam = NULL;
     b->buf = NULL;
 }
@@ -471,16 +454,10 @@ int ll;
     sfop_w("sysut2.rf", &sysut2);
     if((first_ent = (T_ENT*)malloc(sizeof(T_ENT))) == NULL)
         oshex();
-#ifdef mdebug
-    printf("\nmalloc(cj): first_ent=%lx", first_ent);
-#endif
     last_ent = first_ent;
     first_ent->next = NULL;
     if((first_ext = (T_EXT*)malloc(sizeof(T_EXT))) == NULL)
         oshex();
-#ifdef mdebug
-    printf("\nmalloc(cj): first_ext=%lx", first_ext);
-#endif
     last_ext = first_ext;
     first_ext->next = NULL;
     curr_addr = 0;
@@ -526,11 +503,7 @@ void j3addr(pp) T_U* pp;
     rl.delta = delta;
     delta = 0;
     sfwr2();
-#ifdef PDP
-    curr_addr += 2;
-#else
     curr_addr += 4;
-#endif
 }
 
 void jentry(pp, ee, ll) struct u* pp;
@@ -550,9 +523,6 @@ int ll;
     }
     if((r = (T_ENT*)malloc(sizeof(T_ENT))) == NULL)
         oshex();
-#ifdef mdebug
-    printf("\nmalloc(cj): r(ent)=%lx", r);
-#endif
     last_ent->next = r;
     last_ent = r;
     r->p = pp;
@@ -569,9 +539,6 @@ int ll;
     /*  label length  */
     if((rx = (T_EXT*)malloc(sizeof(T_EXT))) == NULL)
         oshex();
-#ifdef mdebug
-    printf("\nmalloc(cj): rx(ext)=%lx", rx);
-#endif
     last_ext->next = rx;
     last_ext = rx;
     rx->p = pp;
@@ -619,11 +586,7 @@ void jend()
     int i;
     zakon();
     if(options.multmod == 1) {
-#ifdef PDP
-        strcat(mod_i, ".mac");
-#else
         strcat(mod_i, ".asm");
-#endif
         syslin = fopen(mod_i, "w");
         if(syslin == NULL) {
             printf("Can't open %s\n", mod_i);
@@ -639,11 +602,7 @@ void jend()
     for(i = 0; i < lnmmod; i++)
         fputc(mod_name[i], syslin);
     fputc('\n', syslin);
-#ifdef PDP /*2*/
-    fputs("\t.RADIX\t10\n", syslin);
-#else  /*2*/
     fputs("\t.PSECT\t$DATA PIC,USR,CON,REL,LCL,NOSHR,NOEXE,RD,WRT,NOVEC\n", syslin);
-#endif /*2*/
     sprintf(bufs, "L$%d:\n", nommod);
     fputs(bufs, syslin);
 #else       /*1*/
@@ -727,11 +686,7 @@ GEN_TXT:
         if(((p->mode) & '\300') != '\200') {
 /*    nonexternal label   */
 #ifndef IBM_PC
-#ifdef PDP
-            sprintf(bufs, "\t.WORD\tL$%d+%u\n", nommod, p->info.infon);
-#else
             sprintf(bufs, "\t.LONG\tL$%d+%u\n", nommod, p->info.infon);
-#endif
 #else
 /* BLF */
 #ifdef FASM
@@ -744,11 +699,7 @@ GEN_TXT:
         } else {
 /*     external   label   */
 #ifndef IBM_PC
-#ifdef PDP
-            fputs("\t.WORD\t_", syslin);
-#else
             fputs("\t.LONG\t_", syslin);
-#endif
 #else
 /* BLF */
 #ifdef UNIX
@@ -967,18 +918,12 @@ JTERM:
     while(q != NULL) {
         r = q->next;
         free(q);
-#ifdef mdebug
-        printf("\nfree(cj) q=%lx", q);
-#endif
         q = r;
     }
     qx = first_ext;
     while(qx != NULL) {
         rx = qx->next;
         free(qx);
-#ifdef mdebug
-        printf("\nfree(cj) qx=%lx", qx);
-#endif
         qx = rx;
     }
 } /*jend*/
@@ -1314,28 +1259,12 @@ JTERM:
     while(q != NULL) {
         r = q->next;
         free(q);
-#ifdef mdebug
-        printf("\nfree(cj) q=%lx", q);
-#endif
         q = r;
     }
     qx = first_ext;
     while(qx != NULL) {
         rx = qx->next;
         free(qx);
-#ifdef mdebug
-        printf("\nfree(cj) qx=%lx", qx);
-#endif
         qx = rx;
     }
 }
-
-#ifdef PDP
-void jvir()
-{
-    if((curr_addr & 1) == 1)
-        jbyte('\0');
-}
-#endif
-
-/*-------------  end  of  file  cj_blf.c  --------------*/
