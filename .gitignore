@@ -1,0 +1,13 @@
+.git/
+.clang/
+.codelite/
+bin/
+lib/
+obj/
+*.o
+*.asm
+*.lst
+*.log
+*.exe
+*.workspace
+*.project
