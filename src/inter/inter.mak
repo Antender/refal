@@ -41,7 +41,6 @@ SOURCES =		\
 	$(S)\xjak.c 	\
 	$(S)\xmo.c 	\
 	$(S)\xrename.c 	\
-	$(S)\xtime.c 	\
 	$(S)\xvv.c 	\
 	$(S)\xvv5.c 	\
 	$(S)\xcv.ref
@@ -61,7 +60,6 @@ OBJECTS =		\
 	$(S)\xjak.o 	\
 	$(S)\xmo.o 	\
 	$(S)\xrename.o 	\
-	$(S)\xtime.o 	\
 	$(S)\xvv.o 	\
 	$(S)\xvv5.o
 
@@ -111,11 +109,6 @@ $(S)\xmo.o: 	$(S)\xmo.c $(S)\..\refal.def
 
 $(S)\xrename.o: $(S)\xrename.c $(S)\..\refal.def
 
-$(S)\xtime.o: 	$(S)\xtime.c $(S)\..\refal.def
-
 $(S)\xvv.o: 	$(S)\xvv.c $(S)\..\refal.def
 
 $(S)\xvv5.o: 	$(S)\xvv5.c $(S)\..\refal.def
-
-
-####### End of Makefile
