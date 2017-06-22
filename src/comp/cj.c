@@ -229,7 +229,7 @@ BU* b;
             else
                 un = 65528; /* 65536-8 (for bc mojno - 4) */
         }
-        while(TRUE) {
+        while(true) {
             if((b->buf = (char*)malloc(un)) != NULL) {
                 break;
             } else {
@@ -252,7 +252,7 @@ BU* b;
 void sfop_r(b) BU* b;
 {
     if(b->fil != NULL) {
-        if((b->fil = fopen(b->nam, Rbin)) == NULL) {
+        if((b->fil = fopen(b->nam, "rb")) == NULL) {
             printf("Can't open for read %s\n", b->nam);
             exit(8);
         }
@@ -288,7 +288,7 @@ void sfclr(b) BU* b;
 void sfclose(b) BU* b;
 {
     if(b->fil == NULL) {
-        if((b->fil = fopen(b->nam, Wbin)) == NULL) {
+        if((b->fil = fopen(b->nam, "wb")) == NULL) {
             printf("Can't open for write %s\n", b->nam);
             exit(8);
         }
@@ -307,7 +307,7 @@ void sfclose(b) BU* b;
 void sfwr2()
 {
     unsigned ost;
-    while(TRUE) {
+    while(true) {
         ost = sysut2.len - sysut2.tek;
         if(ost >= 6) {
             memcpy(sysut2.buf + sysut2.tek, &rl, 6);
@@ -315,7 +315,7 @@ void sfwr2()
             break;
         }
         if(sysut2.fil == NULL) {
-            if((sysut2.fil = fopen(sysut2.nam, Wbin)) == NULL) {
+            if((sysut2.fil = fopen(sysut2.nam, "wb")) == NULL) {
                 printf("Can't open for write sysut2\n");
                 exit(8);
             }
@@ -333,7 +333,7 @@ unsigned n;
 BU* b;
 {
     unsigned ost;
-    while(TRUE) {
+    while(true) {
         ost = b->len - b->tek;
         if(ost >= n) {
             memcpy(b->buf + b->tek, c, n);
@@ -342,7 +342,7 @@ BU* b;
         }
         memcpy(b->buf + b->tek, c, ost);
         if(b->fil == NULL) {
-            if((b->fil = fopen(b->nam, Wbin)) == NULL) {
+            if((b->fil = fopen(b->nam, "wb")) == NULL) {
                 printf("Can't open for write %s\n", b->nam);
                 exit(8);
             }
@@ -361,7 +361,7 @@ void sfrd1(c, n) char* c;
 unsigned n;
 {
     unsigned ost;
-    while(TRUE) {
+    while(true) {
         ost = sysut1.len - sysut1.tek;
         if(ost >= n) {
             memcpy(c, sysut1.buf + sysut1.tek, n);
@@ -381,7 +381,7 @@ unsigned n;
 void sfrd2()
 {
     unsigned ost;
-    while(TRUE) {
+    while(true) {
         ost = sysut2.len - sysut2.tek;
         if(ost >= 6) {
             memcpy(&rl, sysut2.buf + sysut2.tek, 6);
@@ -399,7 +399,7 @@ void sfrd2()
 void sfobmen(n) int n;
 {
     unsigned ost1, ost2;
-    while(TRUE) {
+    while(true) {
         ost1 = sysut1.len - sysut1.tek;
         /*printf("\obmen: n=%d ost1=%d",n,ost1);*/
         if(n > ost1) {
@@ -420,7 +420,7 @@ void sfobmen(n) int n;
             memcpy(sysl.buf + sysl.tek, sysut1.buf + sysut1.tek, ost2);
             ksmn(sysut1.buf + sysut1.tek, ost2);
             if(sysl.fil == NULL) {
-                if((sysl.fil = fopen(sysl.nam, Wbin)) == NULL) {
+                if((sysl.fil = fopen(sysl.nam, "wb")) == NULL) {
                     printf("Can't open for write syslin\n");
                     exit(8);
                 }
@@ -481,7 +481,7 @@ void jbyte(bb) char bb;
         sysut1.tek++;
     } else {
         if(sysut1.fil == NULL) {
-            if((sysut1.fil = fopen(sysut1.nam, Wbin)) == NULL) {
+            if((sysut1.fil = fopen(sysut1.nam, "wb")) == NULL) {
                 printf("Can't open for write sysut1\n");
                 exit(8);
             }
@@ -944,7 +944,7 @@ static void sfwrc()
         sysl.tek++;
     } else {
         if(sysl.fil == NULL) {
-            if((sysl.fil = fopen(sysl.nam, Wbin)) == NULL) {
+            if((sysl.fil = fopen(sysl.nam, "wb")) == NULL) {
                 printf("Can't open for write %s\n", sysl.nam);
                 exit(8);
             }

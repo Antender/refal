@@ -69,7 +69,7 @@ static union { /* structure for pointer and integer aligning */
 } inch;
 /* definition of work variables and pointers*/
 static char opc;      /* current statement code */
-static unchar* vpc;   /* virtual program counter */
+static unsigned char* vpc;   /* virtual program counter */
 static linkcb* lastk; /* last acted sign-k adress */
 static linkcb* lastb; /* last generated left bracket*/
 static linkcb *b0, *b1, *b2;

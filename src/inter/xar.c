@@ -140,14 +140,14 @@ static dajch()
     kon = y->prev;
     if(x == kon) { /* pustoe chislo */
         dl = 0;
-        return (TRUE);
+        return (true);
     }
     x = x->next;
     if((x->tag == TAGO) && ((x->info.infoc == '+') || (x->info.infoc == '-'))) {
         zn = x->info.infoc;
         x = x->next;
         if(x == y)
-            return (FALSE); /*  w chisle - lish znak */
+            return (false); /*  w chisle - lish znak */
     }
     for(; (x->tag == TAGN) && (gcoden(x) == 0l); x = x->next)
         ;
@@ -157,16 +157,16 @@ static dajch()
         for(dl = 0, nach = x; (x->tag == TAGN); x = x->next, dl++)
             ;
         if(x != y)
-            return (FALSE); /* ne makrocifra */
+            return (false); /* ne makrocifra */
     }
-    return (TRUE);
+    return (true);
 }
 
 static dajarg()
 {
     x = refal.preva->next;
     if(x->tag != TAGLB)
-        return (FALSE);
+        return (false);
     y = x->info.codep;
     if(dajch()) {
         Xn = nach;
@@ -174,7 +174,7 @@ static dajarg()
         Xzn = zn;
         Xdl = dl;
     } else
-        return (FALSE);
+        return (false);
     x = y;
     y = refal.nexta;
     if(dajch()) {
@@ -182,9 +182,9 @@ static dajarg()
         Yk = kon;
         Yzn = zn;
         Ydl = dl;
-        return (TRUE);
+        return (true);
     } else
-        return (FALSE);
+        return (false);
 }
 
 static void obmen()
@@ -208,16 +208,16 @@ static void obmen()
 }
 
 static xmy()
-{ /*  if X < Y then TRUE  ( po modulju) */
+{ /*  if X < Y then true  ( po modulju) */
     if(Xdl < Ydl)
-        return (TRUE);
+        return (true);
     if(Xdl > Ydl)
-        return (FALSE);
+        return (false);
     for(x = Xn, y = Yn; (x != Xk->next); x = x->next, y = y->next) {
         if(gcoden(x) < gcoden(y))
-            return (TRUE);
+            return (true);
         if(gcoden(x) > gcoden(y))
-            return (FALSE);
+            return (false);
     }
     return (2); /* x=y */
 }

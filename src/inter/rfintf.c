@@ -37,17 +37,17 @@ lincrm()
                 p = p->next;
             }
             if(n == 1000)
-                return (TRUE);
+                return (true);
         }
     }
     new_block = malloc(1001 * sizeof(linkcb)); /* kras 06.12.88 */
     if(new_block == NULL)
-        return (FALSE);
+        return (false);
     new_block->prev = last_block;
     last_block = new_block;
     curr_size = curr_size + 1000; /* kras 06.12.88 */
     rflist(new_block + 1, 1000);  /* kras 06.12.88 */
-    return (TRUE);
+    return (true);
 }
 
 /*  check a number of items in free items list */
@@ -59,9 +59,9 @@ lrqlk(l) int l;
     for(n = 0; n < l; n++) {
         p = p->next;
         if(p == refal.flhead)
-            return (FALSE);
+            return (false);
     }
-    return (TRUE);
+    return (true);
 }
 
 lins(p, l) linkcb* p;
@@ -75,7 +75,7 @@ int l;
     for(n = 0; n < l; n++) {
         q1 = q1->next;
         if(q1 == refal.flhead)
-            return (FALSE);
+            return (false);
         q1->tag = TAGO;
         q1->info.codep = NULL;
     }
@@ -88,7 +88,7 @@ int l;
     p1->prev = q1;
     p->next = q;
     q->prev = p;
-    return (TRUE);
+    return (true);
 }
 
 slins(p, k) linkcb* p;
@@ -97,7 +97,7 @@ int k;
     while(!lrqlk(k)) {
         if(!lincrm()) {
             refal.upshot = 3;
-            return (FALSE);
+            return (false);
         }
     }
     return (lins(p, k));
@@ -112,7 +112,7 @@ char* f;
     if(ast->dot != NULL)
         rfabe("Linskd: there are 'k'-signes in view field");
     if(!slins(ast->view, 3))
-        return (FALSE);
+        return (false);
     p = ast->view->next;
     r = p->next;
     q = ast->view->prev;
@@ -122,7 +122,7 @@ char* f;
     r->tag = TAGF;
     r->info.codep = (linkcb*)f;
     ast->dot = q;
-    return (TRUE);
+    return (true);
 }
 
 char rfcnv(cm) char cm;
@@ -378,7 +378,7 @@ lcopy(r, p, q) linkcb* r, *p, *q;
     while(f0 != q) {
         f = f->next;
         if(f == refal.flhead)
-            return (FALSE);
+            return (false);
         switch(f0->tag) {
         case TAGLB:
             f->info.codep = lastb;
@@ -419,9 +419,9 @@ lexist(ast) st* ast;
     do {
         p = (REFAL*)(p->crnext);
         if(p == (REFAL*)ast)
-            return (TRUE);
+            return (true);
     } while(p != &refal);
-    return (FALSE);
+    return (false);
 }
 
 lcre(ast) st* ast;
@@ -434,10 +434,10 @@ lcre(ast) st* ast;
         rfabe("Lcre: process already exists");
     ast->view = refal.flhead->next;
     if(ast->view == refal.flhead)
-        return (FALSE);
+        return (false);
     ast->store = ast->view->next;
     if(ast->store == refal.flhead)
-        return (FALSE);
+        return (false);
     flhead1 = ast->store->next;
     refal.flhead->next = flhead1;
     flhead1->prev = refal.flhead;
@@ -454,7 +454,7 @@ lcre(ast) st* ast;
     ast->dot = NULL;
     ast->step = 0L;
     ast->stop = -1L;
-    return (TRUE);
+    return (true);
 }
 
 static void mark(root) linkcb* root;

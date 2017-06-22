@@ -65,7 +65,6 @@ void gsymbol(code) struct linkti* code;
     if(code->tagg == 2) {
         j3addr(code->infoo.codef);
         return;
-        /*      jbyte( '\0' ); jbyte( '\0' );  return; - for no LARGE IBM_PC */
     };
     r = (char*)&(code->infoo.codef);
     if(code->tagg == 0) {

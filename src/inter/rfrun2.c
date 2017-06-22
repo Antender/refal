@@ -33,9 +33,9 @@ static digit(s) char s;
 
 static not(spcpls) int spcpls;
 {
-    if(spcpls == TRUE)
-        return (FALSE);
-    return (TRUE);
+    if(spcpls == true)
+        return (false);
+    return (true);
 }
 
 struct spcs {
@@ -55,7 +55,7 @@ linkcb* b;
     char spcopc;        /*specifier code */
     spcsp = pspcsp;
     move(LBLL, vpc + 1, &spcvpc); /* spcvpc = L */
-    spcpls = TRUE;
+    spcpls = true;
     goto SPCNXT;
 /* return from specifier element if "YES" */
 SPCRET:
@@ -65,7 +65,7 @@ SPCRET:
     spcwrk = spcpls;
     spcpls = spcsp->spls; /*getss (spcpls,spcvpc);*/
     spcvpc = spcsp->svpc;
-    if(spcwrk == TRUE)
+    if(spcwrk == true)
         goto SPCRET;
     spcvpc = spcvpc + LBLL;
 /* return from specifier element if "NO" */
@@ -108,7 +108,7 @@ SPCCLL:
     spcsp->svpc = spcvpc;
     move(LBLL, spcvpc, &spcvpc);
     spcsp++;
-    spcpls = TRUE;
+    spcpls = true;
     goto SPCNXT;
 SPCW:
     goto SPCRET;

@@ -1,8 +1,10 @@
 /*--------------- file -- REFAL.DEF -----------------*/
-/*          Select from IBM_PC, PDP, VAX             */
-/* For IBM_PC turn on/off: STTIME, QC */
+/*          Select from IBM_PC*/
+/* For IBM_PC turn on/off: QC */
 /*          Last modification : 28.05.2005 (BLF)     */
 /*---------------------------------------------------*/
+
+#include <stdbool.h>
 #define IBM_PC
 
 /* BLF - UNIX for operation system Linux, FreeBSD */
@@ -19,8 +21,6 @@
 
 /* BLF -  PRINT_CODE - for print operation code, see rfrun1.c */
 /*#define PRINT_CODE*/
-
-/*#define VAX*/
 
 #define TAGO  0
 #define TAGF  2
@@ -86,18 +86,11 @@
 	};
 	typedef struct refal_ REFAL;
 
-#define TRUE  1
-#define FALSE 0
-
-
 /*---------- I B M - P C : -------------*/
 #ifdef IBM_PC
-/* #define STTIME */
 #define QC			/* BLF */
 
 #ifdef QC
-
-/* BLF 09.07.2004 (VAX version for IBM PC) */
 
 #define Z_0 0
 #define Z2
@@ -131,12 +124,8 @@
 
 
 #define G_L_B
-#define Wbin "wb"
-#define Rbin "rb"
 #define gcoden(p)    p->info.coden
 #define pcoden(p,W)  p->info.coden = W;
-
-	typedef unsigned char unchar;
 
 	typedef struct __ptr__ {
 		char *_ptr_;
