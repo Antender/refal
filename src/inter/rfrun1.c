@@ -9,12 +9,6 @@ extern REFAL refal;
 
 /* for unlooping: */
 
-/* BLF
-#ifdef IBM_PC
-#include <conio.h>
-#endif
-*/
-
 #define NMBL sizeof(char)
 #define SHB1       \
     b1 = b1->next; \
@@ -367,12 +361,6 @@ EOS:
 ADVSTEP:
     (ast->step)++;
 
-/* BLF
-#ifdef IBM_PC
- if ( ast->step % 1000 == 0 ) kbhit();
-#endif
-*/
-
 /* start of next step */
 START:
     if(ast->step >= ast->stop)
@@ -395,7 +383,7 @@ START:
     goto NEXTOP;
 /* C-refal-function execution */
 CFUNC:;
-    move(LBLL, vpc + NMBL + Z_0, &fptr);
+    move(LBLL, vpc + NMBL, &fptr);
     refal.upshot = 1;
     refal.prevr = b0->prev;
     refal.nextr = b0;

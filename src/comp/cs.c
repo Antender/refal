@@ -220,8 +220,7 @@ int lid;
         p->def = scn_.nomkar;
         jlabel(p);
         gop(N_SWAP);
-        /*   kk = sizeof(int)+sizeof(long)+sizeof(POINTER) * 2;  */
-        kk = SMBL + LBLL * 2;
+        kk = sizeof(long) + LBLL * 3;
         for(k0 = 1; k0 <= kk; k0++)
             jbyte('\000');
     }

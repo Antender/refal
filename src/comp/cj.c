@@ -473,9 +473,8 @@ unsigned jwhere()
     return (curr_addr);
 }
 
-void jbyte(bb) char bb;
+void jbyte(char bb)
 {
-    /* sfwr(&bb,1,&sysut1);   */
     if(sysut1.tek != sysut1.len) {
         *(sysut1.buf + sysut1.tek) = bb;
         sysut1.tek++;
@@ -495,7 +494,7 @@ void jbyte(bb) char bb;
     }
     delta++;
     curr_addr++;
-} /*jbyte*/
+}
 
 void j3addr(pp) T_U* pp;
 {
@@ -597,16 +596,6 @@ void jend()
 
 /* heading generating */
 
-#ifndef IBM_PC /*1*/
-    fputs("\t.TITLE\t", syslin);
-    for(i = 0; i < lnmmod; i++)
-        fputc(mod_name[i], syslin);
-    fputc('\n', syslin);
-    fputs("\t.PSECT\t$DATA PIC,USR,CON,REL,LCL,NOSHR,NOEXE,RD,WRT,NOVEC\n", syslin);
-    sprintf(bufs, "L$%d:\n", nommod);
-    fputs(bufs, syslin);
-#else       /*1*/
-
 /* BLF */
 #ifdef UNIX /*3*/
 
@@ -641,7 +630,6 @@ void jend()
 #endif
 
     fputs(bufs, syslin);
-#endif /*1*/
 
     /*  empty module test    */
     if(mod_length == 0)
@@ -660,17 +648,12 @@ GEN_TXT:
         if((k % 60) == 0) {
             if(k != 0)
                 fputc('\n', syslin);
-#ifndef IBM_PC
-            fputs("\t.BYTE\t", syslin);
-#else
 
 /* BLF */
 #ifdef FASM
             fputs("\tdb\t", syslin);
 #else
             fputs("\t.byte\t", syslin);
-#endif
-
 #endif
         }
         sprintf(bufs, "%d", d.w);
@@ -685,22 +668,15 @@ GEN_TXT:
             p = p->info.infop;
         if(((p->mode) & '\300') != '\200') {
 /*    nonexternal label   */
-#ifndef IBM_PC
-            sprintf(bufs, "\t.LONG\tL$%d+%u\n", nommod, p->info.infon);
-#else
-/* BLF */
+
 #ifdef FASM
             sprintf(bufs, "\tdd\t_d%d@+%u\n", nommod, p->info.infon);
 #else
             sprintf(bufs, "\t.long\t_d%d$+%u\n", nommod, p->info.infon);
 #endif
-#endif
             fputs(bufs, syslin);
         } else {
 /*     external   label   */
-#ifndef IBM_PC
-            fputs("\t.LONG\t_", syslin);
-#else
 /* BLF */
 #ifdef UNIX
 /* begin name without underlining _ */
@@ -716,7 +692,6 @@ GEN_TXT:
             fputs("\tdd\t_", syslin);
 #else
             fputs("\t.long\t_", syslin);
-#endif
 #endif
 #endif
             qx = first_ext;
@@ -780,21 +755,11 @@ GEN_TXT:
 
 /* end text generating */
 
-#ifdef IBM_PC
-/* BLF
-fputs("_",syslin); for(i=0;i<lnmmod;i++) fputc(mod_name[i],syslin);
-fputs ("\tends\n",syslin);
-*/
-#endif
-
     /*   external label generating    */
 
     qx = first_ext->next;
     while(qx != NULL) {
 
-#ifndef IBM_PC
-        fputs("\t.GLOBL\t_", syslin);
-#else
 /* BLF     fputs ("\textrn\t_",syslin);*/
 /* BLF */
 #ifdef UNIX
@@ -812,30 +777,20 @@ fputs ("\tends\n",syslin);
 #else          /* fasm format */
         fputs("\textrn\t_", syslin); /* BLF */
 #endif
-#endif
 
 #endif
         for(i = 0; i < qx->le; i++)
             /* BLF fputc (*((qx->e) + i),syslin);*/
             fputc(tolower(*((qx->e) + i)), syslin); /* BLF */
-#ifndef IBM_PC
-        fputs("\n", syslin);
-#else
         fputs(":byte\n", syslin);
-#endif
         qx = qx->next;
     } /*while*/
-
-#ifdef IBM_PC
-/* BLF  fputc('_',syslin); for(i=0;i<lnmmod;i++) fputc(mod_name[i],syslin); */
-/* BLF  fputs ("\tsegment byte public 'CODE'\n",syslin); */
 
 /* BLF */
 #ifdef FASM
     fputs("section '.data'\n", syslin); /* BLF */
 #else
     fputs(".data\n", syslin); /* BLF */
-#endif
 #endif
 
     /* entry label generating */
@@ -860,9 +815,6 @@ fputs ("\tends\n",syslin);
         pp = q->p;
         while(((pp->mode) & '\300') == '\300')
             pp = pp->info.infop;
-#ifndef IBM_PC
-        sprintf(bufs, "\t=L$%d+%d\n\t.GLOBL\t_", nommod, pp->info.infon);
-#else
 /* BLF */
 #ifdef UNIX
 /* begin name without underlining _ */
@@ -880,7 +832,6 @@ fputs ("\tends\n",syslin);
         sprintf(bufs, "\t=_d%d$+%d\n\t.globl\t_", nommod, pp->info.infon);
 #endif
 #endif
-#endif
         fputs(bufs, syslin);
         for(i = 0; i < q->le; i++)
             /* BLF translate name to lower case */
@@ -892,15 +843,6 @@ fputs ("\tends\n",syslin);
 /* termination */
 
 JTERM:
-    /* BLF - the old following how (with fasm) not needed
-    #ifdef IBM_PC
-    fputs("_",syslin); for(i=0;i<lnmmod;i++) fputc(mod_name[i],syslin);
-    fputs ("\tends\n",syslin);
-    fputs ("\tend\n",syslin);
-    #else
-    fputs ("\t.END\n",syslin);
-    #endif
-    */
 
     sfclr(&sysut1);
     sfclr(&sysut2);

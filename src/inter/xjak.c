@@ -65,7 +65,7 @@ static void br_()
     pr->tag = TAGRB;
     rftpl(pl, refal.preva, refal.nexta);
 }
-static char br_0[] = { Z2 'B', 'R', '\002' };
+static char br_0[] = {  'B', 'R', '\002' };
 G_L_B char br = '\122';
 static void (*br_1)() = br_;
 
@@ -94,7 +94,7 @@ DG1:
     pr = pr->next;
     rfdel(pl, pr);
 }
-static char dg_0[] = { Z2 'D', 'G', '\002' };
+static char dg_0[] = {  'D', 'G', '\002' };
 G_L_B char dg = '\122';
 static void (*dg_1)() = dg_;
 
@@ -107,7 +107,7 @@ static void dgall_()
     else
         rftpl(refal.prevr, ast->store, ast->store);
 }
-static char dgal_0[] = { Z5 'D', 'G', 'A', 'L', 'L', '\005' };
+static char dgal_0[] = {  'D', 'G', 'A', 'L', 'L', '\005' };
 G_L_B char dgall = '\122';
 static void (*dgal_1)() = dgall_;
 
@@ -122,7 +122,7 @@ static void gtr_()
     }; /* FAIL */
     rftpl(refal.prevr, p, p);
 }
-static char gtr_0[] = { Z3 'G', 'T', 'R', '\003' };
+static char gtr_0[] = {  'G', 'T', 'R', '\003' };
 G_L_B char gtr = '\122';
 static void (*gtr_1)() = gtr_;
 
@@ -140,7 +140,7 @@ static void rdr_()
         return;
     }; /* LACK */
 }
-static char rdr_0[] = { Z3 'R', 'D', 'R', '\003' };
+static char rdr_0[] = {  'R', 'D', 'R', '\003' };
 G_L_B char rdr = '\122';
 static void (*rdr_1)() = rdr_;
 
@@ -158,11 +158,11 @@ static void ptr_()
 }
 /* BLF */
 #ifdef UNIX
-static char ptr_0[] = { Z3 'P', 'T', '_', '\003' };
+static char ptr_0[] = {  'P', 'T', '_', '\003' };
 G_L_B char pt_ = '\122';
 static void (*ptr_1)() = ptr_;
 #else
-static char ptr_0[] = { Z3 'P', 'T', 'R', '\003' };
+static char ptr_0[] = {  'P', 'T', 'R', '\003' };
 G_L_B char ptr = '\122';
 static void (*ptr_1)() = ptr_;
 #endif
@@ -179,7 +179,7 @@ static void wtr_()
     rfdel(p, p);
     rftpl(p, r, refal.nexta);
 }
-static char wtr_0[] = { Z3 'W', 'T', 'R', '\003' };
+static char wtr_0[] = {  'W', 'T', 'R', '\003' };
 G_L_B char wtr = '\122';
 static void (*wtr_1)() = wtr_;
 
@@ -195,7 +195,7 @@ static void swr_()
     rftpl(refal.prevr, p, p);
     rftpl(p, r, refal.nexta);
 }
-static char swr_0[] = { Z3 'S', 'W', 'R', '\003' };
+static char swr_0[] = {  'S', 'W', 'R', '\003' };
 G_L_B char swr = '\122';
 static void (*swr_1)() = swr_;
 
@@ -245,11 +245,11 @@ FAIL:
 
 /* BLF */
 #ifdef UNIX
-static char rp_0[] = { Z2 'R', '_', '\002' };
+static char rp_0[] = {  'R', '_', '\002' };
 G_L_B char r_ = '\122';
 static void (*rp_1)() = rp_;
 #else
-static char rp_0[] = { Z2 'R', 'P', '\002' };
+static char rp_0[] = {  'R', 'P', '\002' };
 G_L_B char rp = '\122';
 static void (*rp_1)() = rp_;
 #endif
@@ -277,7 +277,7 @@ CP1:
     if(!lcopy(refal.prevr, q, pr))
         refal.upshot = 3; /* LACK */
 }
-static char cp_0[] = { Z2 'C', 'P', '\002' };
+static char cp_0[] = {  'C', 'P', '\002' };
 G_L_B char cp = '\122';
 static void (*cp_1)() = cp_;
 
@@ -300,7 +300,7 @@ static void new_()
     refal.preva->tag = 0;
     refal.dvar = refal.preva;
 }
-static char new_0[] = { Z3 'N', 'E', 'W', '\003' };
+static char new_0[] = {  'N', 'E', 'W', '\003' };
 G_L_B char new = '\122';
 static void (*new_1)() = new_;
 

@@ -521,12 +521,7 @@ void translate(char* str, char* class1)
                 *(class1 + i) = 'L';
                 continue;
             };
-#ifdef IBM_PC
         if(((j > -129) && (j < -80)) || ((j > -33) && (j < -16)))
-#else
-        if(j > -65)
-            if(j < 0)
-#endif
             *(class1 + i) = 'L';
         if((j == 35) || (j == 95))
             *(class1 + i) = 'L';
@@ -1338,15 +1333,10 @@ char convert(cm) char cm;
     j = (int)cm;
     if((j > 96) && (j < 123))
         cm = cm - '\40';
-#ifdef IBM_PC
     if((j > -97) && (j < -80))
         cm = cm - '\40';
     if((j > -33) && (j < -16))
         cm = cm - 80;
-#else
-    if((j > -33) && (j < 0))
-        return (cm - '\40');
-#endif
     return (cm);
 }
 get_id(id, lid) char id[];

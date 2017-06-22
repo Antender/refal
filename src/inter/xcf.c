@@ -49,7 +49,7 @@ HEOT:
     refal.upshot = 2;
     return;
 }
-static char ftochar_0[] = { Z7 'F', 'T', 'O', 'C', 'H', 'A', 'R', '\007' };
+static char ftochar_0[] = {  'F', 'T', 'O', 'C', 'H', 'A', 'R', '\007' };
 G_L_B char ftochar = '\122';
 static void (*ftochar_1)() = ftochar_;
 
@@ -77,7 +77,7 @@ HEOT:
     refal.upshot = 2;
     return;
 }
-static char functab_0[] = { Z7 'F', 'U', 'N', 'C', 'T', 'A', 'B', '\007' };
+static char functab_0[] = {  'F', 'U', 'N', 'C', 'T', 'A', 'B', '\007' };
 G_L_B char functab = '\122';
 static void (*functab_1)() = functab_;
 
@@ -139,7 +139,7 @@ HEOT:
     refal.upshot = 2;
     return;
 }
-static char chartof_0[] = { Z7 'C', 'H', 'A', 'R', 'T', 'O', 'F', '\007' };
+static char chartof_0[] = {  'C', 'H', 'A', 'R', 'T', 'O', 'F', '\007' };
 G_L_B char chartof = '\122';
 static void (*chartof_1)() = chartof_;
 

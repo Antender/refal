@@ -16,9 +16,6 @@ static int junp = 1;
 static int jung = 1;
 static long jl;
 
-/* BLF void PROUT() {
-}*/
-
 static void opng_()
 {
     linkcb* p;
@@ -58,7 +55,7 @@ HEOT1:
     refal.upshot = 2;
     return;
 }
-static char opng_0[] = { Z6 'O', 'P', 'N', 'G', 'E', 'T', '\006' };
+static char opng_0[] = {  'O', 'P', 'N', 'G', 'E', 'T', '\006' };
 G_L_B char opnget = '\122';
 static void (*opng_1)() = opng_;
 
@@ -107,7 +104,7 @@ HEOT1:
     refal.upshot = 2;
     return;
 }
-static char opnp_0[] = { Z6 'O', 'P', 'N', 'P', 'U', 'T', '\006' };
+static char opnp_0[] = {  'O', 'P', 'N', 'P', 'U', 'T', '\006' };
 G_L_B char opnput = '\122';
 static void (*opnp_1)() = opnp_;
 
@@ -134,7 +131,7 @@ HEOT:
     refal.upshot = 2;
     return;
 }
-static char clsg_0[] = { Z6 'C', 'L', 'S', 'G', 'E', 'T', '\006' };
+static char clsg_0[] = {  'C', 'L', 'S', 'G', 'E', 'T', '\006' };
 G_L_B char clsget = '\122';
 static void (*clsg_1)() = clsg_;
 
@@ -161,7 +158,7 @@ HEOT:
     refal.upshot = 2;
     return;
 }
-static char clsp_0[] = { Z6 'C', 'L', 'S', 'P', 'U', 'T', '\006' };
+static char clsp_0[] = {  'C', 'L', 'S', 'P', 'U', 'T', '\006' };
 G_L_B char clsput = '\122';
 static void (*clsp_1)() = clsp_;
 
@@ -235,7 +232,7 @@ HEOT:
     refal.upshot = 2;
     return;
 }
-static char libg_0[] = { Z6 'L', 'I', 'B', 'G', 'E', 'T', '\006' };
+static char libg_0[] = {  'L', 'I', 'B', 'G', 'E', 'T', '\006' };
 G_L_B char libget = '\122';
 static void (*libg_1)() = libg_;
 
@@ -286,7 +283,7 @@ static void libp_()
     }
     return;
 }
-static char libp_0[] = { Z6 'L', 'I', 'B', 'P', 'U', 'T', '\006' };
+static char libp_0[] = {  'L', 'I', 'B', 'P', 'U', 'T', '\006' };
 G_L_B char libput = '\122';
 static void (*libp_1)() = libp_;
 
@@ -311,7 +308,7 @@ static void card_()
     }
     return;
 }
-static char card_0[] = { Z4 'C', 'A', 'R', 'D', '\004' };
+static char card_0[] = {  'C', 'A', 'R', 'D', '\004' };
 G_L_B char card = '\122';
 static void (*card_1)() = card_;
 
@@ -321,7 +318,7 @@ static void pr1_()
     rftpl(refal.prevr, refal.preva, refal.nexta);
     return;
 }
-static char pr1_0[] = { Z5 'P', 'R', 'I', 'N', 'T', '\005' };
+static char pr1_0[] = {  'P', 'R', 'I', 'N', 'T', '\005' };
 G_L_B char print = '\122';
 static void (*pr1_1)() = pr1_;
 
@@ -331,7 +328,7 @@ static void pr2_()
     rftpl(refal.prevr, refal.preva, refal.nexta);
     return;
 }
-static char pr2_0[] = { Z6 'P', 'R', 'I', 'N', 'T', 'M', '\006' };
+static char pr2_0[] = {  'P', 'R', 'I', 'N', 'T', 'M', '\006' };
 G_L_B char printm = '\122';
 static void (*pr2_1)() = pr2_;
 
@@ -340,7 +337,7 @@ static void pr3_()
     rfpex("", refal.preva, refal.nexta);
     return;
 }
-static char pr3_0[] = { Z5 'P', 'R', 'O', 'U', 'T', '\005' };
+static char pr3_0[] = {  'P', 'R', 'O', 'U', 'T', '\005' };
 G_L_B char prout = '\122';
 static void (*pr3_1)() = pr3_;
 
@@ -349,7 +346,7 @@ static void pr4_()
     rfpexm("", refal.preva, refal.nexta);
     return;
 }
-static char pr4_0[] = { Z6 'P', 'R', 'O', 'U', 'T', 'M', '\006' };
+static char pr4_0[] = {  'P', 'R', 'O', 'U', 'T', 'M', '\006' };
 G_L_B char proutm = '\122';
 static void (*pr4_1)() = pr4_;
 

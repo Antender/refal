@@ -25,7 +25,7 @@ static void p1_()
     rftpl(refal.prevr, p->prev, p->next);
     return;
 }
-static char p1_0[] = { Z2 'P', '1', '\002' };
+static char p1_0[] = {  'P', '1', '\002' };
 G_L_B char p1 = '\122';
 static void (*p1_1)() = p1_;
 
@@ -46,7 +46,7 @@ static void m1_()
     rftpl(refal.prevr, p->prev, p->next);
     return;
 }
-static char m1_0[] = { Z2 'M', '1', '\002' };
+static char m1_0[] = {  'M', '1', '\002' };
 G_L_B char m1 = '\122';
 static void (*m1_1)() = m1_;
 
@@ -102,7 +102,7 @@ static void numb_()
     rftpl(refal.prevr, pz->prev, p1->next);
     return;
 }
-static char numb_0[] = { Z4 'N', 'U', 'M', 'B', '\004' };
+static char numb_0[] = {  'N', 'U', 'M', 'B', '\004' };
 G_L_B char numb = '\122';
 static void (*numb_1)() = numb_;
 
@@ -163,7 +163,7 @@ static void symb_()
     rftpl(refal.prevr, pz->prev, p);
     return;
 }
-static char symb_0[] = { Z4 'S', 'Y', 'M', 'B', '\004' };
+static char symb_0[] = {  'S', 'Y', 'M', 'B', '\004' };
 G_L_B char symb = '\122';
 static void (*symb_1)() = symb_;
 
@@ -200,7 +200,7 @@ static void first_()
     rftpl(refal.prevr, refal.nextr, refal.nexta);
     return;
 }
-static char first_0[] = { Z5 'F', 'I', 'R', 'S', 'T', '\005' };
+static char first_0[] = {  'F', 'I', 'R', 'S', 'T', '\005' };
 G_L_B char first = '\122';
 static void (*first_1)() = first_;
 
@@ -241,7 +241,7 @@ static void last_()
     rftpl(p, refal.nextr, refal.nexta);
     return;
 }
-static char last_0[] = { Z4 'L', 'A', 'S', 'T', '\004' };
+static char last_0[] = {  'L', 'A', 'S', 'T', '\004' };
 G_L_B char last = '\122';
 static void (*last_1)() = last_;
 
@@ -260,7 +260,7 @@ static void lengr_()
     rftpl(refal.prevr, refal.nextr, refal.nexta);
     return;
 }
-static char lengr_0[] = { Z5 'L', 'E', 'N', 'G', 'R', '\005' };
+static char lengr_0[] = {  'L', 'E', 'N', 'G', 'R', '\005' };
 G_L_B char lengr = '\122';
 static void (*lengr_1)() = lengr_;
 
@@ -281,7 +281,7 @@ static void lengw_()
     rftpl(refal.prevr, refal.nextr, refal.nexta);
     return;
 }
-static char lengw_0[] = { Z5 'L', 'E', 'N', 'G', 'W', '\005' };
+static char lengw_0[] = {  'L', 'E', 'N', 'G', 'W', '\005' };
 G_L_B char lengw = '\122';
 static void (*lengw_1)() = lengw_;
 
@@ -321,7 +321,7 @@ static void multe_()
     }
     return;
 }
-static char multe_0[] = { Z5 'M', 'U', 'L', 'T', 'E', '\005' };
+static char multe_0[] = {  'M', 'U', 'L', 'T', 'E', '\005' };
 G_L_B char multe = '\122';
 static void (*multe_1)() = multe_;
 
@@ -355,7 +355,7 @@ REPEAT:
     refal.nextr->info.codep = nd;
     return;
 }
-static char delf_0[] = { Z4 'D', 'E', 'L', 'F', '\004' };
+static char delf_0[] = {  'D', 'E', 'L', 'F', '\004' };
 G_L_B char delf = '\122';
 static void (*delf_1)() = delf_;
 
@@ -410,7 +410,7 @@ FAIL:
     refal.upshot = 2;
     return;
 }
-static char crel_0[] = { Z4 'C', 'R', 'E', 'L', '\004' };
+static char crel_0[] = {  'C', 'R', 'E', 'L', '\004' };
 G_L_B char crel = '\122';
 static void (*crel_1)() = crel_;
 

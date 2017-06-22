@@ -77,7 +77,7 @@ LACK:
     refal.upshot = 3;
     return;
 }
-static char appl_0[] = { Z5 'A', 'P', 'P', 'L', 'Y', '\005' };
+static char appl_0[] = {  'A', 'P', 'P', 'L', 'Y', '\005' };
 G_L_B char apply = '\122';
 static void (*appl_1)() = appl_;
 

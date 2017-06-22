@@ -127,17 +127,7 @@ char* f;
 
 char rfcnv(cm) char cm;
 {
-    int j;
-    j = (int)cm;
-    if((j > 96) && (j < 123))
-        return (cm - '\40');
-    else
-        return (cm); /* perewod  a..z w A..Z */
-                     /*#ifdef IBM_PC
-                        if ((j>-97) && (j<-64))  return ( cm - '\40' );
-                      #else
-                        if ((j>-33) && (j<0))    return ( cm - '\40' );
-                      #endif*/
+    return tolower(cm);
 }
 
 void rfinit()
