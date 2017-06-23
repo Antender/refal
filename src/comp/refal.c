@@ -38,7 +38,6 @@ void rdline();
 void translate();
 void gsp();
 void scan();
-void sfop_w();
 int specif();
 int get_id();
 int get_idm();
@@ -47,7 +46,6 @@ int sempty();
 int sextrn();
 int sentry();
 int sswap();
-FILE* fopen();
 char* fnref();
 unsigned jwhere();
 /* the recovery of the next element of sentence   */
@@ -82,18 +80,13 @@ typedef char* adr;
 
 extern long sysl; /* for obj   */
 
-FILE* systxt; /* for module names */
-
 short m; /* current symbol number */
-short nommod;
+
 char strg_c[78];
-char parm_i[40];
+
 char cprc[] = "%%%";
 char regnom[] = "000";
 int rn[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
-
-/* BLF */
-char vers_i[] = "Refal-2  version 0.2.3-20050529 (c) Refal-2 Team";
 
 char mod_i[13]; /* 8+4+1 (xxxxxxxx.yyy0) */
 int lbl_leng;
@@ -125,7 +118,7 @@ static char prevlb[40];
 static char stmkey[6];
 static short fixm;                          /* start sentence position */
 static char mod_name[9]; /* module name */  /* kras */
-static long mod_length; /* module length */ /* kras */
+ /* module length */ /* kras */
 static short again;                         /* next module processing feature */
 
 static int cur;
@@ -145,143 +138,8 @@ static void de()
     }
 }
 
-main(argc, argv) int argc;
-char* argv[];
+int main_loop()
 {
-    char parm[40];
-    int i, j, temp;
-
-    systerm = NULL;
-
-    /*
-       printf ("qindex =%d\n", qindex);
-    */
-
-    nommod = 0;
-    printf("\n"); /* BLF */
-    printf("%s", vers_i);
-    /* BLF  de();  ---------------------------------*/
-    if(argc < 2) {
-        /* BLF      printf("\nSer. No %s",regnom);      */
-        printf("\n"); /* BLF */
-        printf("\nSyntax: refal source_file [(option,...,option)]");
-        printf("\nOptions:");
-        printf("\n   mm  multi_module");
-        printf("\n   nn  no_function_names");
-        printf("\n   ns  no_source_listing");
-
-        /* BLF,   printf("\n   as  assembler_module");
-                assembler generated always
-        */
-        printf("\n   fn  full_names");
-        printf("\n   cm  minimal_memory_for_compiler");
-        printf("\n\n"); /* BLF */
-        exit(1);
-    };
-
-    for(i = 0; (parm[i] = *(argv[1] + i)) != '\0'; i++)
-        ;
-
-    if(strchr(parm, '.') == NULL)
-        strcat(parm, ".ref");
-
-    printf("\n%s:\n", parm);
-    for(i = 0; i <= (strlen(parm) + 1); i++)
-        parm_i[i] = parm[i];
-    sysin = fopen(parm, "r");
-    if(sysin == NULL) {
-        printf("Can't open %s\n", parm);
-        exit(1);
-    };
-    systerm = stdout;
-    sysprint = NULL;
-
-    options.source = 1;
-    options.stm_nmb = 0;
-    options.extname = 0;
-    options.multmod = 0;
-    options.asmb = 1; /* BLF, instead 0, we need assembler code */
-    options.names = 1;
-    options.mincomp = 0;
-    for(j = 2; j < argc; ++j) {
-        for(i = 0; (parm[i] = *(argv[j] + i)) != '\0'; i++)
-            ;
-        if(parm[0] == '(') {
-            for(i = 1; (i < 40) && (parm[i] != ')') && (parm[i] != '\0');) {
-                if(*(parm + i) == 'a') /*  kras */
-                    options.asmb = 1;
-                else if(strncmp((parm + i), "nn", 2) == 0) /*  kras */
-                    options.names = 0;
-                else if(strncmp((parm + i), "ns", 2) == 0)
-                    options.source = 0;
-                else if(strncmp((parm + i), "fn", 2) == 0)
-                    options.extname = 1;
-                else if(strncmp((parm + i), "cm", 2) == 0)
-                    options.mincomp = 1;
-                else if(*(parm + i) == 'm')
-                    options.multmod = 1;
-                else {
-                    for(temp = 0; *(parm + temp) != '\0'; temp++)
-                        ;
-                    temp--;
-                    if(*(parm + temp) == ')')
-                        *(parm + temp) = '\0';
-                    printf("Unknown option: %s\n", (parm + i));
-                    printf("Options may be: ns,nn,as,mm,fn,cm\n");
-                    exit(1);
-                }
-                temp = i;
-                char* pos = strchr((parm + i), ',') + 1;
-                if((parm + i) == pos) {
-                    pos = strchr((parm + temp), ')');
-                    if(pos == NULL) {
-                        printf("Missing ')' in option definition\n");
-                        exit(1);
-                    }
-                }
-                i += temp;
-            } /* end for */
-            for(i = 0; (parm[i] = *(argv[1] + i)) != '\0'; ++i)
-                ;
-        } /* end if */
-        else {
-            printf("Illegal options definition: %s\n", parm);
-            exit(1);
-        }
-    } /* end for */
-    for(i = 0; ((parm[i] = *(argv[1] + i)) != '\0') && (parm[i] != '.'); ++i)
-        ;
-    parm[i] = '\0';
-    if(options.source == 1) {
-        strcat(parm, ".lst");
-        if((sysprint = fopen(parm, "w")) == NULL) {
-            printf("Can't open %s\n", parm);
-            exit(8);
-        }
-    }
-    for(i = 0; ((parm[i] = *(argv[1] + i)) != '\0') && (parm[i] != '.'); ++i)
-        ;
-    parm[i] = '\0';
-    if(options.multmod == 1) {
-        strcat(parm, ".txt");
-        systxt = fopen(parm, "w");
-        if(systxt == NULL) {
-            printf("Can't open %s\n", parm);
-            exit(8);
-        }
-    } else {
-        if(options.asmb == 1) {
-            strcat(parm, ".asm");
-            syslin = fopen(parm, "w");
-            if(syslin == NULL) {
-                printf("Can't open %s\n", parm);
-                exit(8);
-            }
-        } else {
-            strcat(parm, ".obj");
-            sfop_w(parm, &sysl);
-        }
-    }
     /*  print of page title missing here */
     flags.was_err = 0;
     flags.uzhe_zgl = 0;
@@ -297,9 +155,9 @@ START_OF_MODULE:
     card[80] = '\n';
     prevlb[0] = '\0';
     mod_length = 0l; /* kras */
-    for(i = 0; i < 9; i++)
+    for(int i = 0; i < 9; i++)
         mod_name[i] = '\0'; /* kras */
-    for(i = 0; i < 7; ++i)
+    for(int i = 0; i < 7; ++i)
         sarr[i] = NULL;
     /* "start" - directive work  */
     lblkey(0);
@@ -313,9 +171,12 @@ START_OF_MODULE:
         goto KEYS;
     }
     strncpy(mod_name, stmlbl, 8 > lbl_leng ? lbl_leng : 8);
-    for(i = 0; i < (8 > lbl_leng ? lbl_leng : 8); i++)
-        mod_i[i] = mod_name[i];
-    mod_i[i] = 0;
+    {
+        int i;
+        for(i = 0; i < (8 > lbl_leng ? lbl_leng : 8); i++)
+            mod_i[i] = mod_name[i];
+        mod_i[i] = 0;
+    }
     strncpy(scn_.modname_var, stmlbl, lbl_leng);
     scn_.modnmlen = lbl_leng;
     jstart(mod_name, 8 < lbl_leng ? 8 : lbl_leng);
@@ -362,9 +223,12 @@ KEYS:
     else if(stmkey[0] == ' ') {
         trprev();
         if(lbl_leng != 0) {
-            for(i = 0; i < lbl_leng; i++)
-                prevlb[i] = stmlbl[i];
-            prevlb[i] = '\0';
+            {
+                int i;
+                for(i = 0; i < lbl_leng; i++)
+                    prevlb[i] = stmlbl[i];
+                prevlb[i] = '\0';
+            }
         }
     } else {
         m = fixm; /* return to left */
@@ -384,10 +248,7 @@ END_STATEMENT:
         flags.was_err = 1;
         mod_length = 0;
     } else {
-        if(options.asmb == 1)
-            jend();
-        else
-            jendo();
+        jend();
         mod_length = jwhere();
     }
     s_term();
@@ -397,27 +258,6 @@ END_STATEMENT:
     if(again == 1)
         goto START_OF_MODULE;
 END_OF_SYSIN:
-    fclose(sysin);
-    if(options.source == 1)
-        fclose(sysprint);
-    if(options.multmod == 0) {
-        mod_length = jwhere();
-        if(options.asmb == 1)
-            fclose(syslin);
-        else
-            sfclose(&sysl);
-        if((mod_length == 0) || (flags.was_err != 0))
-            unlink(parm);
-    }
-    if(flags.was_err != 0) {
-        if(options.multmod == 1)
-            unlink(parm);
-        exit(1);
-    } else {
-        if(nommod <= 1 && options.multmod == 1)
-            unlink(parm); /* for multimod. */
-        exit(0);
-    }
     return (0);
 } /* main program  end  */
 

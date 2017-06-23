@@ -243,24 +243,7 @@ void sfclr(b) BU* b;
     b->buf = NULL;
 }
 
-void sfclose(b) BU* b;
-{
-    if(b->fil == NULL) {
-        if((b->fil = fopen(b->nam, "wb")) == NULL) {
-            printf("Can't open for write %s\n", b->nam);
-            exit(8);
-        }
-    }
-    if(fwrite(b->buf, b->tek, 1, b->fil) <= 0) {
-        printf("Write i/o error in %s\n", b->nam);
-        exit(8);
-    }
-    fclose(b->fil);
-    free(b->nam);
-    free(b->buf);
-    b->nam = NULL;
-    b->buf = NULL;
-}
+
 
 void sfwr2()
 {
@@ -1002,7 +985,24 @@ JTERM:
     sfclr(&sysut1);
     sfclr(&sysut2);
     if(options.multmod == 1) {
-        sfclose(&sysl);
+//FIX: maybe not necessary cause options.asmb is no longer
+        BU* b = &sysl;
+        if(b->fil == NULL) {
+            if((b->fil = fopen(b->nam, "wb")) == NULL) {
+                printf("Can't open for write %s\n", b->nam);
+                exit(8);
+            }
+        }
+        if(fwrite(b->buf, b->tek, 1, b->fil) <= 0) {
+            printf("Write i/o error in %s\n", b->nam);
+            exit(8);
+        }
+        fclose(b->fil);
+        free(b->nam);
+        free(b->buf);
+        b->nam = NULL;
+        b->buf = NULL;
+//FIX: maybe not necessary END
         if(mod_length != 0) {
             if(nommod != 1)
                 fputs("&\n", systxt);

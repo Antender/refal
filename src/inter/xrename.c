@@ -33,7 +33,7 @@ HEOT:
     return;
 }
 static char unlnk_0[] = { 'R', 'U', 'N', 'L', 'N', 'K', '\005' };
-G_L_B char unlnk asm("runlnk") = '\122';
+G_L_B char unlnk __asm__("runlnk") = '\122';
 static void (*unlnk_1)() = unlnk_;
 
 static void renam_()
@@ -73,7 +73,7 @@ HEOT:
     return;
 }
 static char renam_0[] = { 'R', 'E', 'N', 'A', 'M', '\005' };
-G_L_B char renam asm("rrenam") = '\122';
+G_L_B char renam __asm__("rrenam") = '\122';
 static void (*renam_1)() = renam_;
 
 /*-------- end of file  XRENAME.C -------*/

@@ -26,7 +26,7 @@ static void p1_()
     return;
 }
 static char p1_0[] = { 'P', '1', '\002' };
-G_L_B char p1 asm("rp1") = '\122';
+G_L_B char p1 __asm__("rp1") = '\122';
 static void (*p1_1)() = p1_;
 
 static void m1_()
@@ -47,7 +47,7 @@ static void m1_()
     return;
 }
 static char m1_0[] = { 'M', '1', '\002' };
-G_L_B char m1 asm("rm1") = '\122';
+G_L_B char m1 __asm__("rm1") = '\122';
 static void (*m1_1)() = m1_;
 
 long atol();
@@ -103,7 +103,7 @@ static void numb_()
     return;
 }
 static char numb_0[] = { 'N', 'U', 'M', 'B', '\004' };
-G_L_B char numb asm("rnumb") = '\122';
+G_L_B char numb __asm__("rnumb") = '\122';
 static void (*numb_1)() = numb_;
 
 static void symb_()
@@ -164,7 +164,7 @@ static void symb_()
     return;
 }
 static char symb_0[] = { 'S', 'Y', 'M', 'B', '\004' };
-G_L_B char symb asm("rsymb") = '\122';
+G_L_B char symb __asm__("rsymb") = '\122';
 static void (*symb_1)() = symb_;
 
 static void first_()
@@ -201,7 +201,7 @@ static void first_()
     return;
 }
 static char first_0[] = { 'F', 'I', 'R', 'S', 'T', '\005' };
-G_L_B char first asm("rfirst") = '\122';
+G_L_B char first __asm__("rfirst") = '\122';
 static void (*first_1)() = first_;
 
 static void last_()
@@ -242,7 +242,7 @@ static void last_()
     return;
 }
 static char last_0[] = { 'L', 'A', 'S', 'T', '\004' };
-G_L_B char last asm("rlast") = '\122';
+G_L_B char last __asm__("rlast") = '\122';
 static void (*last_1)() = last_;
 
 static void lengr_()
@@ -261,7 +261,7 @@ static void lengr_()
     return;
 }
 static char lengr_0[] = { 'L', 'E', 'N', 'G', 'R', '\005' };
-G_L_B char lengr asm("rlengr") = '\122';
+G_L_B char lengr __asm__("rlengr") = '\122';
 static void (*lengr_1)() = lengr_;
 
 static void lengw_()
@@ -282,7 +282,7 @@ static void lengw_()
     return;
 }
 static char lengw_0[] = { 'L', 'E', 'N', 'G', 'W', '\005' };
-G_L_B char lengw asm("rlengw") = '\122';
+G_L_B char lengw __asm__("rlengw") = '\122';
 static void (*lengw_1)() = lengw_;
 
 static void multe_()
@@ -322,7 +322,7 @@ static void multe_()
     return;
 }
 static char multe_0[] = { 'M', 'U', 'L', 'T', 'E', '\005' };
-G_L_B char multe asm("rmulte") = '\122';
+G_L_B char multe __asm__("rmulte") = '\122';
 static void (*multe_1)() = multe_;
 
 static void delf_()
@@ -356,7 +356,7 @@ REPEAT:
     return;
 }
 static char delf_0[] = { 'D', 'E', 'L', 'F', '\004' };
-G_L_B char delf asm("rdelf") = '\122';
+G_L_B char delf __asm__("rdelf") = '\122';
 static void (*delf_1)() = delf_;
 
 static void crel_()
@@ -411,7 +411,7 @@ FAIL:
     return;
 }
 static char crel_0[] = { 'C', 'R', 'E', 'L', '\004' };
-G_L_B char crel asm("rcrel") = '\122';
+G_L_B char crel __asm__("rcrel") = '\122';
 static void (*crel_1)() = crel_;
 
 /*-------------------- end of file  XMO.C ----------------*/

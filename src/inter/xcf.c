@@ -48,7 +48,7 @@ HEOT:
     return;
 }
 static char ftochar_0[] = { 'F', 'T', 'O', 'C', 'H', 'A', 'R', '\007' };
-G_L_B char ftochar asm("rftochar") = '\122';
+G_L_B char ftochar __asm__("rftochar") = '\122';
 static void (*ftochar_1)() = ftochar_;
 
 static void functab_()
@@ -76,7 +76,7 @@ HEOT:
     return;
 }
 static char functab_0[] = { 'F', 'U', 'N', 'C', 'T', 'A', 'B', '\007' };
-G_L_B char functab asm("rfunctab") = '\122';
+G_L_B char functab __asm__("rfunctab") = '\122';
 static void (*functab_1)() = functab_;
 
 static void chartof_()
@@ -138,7 +138,7 @@ HEOT:
     return;
 }
 static char chartof_0[] = { 'C', 'H', 'A', 'R', 'T', 'O', 'F', '\007' };
-G_L_B char chartof asm("rchartof") = '\122';
+G_L_B char chartof __asm__("rchartof") = '\122';
 static void (*chartof_1)() = chartof_;
 
 /*------------------ end of file  XCF.C ----------------*/

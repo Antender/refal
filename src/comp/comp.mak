@@ -15,7 +15,7 @@
 .SUFFIXES: .c 
 
 CC		=	gcc
-CFLAGS		=	-pipe -w -O2 -DNO_DEBUG
+CFLAGS		=	-std=c11 -pipe -w -O2 -DNO_DEBUG
 LINK		=	gcc
 
 TAR		=	tar -cf

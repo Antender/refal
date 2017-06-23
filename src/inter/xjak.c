@@ -66,7 +66,7 @@ static void br_()
     rftpl(pl, refal.preva, refal.nexta);
 }
 static char br_0[] = { 'B', 'R', '\002' };
-G_L_B char br asm("rbr") = '\122';
+G_L_B char br __asm__("rbr") = '\122';
 static void (*br_1)() = br_;
 
 static void dg_()
@@ -95,7 +95,7 @@ DG1:
     rfdel(pl, pr);
 }
 static char dg_0[] = { 'D', 'G', '\002' };
-G_L_B char dg asm("rdg") = '\122';
+G_L_B char dg __asm__("rdg") = '\122';
 static void (*dg_1)() = dg_;
 
 static void dgall_()
@@ -108,7 +108,7 @@ static void dgall_()
         rftpl(refal.prevr, ast->store, ast->store);
 }
 static char dgal_0[] = { 'D', 'G', 'A', 'L', 'L', '\005' };
-G_L_B char dgall asm("rdgall") = '\122';
+G_L_B char dgall __asm__("rdgall") = '\122';
 static void (*dgal_1)() = dgall_;
 
 static void gtr_()
@@ -123,7 +123,7 @@ static void gtr_()
     rftpl(refal.prevr, p, p);
 }
 static char gtr_0[] = { 'G', 'T', 'R', '\003' };
-G_L_B char gtr asm("rgtr") = '\122';
+G_L_B char gtr __asm__("rgtr") = '\122';
 static void (*gtr_1)() = gtr_;
 
 static void rdr_()
@@ -141,7 +141,7 @@ static void rdr_()
     }; /* LACK */
 }
 static char rdr_0[] = { 'R', 'D', 'R', '\003' };
-G_L_B char rdr asm("rrdr") = '\122';
+G_L_B char rdr __asm__("rrdr") = '\122';
 static void (*rdr_1)() = rdr_;
 
 static void ptr_()
@@ -158,7 +158,7 @@ static void ptr_()
 }
 
 static char ptr_0[] = { 'P', 'T', 'R', '\003' };
-G_L_B char ptr asm("rptp") = '\122';
+G_L_B char ptr __asm__("rptp") = '\122';
 static void (*ptr_1)() = ptr_;
 
 static void wtr_()
@@ -174,7 +174,7 @@ static void wtr_()
     rftpl(p, r, refal.nexta);
 }
 static char wtr_0[] = { 'W', 'T', 'R', '\003' };
-G_L_B char wtr asm("rwtr") = '\122';
+G_L_B char wtr __asm__("rwtr") = '\122';
 static void (*wtr_1)() = wtr_;
 
 static void swr_()
@@ -190,7 +190,7 @@ static void swr_()
     rftpl(p, r, refal.nexta);
 }
 static char swr_0[] = { 'S', 'W', 'R', '\003' };
-G_L_B char swr asm("rswr") = '\122';
+G_L_B char swr __asm__("rswr") = '\122';
 static void (*swr_1)() = swr_;
 
 static void rp_()
@@ -238,7 +238,7 @@ FAIL:
 }
 
 static char rp_0[] = { 'R', 'P', '\002' };
-G_L_B char rp asm("rrp") = '\122';
+G_L_B char rp __asm__("rrp") = '\122';
 static void (*rp_1)() = rp_;
 
 static void cp_()
@@ -265,7 +265,7 @@ CP1:
         refal.upshot = 3; /* LACK */
 }
 static char cp_0[] = { 'C', 'P', '\002' };
-G_L_B char cp asm("rcp") = '\122';
+G_L_B char cp __asm__("rcp") = '\122';
 static void (*cp_1)() = cp_;
 
 static void new_()
@@ -288,7 +288,7 @@ static void new_()
     refal.dvar = refal.preva;
 }
 static char new_0[] = { 'N', 'E', 'W', '\003' };
-G_L_B char rnew asm("rnew") = '\122';
+G_L_B char rnew __asm__("rnew") = '\122';
 static void (*new_1)() = new_;
 
 /*----------------- end of file  XJAK.C ----------------*/

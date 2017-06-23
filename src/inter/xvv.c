@@ -56,7 +56,7 @@ HEOT1:
     return;
 }
 static char opng_0[] = { 'O', 'P', 'N', 'G', 'E', 'T', '\006' };
-G_L_B char opnget asm("ropnget") = '\122';
+G_L_B char opnget __asm__("ropnget") = '\122';
 static void (*opng_1)() = opng_;
 
 static void opnp_()
@@ -105,7 +105,7 @@ HEOT1:
     return;
 }
 static char opnp_0[] = { 'R', 'O', 'P', 'N', 'P', 'U', 'T', '\006' };
-G_L_B char opnput asm("ropnput") = '\122';
+G_L_B char opnput __asm__("ropnput") = '\122';
 static void (*opnp_1)() = opnp_;
 
 static void clsg_()
@@ -132,7 +132,7 @@ HEOT:
     return;
 }
 static char clsg_0[] = { 'C', 'L', 'S', 'G', 'E', 'T', '\006' };
-G_L_B char clsget asm("rclsget") = '\122';
+G_L_B char clsget __asm__("rclsget") = '\122';
 static void (*clsg_1)() = clsg_;
 
 static void clsp_()
@@ -159,7 +159,7 @@ HEOT:
     return;
 }
 static char clsp_0[] = { 'R', 'C', 'L', 'S', 'P', 'U', 'T', '\006' };
-G_L_B char clsput asm("rclsput") = '\122';
+G_L_B char clsput __asm__("rclsput") = '\122';
 static void (*clsp_1)() = clsp_;
 
 static void libg_()
@@ -233,7 +233,7 @@ HEOT:
     return;
 }
 static char libg_0[] = { 'L', 'I', 'B', 'G', 'E', 'T', '\006' };
-G_L_B char libget asm("rlibget") = '\122';
+G_L_B char libget __asm__("rlibget") = '\122';
 static void (*libg_1)() = libg_;
 
 static void libp_()
@@ -284,7 +284,7 @@ static void libp_()
     return;
 }
 static char libp_0[] = { 'L', 'I', 'B', 'P', 'U', 'T', '\006' };
-G_L_B char libput asm("rlibput") = '\122';
+G_L_B char libput __asm__("rlibput") = '\122';
 static void (*libp_1)() = libp_;
 
 static void card_()
@@ -309,7 +309,7 @@ static void card_()
     return;
 }
 static char card_0[] = { 'C', 'A', 'R', 'D', '\004' };
-G_L_B char card asm("rcard") = '\122';
+G_L_B char card __asm__("rcard") = '\122';
 static void (*card_1)() = card_;
 
 static void pr1_()
@@ -319,7 +319,7 @@ static void pr1_()
     return;
 }
 static char pr1_0[] = { 'P', 'R', 'I', 'N', 'T', '\005' };
-G_L_B char print asm("rprint") = '\122';
+G_L_B char print __asm__("rprint") = '\122';
 static void (*pr1_1)() = pr1_;
 
 static void pr2_()
@@ -329,7 +329,7 @@ static void pr2_()
     return;
 }
 static char pr2_0[] = { 'P', 'R', 'I', 'N', 'T', 'M', '\006' };
-G_L_B char printm asm("rprintm") = '\122';
+G_L_B char printm __asm__("rprintm") = '\122';
 static void (*pr2_1)() = pr2_;
 
 static void pr3_()
@@ -338,7 +338,7 @@ static void pr3_()
     return;
 }
 static char pr3_0[] = { 'P', 'R', 'O', 'U', 'T', '\005' };
-G_L_B char prout asm("rprout") = '\122';
+G_L_B char prout __asm__("rprout") = '\122';
 static void (*pr3_1)() = pr3_;
 
 static void pr4_()
@@ -347,7 +347,7 @@ static void pr4_()
     return;
 }
 static char pr4_0[] = { 'P', 'R', 'O', 'U', 'T', 'M', '\006' };
-G_L_B char proutm asm("rproutm") = '\122';
+G_L_B char proutm __asm__("rproutm") = '\122';
 static void (*pr4_1)() = pr4_;
 
 /*------------------ end of file  XVV.C ----------------*/

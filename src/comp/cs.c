@@ -58,7 +58,7 @@ void jbyte();
 void jextrn();
 void jentry();
 void jlabel();
-unsigned jwhere();
+extern unsigned jwhere();
 void ghw();
 void error_message_label();
 void through();

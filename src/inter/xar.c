@@ -24,7 +24,7 @@ static void add_()
 }
 
 static char add_0[] = { 'A', 'D', 'D', '\003' };
-G_L_B char add asm("radd") = '\122';
+G_L_B char add __asm__("radd") = '\122';
 
 static void (*add_1)() = add_;
 
@@ -34,7 +34,7 @@ static void sub_()
 }
 
 static char sub_0[] = { 'S', 'U', 'B', '\003' };
-G_L_B char sub asm("rsub") = '\122';
+G_L_B char sub __asm__("rsub") = '\122';
 static void (*sub_1)() = sub_;
 
 static void mul_()
@@ -44,7 +44,7 @@ static void mul_()
 
 /* BLF */
 static char mul_0[] = { 'M', 'U', 'L', '\003' };
-G_L_B char mul asm("rmul") = '\122';
+G_L_B char mul __asm__("rmul") = '\122';
 static void (*mul_1)() = mul_;
 
 static void dr_()
@@ -52,7 +52,7 @@ static void dr_()
     oper(Odr, 0);
 }
 static char dr_0[] = { 'D', 'R', '\002' };
-G_L_B char dr asm("rdr") = '\122';
+G_L_B char dr __asm__("rdr") = '\122';
 static void (*dr_1)() = dr_;
 
 static void divv_()
@@ -62,7 +62,7 @@ static void divv_()
 
 /* BLF */
 static char div_0[] = { 'D', 'I', 'V', '\003' };
-G_L_B char div_ asm("rdiv") = '\122';
+G_L_B char div_ __asm__("rdiv") = '\122';
 static void (*div_1)() = divv_;
 
 static void addn_()
@@ -70,7 +70,7 @@ static void addn_()
     oper(Oadd, 1);
 }
 static char addn_0[] = { 'A', 'D', 'D', 'N', '\004' };
-G_L_B char addn asm("raddn") = '\122';
+G_L_B char addn __asm__("raddn") = '\122';
 static void (*addn_1)() = addn_;
 
 static void subn_()
@@ -78,7 +78,7 @@ static void subn_()
     oper(Osub, 1);
 }
 static char subn_0[] = { 'S', 'U', 'B', 'N', '\004' };
-G_L_B char subn asm("rsubn") = '\122';
+G_L_B char subn __asm__("rsubn") = '\122';
 static void (*subn_1)() = subn_;
 
 static void muln_()
@@ -86,7 +86,7 @@ static void muln_()
     oper(Omul, 1);
 }
 static char muln_0[] = { 'M', 'U', 'L', 'N', '\004' };
-G_L_B char muln asm("muln") = '\122';
+G_L_B char muln __asm__("muln") = '\122';
 static void (*muln_1)() = muln_;
 
 static void drn_()
@@ -94,7 +94,7 @@ static void drn_()
     oper(Odr, 1);
 }
 static char drn_0[] = { 'D', 'R', 'N', '\003' };
-G_L_B char drn asm("rdrn") = '\122';
+G_L_B char drn __asm__("rdrn") = '\122';
 static void (*drn_1)() = drn_;
 
 static void divn_()
@@ -102,7 +102,7 @@ static void divn_()
     oper(Odr, 3);
 }
 static char divn_0[] = { 'D', 'I', 'V', 'N', '\004' };
-G_L_B char divn asm("rdivn") = '\122';
+G_L_B char divn __asm__("rdivn") = '\122';
 static void (*divn_1)() = divn_;
 
 static linkcb_t *x, *y, *nach, *kon, *Xn, *Yn, *Xk, *Yk;
@@ -717,7 +717,7 @@ static void nrel_()
     return;
 }
 static char nrel_0[] = { 'N', 'R', 'E', 'L', '\004' };
-G_L_B char nrel asm("rnrel") = '\122';
+G_L_B char nrel __asm__("rnrel") = '\122';
 static void (*nrel_1)() = nrel_;
 
 /*-------------------- end of file  XAR.C ----------------*/

@@ -76,7 +76,7 @@ LACK:
     return;
 }
 static char appl_0[] = { 'A', 'P', 'P', 'L', 'Y', '\005' };
-G_L_B char apply asm("rapply") = '\122';
+G_L_B char apply __asm__("rapply") = '\122';
 static void (*appl_1)() = appl_;
 
 /*----------  end of file XAPPLY.C  -----------*/

@@ -4,9 +4,9 @@
 /*------------------------------------------------*/
 
 /* BLF GO -> go */
-extern char rgo() asm("rgo");
+extern char rgo() __asm__("rgo");
 
-void main()
+int main()
 {
     rfexec(rgo);
 }

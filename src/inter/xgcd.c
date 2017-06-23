@@ -450,7 +450,7 @@ NOMEM:
     return;
 }
 static char add_0[] = { 'G', 'C', 'D', '\003' };
-G_L_B char gcd asm("rgcd") = '\122';
+G_L_B char gcd __asm__("rgcd") = '\122';
 static void (*gcd_1)() = gcd_;
 
 /*------------------ end of file  XGCD.C ----------------*/

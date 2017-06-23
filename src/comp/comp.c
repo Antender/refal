@@ -1,30 +1,21 @@
 #include "../refal.h"
 
-FILE* systerm;
-FILE* sysprint;
 
-FILE* syslin;
-FILE* sysin;
+
 int _eoj; /* "sysin" end flag */ /* kras */
 int cdnumb; /* card number */    /* kras */
 
-struct {
+typedef struct parser_flags_t {
     bool was_72 : 1;
     bool uzhe_krt : 1;
     bool was_err : 1;
     bool uzhe_zgl : 1;
     bool uzhekrt_t : 1;
-} flags;
+} parser_flags_t;
 
-struct {
-    bool source : 1;
-    bool mincomp : 1;
-    bool stm_nmb : 1;
-    bool extname : 1;
-    bool multmod : 1;
-    bool asmb : 1;
-    bool names : 1;
-} options;
+parser_flags_t flags;
+
+#include "main.c"
 
 void log(char* message)
 {

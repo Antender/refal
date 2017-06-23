@@ -15,7 +15,7 @@
 .SUFFIXES: .c .ref
 
 CC	=	gcc
-CFLAGS	=	-pipe -w -O2 -DNO_DEBUG
+CFLAGS	=	-std=c11 -pipe -w -O2 -DNO_DEBUG
 AR	=	ar
 REFXCV	=	src\inter\refxcv.bat 	# refal2 + assembler for xcv
 TAR	=	tar -cf
