@@ -32,8 +32,8 @@ HEOT:
     refal.upshot = 2;
     return;
 }
-static char unlnk_0[] = {  'U', 'N', 'L', 'N', 'K', '\005' };
-G_L_B char unlnk = '\122';
+static char unlnk_0[] = { 'R', 'U', 'N', 'L', 'N', 'K', '\005' };
+G_L_B char unlnk asm("runlnk") = '\122';
 static void (*unlnk_1)() = unlnk_;
 
 static void renam_()
@@ -72,8 +72,8 @@ HEOT:
     refal.upshot = 2;
     return;
 }
-static char renam_0[] = {  'R', 'E', 'N', 'A', 'M', '\005' };
-G_L_B char renam = '\122';
+static char renam_0[] = { 'R', 'E', 'N', 'A', 'M', '\005' };
+G_L_B char renam asm("rrenam") = '\122';
 static void (*renam_1)() = renam_;
 
 /*-------- end of file  XRENAME.C -------*/

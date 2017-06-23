@@ -132,7 +132,6 @@ static T_RL rl;
 static int k;
 static int delta;
 
-char* malloc();
 FILE* fopen();
 void free();
 void pchose();
@@ -594,40 +593,15 @@ void jend()
     }
     d.w = 0;
 
-/* heading generating */
+    /* heading generating */
 
-/* BLF */
-#ifdef UNIX /*3*/
+    fputs(".data\n", syslin); /* BLF */
 
-/* BLF */
-#ifdef FASM
-    fputs("format ELF\n", syslin);
-#endif
-
-#else /*3*/
-
-#ifndef MINGW32
-    fputs("format COFF\n", syslin);
-#endif
-
-#endif /*3*/
-
-/* BLF */
-#ifdef FASM
-    fputs("section '.data'\n", syslin); /* BLF */
-#else
-    fputs(".data\n", syslin);          /* BLF */
-#endif
-
-/* BLF fputc('_',syslin); for(i=0;i<lnmmod;i++) fputc(mod_name[i],syslin); */
-/* BLF fputs ("\tsegment\tbyte public 'CODE'\n",syslin); */
-/* BLF sprintf(bufs,"_d%d@\tlabel\tbyte\n",nommod); fputs (bufs,syslin); */
-/* BLF */
-#ifdef FASM
-    sprintf(bufs, "_d%d@:\n", nommod); /* BLF */
-#else
+    /* BLF fputc('_',syslin); for(i=0;i<lnmmod;i++) fputc(mod_name[i],syslin); */
+    /* BLF fputs ("\tsegment\tbyte public 'CODE'\n",syslin); */
+    /* BLF sprintf(bufs,"_d%d@\tlabel\tbyte\n",nommod); fputs (bufs,syslin); */
+    /* BLF */
     sprintf(bufs, "_d%d$:\n", nommod); /* BLF */
-#endif
 
     fputs(bufs, syslin);
 
@@ -649,12 +623,8 @@ GEN_TXT:
             if(k != 0)
                 fputc('\n', syslin);
 
-/* BLF */
-#ifdef FASM
-            fputs("\tdb\t", syslin);
-#else
+            /* BLF */
             fputs("\t.byte\t", syslin);
-#endif
         }
         sprintf(bufs, "%d", d.w);
         fputs(bufs, syslin);
@@ -667,84 +637,19 @@ GEN_TXT:
         while(((p->mode) & '\300') == '\300')
             p = p->info.infop;
         if(((p->mode) & '\300') != '\200') {
-/*    nonexternal label   */
+            /*    nonexternal label   */
 
-#ifdef FASM
-            sprintf(bufs, "\tdd\t_d%d@+%u\n", nommod, p->info.infon);
-#else
             sprintf(bufs, "\t.long\t_d%d$+%u\n", nommod, p->info.infon);
-#endif
             fputs(bufs, syslin);
         } else {
-/*     external   label   */
-/* BLF */
-#ifdef UNIX
-/* begin name without underlining _ */
-/* BLF */
-#ifdef FASM
-            fputs("\tdd\t", syslin);
-#else
+            /*     external   label   */
             fputs("\t.long\t", syslin);
-#endif
-#else /* Windows - with underlining _*/
-/* BLF */
-#ifdef FASM
-            fputs("\tdd\t_", syslin);
-#else
-            fputs("\t.long\t_", syslin);
-#endif
-#endif
+
             qx = first_ext;
             for(i = 1; i < p->info.infon; i++)
                 qx = qx->next;
 
-#ifdef UNIX
-            /* BLF ------- renaming add, sub, mul ... --------------- */
-            /* For GCC under UNIX we have the
-            following problem. Variable names have not
-            underscore (_) in begin (as it is in Windows).
-            That is cause for collision names
-                    add, sub, mul  ...
-            with corresponding assembler operation.
-            The solution which we propuse is to rename
-            on the fly that refal operation to
-                    ad_, su_, mu_ ... accordingly.
-            */
-            oper_add = "ad_";
-            oper_sub = "su_";
-            oper_mul = "mu_";
-            oper_div = "di_";
-            oper_rp = "r_";
-            oper_ptr = "pt_";
-
-            /* BLF - debug printf ("%s\n",qx->e) ; */
-            if(strcmp(qx->e, "ADD") == 0)
-                for(i = 0; i < (qx->le); i++)
-                    *((qx->e) + i) = oper_add[i];
-
-            else if(strcmp(qx->e, "SUB") == 0)
-                for(i = 0; i < (qx->le); i++)
-                    *((qx->e) + i) = oper_sub[i];
-
-            else if(strcmp(qx->e, "MUL") == 0)
-                for(i = 0; i < (qx->le); i++)
-                    *((qx->e) + i) = oper_mul[i];
-
-            else if(strcmp(qx->e, "DIV") == 0)
-                for(i = 0; i < (qx->le); i++)
-                    *((qx->e) + i) = oper_div[i];
-
-            else if(strcmp(qx->e, "RP") == 0)
-                for(i = 0; i < (qx->le); i++)
-                    *((qx->e) + i) = oper_rp[i];
-
-            else if(strcmp(qx->e, "PTR") == 0)
-                for(i = 0; i < (qx->le); i++)
-                    *((qx->e) + i) = oper_ptr[i];
-
-#endif
-            /* BLF ------- end renaming --------------- */
-
+            fputc('r', syslin);
             for(i = 0; i < qx->le; i++)
                 /* BLF    fputc (*((qx->e) + i),syslin);*/
                 fputc(tolower(*((qx->e) + i)), syslin); /* BLF */
@@ -753,32 +658,15 @@ GEN_TXT:
         goto GEN_TXT;
     } /*if*/
 
-/* end text generating */
+    /* end text generating */
 
     /*   external label generating    */
 
     qx = first_ext->next;
     while(qx != NULL) {
 
-/* BLF     fputs ("\textrn\t_",syslin);*/
-/* BLF */
-#ifdef UNIX
-/* begin name without underlining _ */
-/* BLF */
-#ifdef FASM
-        fputs("\textrn\t", syslin); /* BLF */
-#else
         fputs("\t.extern\t", syslin); /* BLF */
-#endif
-#else          /* Windows */
-/* BLF */
-#ifdef MINGW32 /* then GNU format */
-        fputs("\t.extern\t_", syslin); /* BLF */
-#else          /* fasm format */
-        fputs("\textrn\t_", syslin); /* BLF */
-#endif
-
-#endif
+        fputc('r', syslin);
         for(i = 0; i < qx->le; i++)
             /* BLF fputc (*((qx->e) + i),syslin);*/
             fputc(tolower(*((qx->e) + i)), syslin); /* BLF */
@@ -786,53 +674,24 @@ GEN_TXT:
         qx = qx->next;
     } /*while*/
 
-/* BLF */
-#ifdef FASM
-    fputs("section '.data'\n", syslin); /* BLF */
-#else
+    /* BLF */
     fputs(".data\n", syslin); /* BLF */
-#endif
 
     /* entry label generating */
 
     q = first_ent->next;
     while(q != NULL) {
-
-/* BLF */
-#ifndef UNIX
-        /* begin name with underlining _ */
-        fputc('_', syslin);
-#else
-#ifdef MINGW32
-        /* begin name with underlining _ */
-        fputc('_', syslin);
-#endif
-#endif
-
+        fputc('r', syslin);
         for(i = 0; i < q->le; i++)
             /* BLF translate name to lower case */
             fputc(tolower(*((q->e) + i)), syslin);
         pp = q->p;
         while(((pp->mode) & '\300') == '\300')
             pp = pp->info.infop;
-/* BLF */
-#ifdef UNIX
-/* begin name without underlining _ */
-/* BLF */
-#ifdef FASM
-        sprintf(bufs, "\t=_d%d@+%d\n\tpublic\t", nommod, pp->info.infon);
-#else
+        /* BLF */
         sprintf(bufs, "\t=_d%d$+%d\n\t.globl\t", nommod, pp->info.infon);
-#endif
-#else /* Windows */
-                                       /* BLF */
-#ifdef FASM
-        sprintf(bufs, "\t=_d%d@+%d\n\tpublic\t_", nommod, pp->info.infon);
-#else
-        sprintf(bufs, "\t=_d%d$+%d\n\t.globl\t_", nommod, pp->info.infon);
-#endif
-#endif
         fputs(bufs, syslin);
+        fputc('r', syslin);
         for(i = 0; i < q->le; i++)
             /* BLF translate name to lower case */
             fputc(tolower(*((q->e) + i)), syslin);

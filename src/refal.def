@@ -1,88 +1,70 @@
 #include <stdbool.h>
 #include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-/* BLF - UNIX for operation system Linux, FreeBSD */
-/*#define UNIX*/
+typedef enum TAGS {
+    TAGO = 0,
+    TAGLB,
+    TAGF,
+    TAGRB,
+    TAGN,
+    TAGK,
+    TAGR,
+    TAGD
+} TAGS;
 
-/* BLF - FASM for fasm assembler format */
-/*#define FASM*/
+typedef struct linkcb {
+    struct linkcb* prev;
+    struct linkcb* next;
+    TAGS tag;
+    union {
+        char infoc;
+        long coden;
+        struct linkcb* codep;
+        char* codef;
+    } info;
+} linkcb;
 
-/* BLF - MINGW32 for operation system Windows - mingw32 */
-#define MINGW32
+#define gcoden(p) p->info.coden
+#define pcoden(p, W) p->info.coden = W;
 
+typedef struct st {
+    struct st* stprev;
+    struct st* stnext;
+    int state;
+    linkcb* dot;
+    long step;
+    long stop;
+    linkcb* view;
+    linkcb* store;
+} st;
+
+typedef struct REFAL {
+    st* crprev;
+    st* crnext;
+    int upshot;
+    linkcb* preva;
+    linkcb* nexta;
+    linkcb* prevr;
+    linkcb* nextr;
+    st* currst;
+    linkcb* flhead;
+    linkcb* svar;
+    linkcb* dvar;
+    int stmnmb;
+    int nostm;
+    int tmmode;
+    long tmintv;
+} REFAL;
+
+
+#define LBLL sizeof(void*)
+#define SMBL (sizeof(long)+sizeof(void*))
+
+#define G_L_B
 /* BLF - DBLF for prokrutka - trace debug mode, see rfintf.c */
 /*#define DBLF*/
 
 /* BLF -  PRINT_CODE - for print operation code, see rfrun1.c */
 /*#define PRINT_CODE*/
-
-#define TAGO  0
-#define TAGF  2
-#define TAGN  4
-#define TAGR  6
-#define TAGLB 1
-#define TAGRB 3
-#define TAGK  5
-#define TAGD  7
-
-
-/* BLF pragma for 1 byte aligniment structure ------------*/
-#pragma pack(1)
-
-
-	struct  linkcb_ {
-		struct	linkcb_ *prev;
-		struct	linkcb_ *next;
-		short	tag;
-		union {
-			char infoc;
-			long  coden;
-			struct linkcb_ *codep;
-			char *codef;
-		} info;
-	};
-
-#pragma pack()
-
-/* BLF ------------ end of pragma ------------------------------------ */
-
-	typedef struct linkcb_ linkcb;
-
-	struct  st_ {
-		struct st_ *stprev;
-		struct st_ *stnext;
-		int state;
-		linkcb *dot;
-		long step;
-		long stop;
-		linkcb *view;
-		linkcb *store;
-	};
-	typedef  struct  st_ st;
-
-	struct  refal_ {
-		st *crprev;
-		st *crnext;
-		int upshot;
-		linkcb *preva;
-		linkcb *nexta;
-		linkcb *prevr;
-		linkcb *nextr;
-		st *currst;
-		linkcb *flhead;
-		linkcb *svar;
-		linkcb *dvar;
-		int stmnmb;
-		int nostm;
-		int tmmode;
-		long tmintv;
-	};
-	typedef struct refal_ REFAL;
-
-/*---------- I B M - P C : -------------*/
-
-#define G_L_B
-#define gcoden(p)    p->info.coden
-#define pcoden(p,W)  p->info.coden=W;
-#define LBLL sizeof(void*)
-#define SMBL (sizeof(long)+sizeof(void*))

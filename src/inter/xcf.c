@@ -9,8 +9,6 @@ extern REFAL refal;
 typedef char* adr;
 short func_n = 0;
 adr* func_f = NULL;
-adr* malloc();
-adr* realloc();
 char rfcnv(char cm);
 
 static void ftochar_()
@@ -49,8 +47,8 @@ HEOT:
     refal.upshot = 2;
     return;
 }
-static char ftochar_0[] = {  'F', 'T', 'O', 'C', 'H', 'A', 'R', '\007' };
-G_L_B char ftochar = '\122';
+static char ftochar_0[] = { 'F', 'T', 'O', 'C', 'H', 'A', 'R', '\007' };
+G_L_B char ftochar asm("rftochar") = '\122';
 static void (*ftochar_1)() = ftochar_;
 
 static void functab_()
@@ -77,8 +75,8 @@ HEOT:
     refal.upshot = 2;
     return;
 }
-static char functab_0[] = {  'F', 'U', 'N', 'C', 'T', 'A', 'B', '\007' };
-G_L_B char functab = '\122';
+static char functab_0[] = { 'F', 'U', 'N', 'C', 'T', 'A', 'B', '\007' };
+G_L_B char functab asm("rfunctab") = '\122';
 static void (*functab_1)() = functab_;
 
 static void chartof_()
@@ -139,8 +137,8 @@ HEOT:
     refal.upshot = 2;
     return;
 }
-static char chartof_0[] = {  'C', 'H', 'A', 'R', 'T', 'O', 'F', '\007' };
-G_L_B char chartof = '\122';
+static char chartof_0[] = { 'C', 'H', 'A', 'R', 'T', 'O', 'F', '\007' };
+G_L_B char chartof asm("rchartof") = '\122';
 static void (*chartof_1)() = chartof_;
 
 /*------------------ end of file  XCF.C ----------------*/

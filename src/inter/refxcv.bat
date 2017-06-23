@@ -12,4 +12,4 @@ rem Date: 28.05.2005
 rem *******************************************************************
 
 bin\refal2 src\inter\xcv.ref > src\inter\xcv.log
-as -o src\inter\xcv.o src\inter\xcv.asm >> src\inter\xcv.log 
+as -o src\inter\xcv.ref.o src\inter\xcv.asm >> src\inter\xcv.log 

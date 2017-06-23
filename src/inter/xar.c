@@ -23,32 +23,19 @@ static void add_()
     oper(Oadd, 0);
 }
 
-/* BLF */
-#ifdef UNIX
-static char add_0[] = {  'A', 'D', '_', '\003' };
-G_L_B char ad_ = '\122';
+static char add_0[] = { 'A', 'D', 'D', '\003' };
+G_L_B char add asm("radd") = '\122';
+
 static void (*add_1)() = add_;
-#else
-static char add_0[] = {  'A', 'D', 'D', '\003' };
-G_L_B char add = '\122';
-static void (*add_1)() = add_;
-#endif
 
 static void sub_()
 {
     oper(Osub, 0);
 }
 
-/* BLF */
-#ifdef UNIX
-static char sub_0[] = {  'S', 'U', '_', '\003' };
-G_L_B char su_ = '\122';
+static char sub_0[] = { 'S', 'U', 'B', '\003' };
+G_L_B char sub asm("rsub") = '\122';
 static void (*sub_1)() = sub_;
-#else
-static char sub_0[] = {  'S', 'U', 'B', '\003' };
-G_L_B char sub = '\122';
-static void (*sub_1)() = sub_;
-#endif
 
 static void mul_()
 {
@@ -56,22 +43,16 @@ static void mul_()
 }
 
 /* BLF */
-#ifdef UNIX
-static char mul_0[] = {  'M', 'U', '_', '\003' };
-G_L_B char mu_ = '\122';
+static char mul_0[] = { 'M', 'U', 'L', '\003' };
+G_L_B char mul asm("rmul") = '\122';
 static void (*mul_1)() = mul_;
-#else
-static char mul_0[] = {  'M', 'U', 'L', '\003' };
-G_L_B char mul = '\122';
-static void (*mul_1)() = mul_;
-#endif
 
 static void dr_()
 {
     oper(Odr, 0);
 }
-static char dr_0[] = {  'D', 'R', '\002' };
-G_L_B char dr = '\122';
+static char dr_0[] = { 'D', 'R', '\002' };
+G_L_B char dr asm("rdr") = '\122';
 static void (*dr_1)() = dr_;
 
 static void divv_()
@@ -80,54 +61,48 @@ static void divv_()
 }
 
 /* BLF */
-#ifdef UNIX
-static char div_0[] = {  'D', 'I', '_', '\003' };
-G_L_B char div_ = '\122';
+static char div_0[] = { 'D', 'I', 'V', '\003' };
+G_L_B char div_ asm("rdiv") = '\122';
 static void (*div_1)() = divv_;
-#else
-static char div_0[] = {  'D', 'I', 'V', '\003' };
-G_L_B char div_ = '\122';
-static void (*div_1)() = divv_;
-#endif
 
 static void addn_()
 {
     oper(Oadd, 1);
 }
-static char addn_0[] = {  'A', 'D', 'D', 'N', '\004' };
-G_L_B char addn = '\122';
+static char addn_0[] = { 'A', 'D', 'D', 'N', '\004' };
+G_L_B char addn asm("raddn") = '\122';
 static void (*addn_1)() = addn_;
 
 static void subn_()
 {
     oper(Osub, 1);
 }
-static char subn_0[] = {  'S', 'U', 'B', 'N', '\004' };
-G_L_B char subn = '\122';
+static char subn_0[] = { 'S', 'U', 'B', 'N', '\004' };
+G_L_B char subn asm("rsubn") = '\122';
 static void (*subn_1)() = subn_;
 
 static void muln_()
 {
     oper(Omul, 1);
 }
-static char muln_0[] = {  'M', 'U', 'L', 'N', '\004' };
-G_L_B char muln = '\122';
+static char muln_0[] = { 'M', 'U', 'L', 'N', '\004' };
+G_L_B char muln asm("muln") = '\122';
 static void (*muln_1)() = muln_;
 
 static void drn_()
 {
     oper(Odr, 1);
 }
-static char drn_0[] = {  'D', 'R', 'N', '\003' };
-G_L_B char drn = '\122';
+static char drn_0[] = { 'D', 'R', 'N', '\003' };
+G_L_B char drn asm("rdrn") = '\122';
 static void (*drn_1)() = drn_;
 
 static void divn_()
 {
     oper(Odr, 3);
 }
-static char divn_0[] = {  'D', 'I', 'V', 'N', '\004' };
-G_L_B char divn = '\122';
+static char divn_0[] = { 'D', 'I', 'V', 'N', '\004' };
+G_L_B char divn asm("rdivn") = '\122';
 static void (*divn_1)() = divn_;
 
 static linkcb *x, *y, *nach, *kon, *Xn, *Yn, *Xk, *Yk;
@@ -741,8 +716,8 @@ static void nrel_()
     rftpl(refal.prevr, refal.preva->prev, refal.nexta);
     return;
 }
-static char nrel_0[] = {  'N', 'R', 'E', 'L', '\004' };
-G_L_B char nrel = '\122';
+static char nrel_0[] = { 'N', 'R', 'E', 'L', '\004' };
+G_L_B char nrel asm("rnrel") = '\122';
 static void (*nrel_1)() = nrel_;
 
 /*-------------------- end of file  XAR.C ----------------*/

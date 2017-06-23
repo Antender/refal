@@ -4,11 +4,11 @@
 /*------------------------------------------------*/
 
 /* BLF GO -> go */
-extern char go();
+extern char rgo() asm("rgo");
 
 void main()
 {
-    rfexec(go);
+    rfexec(rgo);
 }
 
 /*---------  end of file MAINRF.C  ---------*/

@@ -2,7 +2,6 @@
 /*           C-interface functions                  */
 /*        Last modification : 17.07.2004 (BLF)      */
 /*--------------------------------------------------*/
-#include <stdio.h>
 #include "../refal.def"
 
 REFAL refal;
@@ -11,7 +10,6 @@ static int rf_init = 1;
 static int curr_size = 0;
 static linkcb hd;
 
-linkcb* malloc();
 void rflist();
 void rfpexm();
 

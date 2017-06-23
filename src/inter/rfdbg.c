@@ -2,11 +2,10 @@
 /*          Standard REFAL-Debugger         */
 /*        Last modification : 14.09.91      */
 /*------------------------------------------*/
-#include <stdio.h>
 #include "../refal.def"
 
 static st s_st;
-extern char go();
+extern char rgo();
 
 void main()
 {
@@ -15,7 +14,7 @@ void main()
         goto LACK;
     if(!lcre(&s_st))
         goto LACK;
-    if(!linskd(&s_st, go))
+    if(!linskd(&s_st, rgo))
         goto LACK;
     rfdbg(&s_st); /* there is exit */
 LACK:

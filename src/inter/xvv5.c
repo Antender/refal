@@ -63,8 +63,8 @@ NEOT1:
     refal.upshot = 2;
     return;
 }
-static char open_0[] = {  'O', 'P', 'E', 'N', '\004' };
-G_L_B char xopen = '\122';
+static char open_0[] = { 'O', 'P', 'E', 'N', '\004' };
+G_L_B char xopen asm("ropen") = '\122';
 static void (*open_1)() = open_;
 
 static void close_()
@@ -98,8 +98,8 @@ NEOT:
     refal.upshot = 2;
     return;
 }
-static char close_0[] = {  'C', 'L', 'O', 'S', 'E', '\005' };
-G_L_B char xclose = '\122';
+static char close_0[] = { 'C', 'L', 'O', 'S', 'E', '\005' };
+G_L_B char xclose asm("rclose") = '\122';
 static void (*close_1)() = close_;
 
 static void get_()
@@ -143,8 +143,8 @@ NEOT1:
     refal.upshot = 2;
     return;
 }
-static char get_0[] = {  'G', 'E', 'T', '\003' };
-G_L_B char xget = '\122';
+static char get_0[] = { 'G', 'E', 'T', '\003' };
+G_L_B char xget asm("rget") = '\122';
 static void (*get_1)() = get_;
 
 static void put_()
@@ -197,8 +197,8 @@ NEOT1:
     refal.upshot = 2;
     return;
 }
-static char put_0[] = {  'P', 'U', 'T', '\003' };
-G_L_B char xput = '\122';
+static char put_0[] = { 'P', 'U', 'T', '\003' };
+G_L_B char xput asm("rput") = '\122';
 static void (*put_1)() = put_;
 
 /*----------  end of file XVV5.C  -----------*/

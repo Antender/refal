@@ -20,7 +20,6 @@
     }           \
     }
 int qindex;
-char* malloc();
 void exit();
 void lblkey();
 void gsymbol();

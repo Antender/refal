@@ -61,7 +61,6 @@ extern struct {
 } scn_;
 
 struct u* lookup();
-struct arr_lbl* calloc();
 
 static struct arr_lbl* first_arr_lbl = NULL;
 static int n_lbl = 15;
@@ -220,7 +219,7 @@ int lid;
         p->def = scn_.nomkar;
         jlabel(p);
         gop(N_SWAP);
-        kk = sizeof(long) + LBLL * 3;
+        kk = SMBL + LBLL * 2;
         for(k0 = 1; k0 <= kk; k0++)
             jbyte('\000');
     }

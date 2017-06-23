@@ -52,7 +52,7 @@ TARGET =	refal2
 ####### Implicit rules
 
 .c.o:
-	$(CC) -c $(CFLAGS) -o $@ $<
+	$(CC) -o $@ $< -c $(CFLAGS) 
 
 ####### Build rules
 
@@ -63,9 +63,9 @@ $(TARGET): $(OBJECTS)
 
 ####### Dependences
 
-$(S)\ccst1.o: $(S)\ccst1.c
+$(S)\ccst1.o: $(S)\ccst1.c $(S)\..\refal.def
 
-$(S)\ccst2.o: $(S)\ccst2.c
+$(S)\ccst2.o: $(S)\ccst2.c $(S)\..\refal.def
 
 $(S)\cerr.o: $(S)\cerr.c $(S)\..\refal.def
 

@@ -25,6 +25,7 @@ REFLIB	=	lib\librefal2.a
 USERLIB	=	lib\libr2user.a
 S	=      	src\inter
 OBJ	=	lib\r2objects
+NU	=	-fno-leading-underscore
 ####### Files
 
 SOURCES =		\
@@ -55,7 +56,7 @@ OBJECTS =		\
 	$(S)\xapply.o 	\
 	$(S)\xar.o 	\
 	$(S)\xcf.o 	\
-	$(S)\xcv.o 	\
+	$(S)\xcv.ref.o 	\
 	$(S)\xgcd.o 	\
 	$(S)\xjak.o 	\
 	$(S)\xmo.o 	\
@@ -65,8 +66,10 @@ OBJECTS =		\
 
 ####### Implicit rules
 
-.ref.o: 
-	$(REFXCV)  
+%.ref.o: 
+	$(REFXCV)
+x%.o:
+	$(CC) $(CFLAGS) $(NU) -c $< -o $@  
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@ 
 

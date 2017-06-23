@@ -62,16 +62,15 @@ static union { /* structure for pointer and integer aligning */
     char chr[2];
 } inch;
 /* definition of work variables and pointers*/
-static char opc;      /* current statement code */
-static unsigned char* vpc;   /* virtual program counter */
-static linkcb* lastk; /* last acted sign-k adress */
-static linkcb* lastb; /* last generated left bracket*/
+static char opc;           /* current statement code */
+static unsigned char* vpc; /* virtual program counter */
+static linkcb* lastk;      /* last acted sign-k adress */
+static linkcb* lastb;      /* last generated left bracket*/
 static linkcb *b0, *b1, *b2;
 static linkcb *f0, *f1, *f;
 static char* vpca; /* additional vpc  */
 static char (*fptr)();
 static int i, n, m;
-sav* malloc();
 long time();
 
 void rfrun(ast) st* ast; /* adress of current state table */

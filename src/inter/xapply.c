@@ -6,7 +6,6 @@
 #include "../refal.def"
 extern REFAL refal;
 
-st* malloc();
 void (*dba)(st*) = NULL;
 
 static void appl_()
@@ -15,8 +14,7 @@ static void appl_()
     linkcb *px, *pk, *pd;
     long l = (long)&s_st;
     /*   printf("\nl=%lx",l);*/
-    if((l & 0xffffL) < 200L)
-    { /* printf("\nStack overflow!");*/
+    if((l & 0xffffL) < 200L) { /* printf("\nStack overflow!");*/
         goto LACK;
     }
     upst = refal.currst;
@@ -77,8 +75,8 @@ LACK:
     refal.upshot = 3;
     return;
 }
-static char appl_0[] = {  'A', 'P', 'P', 'L', 'Y', '\005' };
-G_L_B char apply = '\122';
+static char appl_0[] = { 'A', 'P', 'P', 'L', 'Y', '\005' };
+G_L_B char apply asm("rapply") = '\122';
 static void (*appl_1)() = appl_;
 
 /*----------  end of file XAPPLY.C  -----------*/
