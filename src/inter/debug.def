@@ -42,12 +42,12 @@ static short was_le;
 static short was_eq;
 static long curr_step1;
 static long curr_step2;
-static linkcb* nextk;
-static linkcb* res_prevk;
-static linkcb* res_nextd;
-static linkcb *pk, *prevk, *nextd;
-static linkcb *dot1, *prevk1, *nextd1;
-static linkcb *dot2, *prevk2, *nextd2;
+static linkcb_t* nextk;
+static linkcb_t* res_prevk;
+static linkcb_t* res_nextd;
+static linkcb_t *pk, *prevk, *nextd;
+static linkcb_t *dot1, *prevk1, *nextd1;
+static linkcb_t *dot2, *prevk2, *nextd2;
 static int i, c2;
 
 #ifdef VIDEO

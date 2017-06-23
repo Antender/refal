@@ -4,9 +4,9 @@
 /*       addn, subn, muln, divn, drn,       */
 /*      Last edition date : 23.02.2005 (BLF)*/
 /*------------------------------------------*/
-#include "../refal.def"
+#include "../refal.h"
 #include <stdio.h>
-extern REFAL refal;
+extern refalproc_t refal;
 
 #define Oadd 1
 #define Osub 2
@@ -105,7 +105,7 @@ static char divn_0[] = { 'D', 'I', 'V', 'N', '\004' };
 G_L_B char divn asm("rdivn") = '\122';
 static void (*divn_1)() = divn_;
 
-static linkcb *x, *y, *nach, *kon, *Xn, *Yn, *Xk, *Yk;
+static linkcb_t *x, *y, *nach, *kon, *Xn, *Yn, *Xk, *Yk;
 static int dl, Xdl, Ydl;
 static char zn, Xzn, Yzn;
 
@@ -118,18 +118,18 @@ static dajch()
         return (true);
     }
     x = x->next;
-    if((x->tag == TAGO) && ((x->info.infoc == '+') || (x->info.infoc == '-'))) {
+    if((x->tag == TAG_O) && ((x->info.infoc == '+') || (x->info.infoc == '-'))) {
         zn = x->info.infoc;
         x = x->next;
         if(x == y)
             return (false); /*  w chisle - lish znak */
     }
-    for(; (x->tag == TAGN) && (gcoden(x) == 0l); x = x->next)
+    for(; (x->tag == TAG_N) && (gcoden(x) == 0l); x = x->next)
         ;
     if(x == y)
         dl = 0; /*  wse cifry - nuli */
     else {
-        for(dl = 0, nach = x; (x->tag == TAGN); x = x->next, dl++)
+        for(dl = 0, nach = x; (x->tag == TAG_N); x = x->next, dl++)
             ;
         if(x != y)
             return (false); /* ne makrocifra */
@@ -140,7 +140,7 @@ static dajch()
 static dajarg()
 {
     x = refal.preva->next;
-    if(x->tag != TAGLB)
+    if(x->tag != TAG_LB)
         return (false);
     y = x->info.codep;
     if(dajch()) {
@@ -164,7 +164,7 @@ static dajarg()
 
 static void obmen()
 {
-    linkcb* p;
+    linkcb_t* p;
     int i;
     char c;
 
@@ -231,7 +231,7 @@ static void ymn(a, b) long *a, *b;
 }
 
 static void norm(X, dl, j) /*  normaliz. posledov. makrocifr */
-    linkcb* X;
+    linkcb_t* X;
 int dl, j;
 { /*  X - ukaz. na konec            */
     long a, g, m, peren;
@@ -250,7 +250,7 @@ int dl, j;
 
 static void oper(o, prn) int o, prn;
 {
-    linkcb *p, *r, *f, *Xt, *Yt;
+    linkcb_t *p, *r, *f, *Xt, *Yt;
     long j, peren;
     int i, n, a11, b11, a22, b22, r1, r2, r3, r4;
     long a, a1, b, b1, c, d, x1, x2, y1, y2;
@@ -271,7 +271,7 @@ static void oper(o, prn) int o, prn;
             if(prn == 1)
                 return; /* dlja n-operacij */
             x = refal.preva->next;
-            x->tag = TAGN;
+            x->tag = TAG_N;
             pcoden(x, 0l);
             rftpl(refal.prevr, x->prev, x->next);
             return;
@@ -287,7 +287,7 @@ static void oper(o, prn) int o, prn;
                         obmen();
                     /*  X  dlinnee  Y  (ili =)  */
                     Xn = Xn->prev; /*  pripisywaem  0  */
-                    Xn->tag = TAGN;
+                    Xn->tag = TAG_N;
                     pcoden(Xn, 0l);
                     peren = 0L;
                     for(x = Xk, y = Yk; (x != Xn->prev); x = x->prev) {
@@ -308,7 +308,7 @@ static void oper(o, prn) int o, prn;
                     if(xmy())
                         obmen();   /*  menjaem x i y  */
                     Xn = Xn->prev; /*  pripisywaem 0  */
-                    Xn->tag = TAGN;
+                    Xn->tag = TAG_N;
                     pcoden(Xn, 0l);
                     peren = 0L;
                     for(x = Xk, y = Yk; (x != Xn->prev); x = x->prev) {
@@ -342,14 +342,14 @@ static void oper(o, prn) int o, prn;
         p = p->next;
         r = r->prev;
         for(x = p; x != r->next; x = x->next) {
-            x->tag = TAGN;
+            x->tag = TAG_N;
             pcoden(x, 0l);
         } /*  zanulen rezultat  */
         if(Xdl < Ydl)
             obmen();
         /*  dobawim 0 k X dlja summir. s perenosom  */
         Xn = Xn->prev;
-        Xn->tag = TAGN;
+        Xn->tag = TAG_N;
         pcoden(Xn, 0l);
         for(f = r, y = Yk; y != Yn->prev; y = y->prev, f = f->prev) {
             d = gcoden(y);
@@ -427,19 +427,19 @@ static void oper(o, prn) int o, prn;
             }
             if(Xzn == '-') {
                 Xn = Xn->prev;
-                Xn->tag = TAGO;
+                Xn->tag = TAG_O;
                 Xn->info.codep = NULL;
                 Xn->info.infoc = '-';
             }
             Xn = Xn->prev;
             Xk = Xk->next;
-            Xn->tag = TAGLB;
-            Xk->tag = TAGRB;
+            Xn->tag = TAG_LB;
+            Xk->tag = TAG_RB;
             Xn->info.codep = Xk;
             Xk->info.codep = Xn;
             if(prn == 0) {
                 Xn = Xn->prev;
-                Xn->tag = TAGN;
+                Xn->tag = TAG_N;
                 pcoden(Xn, 0l);
             }
             rftpl(refal.prevr, Xn->prev, Xk->next);
@@ -463,13 +463,13 @@ static void oper(o, prn) int o, prn;
         r = p->next; /*  dlja  perwoj  cifry  */
         nach = r;
         Xn = Xn->prev;
-        Xn->tag = TAGN;
+        Xn->tag = TAG_N;
         pcoden(Xn, 0l);
         Xdl++;
         for(i = 0, x = Xn; i < Ydl; i++, x = x->next)
             ;
         y = Yn->prev;
-        y->tag = TAGN;
+        y->tag = TAG_N;
         pcoden(y, 0l);
         if(Ydl != 0) { /* wozmovna normalizacija */
             b = gcoden(Yn);
@@ -571,7 +571,7 @@ static void oper(o, prn) int o, prn;
                     /*printf("\nc veliko jj=%ld",jj);*/
                 }
             }
-            r->tag = TAGN;
+            r->tag = TAG_N;
             pcoden(r, c);
             r = r->next;
             x = x->next;
@@ -600,7 +600,7 @@ static void oper(o, prn) int o, prn;
         x = x->prev;
         if(x != Xk) {
             if(Xzn != Yzn) {
-                x->tag = TAGO;
+                x->tag = TAG_O;
                 x->info.codep = NULL;
                 x->info.infoc = '-';
             } else
@@ -611,16 +611,16 @@ static void oper(o, prn) int o, prn;
             ;
         if(Xzn == '-') {
             x = x->prev;
-            x->tag = TAGO;
+            x->tag = TAG_O;
             x->info.codep = NULL;
             x->info.infoc = '-';
         }
         if((prn & 1) == 0 || Xn != Xk || gcoden(Xn) != 0l)
             Xn = Xn->prev;
-        Xn->tag = TAGLB;
+        Xn->tag = TAG_LB;
         Xn->info.codep = Xk->next;
         Xk = Xk->next;
-        Xk->tag = TAGRB;
+        Xk->tag = TAG_RB;
         Xk->info.codep = Xn;
         if(r->next != Xn)
             rftpl(r, Xn->prev, Xk->next);
@@ -638,7 +638,7 @@ static void oper(o, prn) int o, prn;
         return;
     if(Xzn == '-') {
         x = x->prev;
-        x->tag = TAGO;
+        x->tag = TAG_O;
         x->info.codep = NULL;
         x->info.infoc = '-';
     }
@@ -654,32 +654,32 @@ odnc: /* wywod rezultata delenija, kogda ostatok i chastnoe */
     /* in bad case: /1/() - 3 zwena est uje + name */
     x = refal.preva;
     if(Xzn != Yzn) {
-        x->tag = TAGO;
+        x->tag = TAG_O;
         x->info.codep = NULL;
         x->info.infoc = '-';
         x = x->next;
     }
     if(b != 0l || ((prn & 1) == 0)) { /* div/dr */
-        x->tag = TAGN;
+        x->tag = TAG_N;
         pcoden(x, b);
         x = x->next;
     }
     y = x->next;
     if(a != 0L) {
         if(Xzn != '+') {
-            y->tag = TAGO;
+            y->tag = TAG_O;
             y->info.codep = NULL;
             y->info.infoc = '-';
             y = y->next;
         }
     }
     if(a != 0l || ((prn & 1) == 0)) { /* div/dr */
-        y->tag = TAGN;
+        y->tag = TAG_N;
         pcoden(y, a);
         y = y->next;
     }
-    x->tag = TAGLB;
-    y->tag = TAGRB;
+    x->tag = TAG_LB;
+    y->tag = TAG_RB;
     x->info.codep = y;
     y->info.codep = x;
     if((prn & 2) == 0) { /* dr/n */
@@ -710,7 +710,7 @@ static void nrel_()
                 c = '>';
         }
     }
-    refal.preva->tag = TAGO;
+    refal.preva->tag = TAG_O;
     refal.preva->info.codep = NULL;
     refal.preva->info.infoc = c;
     rftpl(refal.prevr, refal.preva->prev, refal.nexta);

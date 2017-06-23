@@ -3,7 +3,7 @@
 /*      Last edition date: 29.07.2004 (BLF)  */
 /*-------------------------------------------*/
 #include <stdio.h>
-#include "../refal.def"
+#include "../refal.h"
 #define NMBL sizeof(char)
 
 void link();
@@ -46,7 +46,7 @@ spc(pspcsp, vpc, b)
     /* specifier interpreter */
     struct spcs* pspcsp;
 char* vpc;
-linkcb* b;
+linkcb_t* b;
 {
     int spcwrk;         /* work variable */
     int spcpls;         /* positiveness feature of specifier element */
@@ -132,49 +132,49 @@ SPCB:
         goto SPCRET;
     goto SPCNXT;
 SPCF:
-    if(b->tag == TAGF)
+    if(b->tag == TAG_F)
         goto SPCRET;
     goto SPCNXT;
 SPCN:
-    if(b->tag == TAGN)
+    if(b->tag == TAG_N)
         goto SPCRET;
     goto SPCNXT;
 SPCR:
-    if(b->tag == TAGR)
+    if(b->tag == TAG_R)
         goto SPCRET;
     goto SPCNXT;
 SPCO:
-    if(b->tag == TAGO)
+    if(b->tag == TAG_O)
         goto SPCRET;
     goto SPCNXT;
 SPCD:
-    if(b->tag != TAGO)
+    if(b->tag != TAG_O)
         goto SPCNXT;
     if(digit(b->info.infoc) == 1)
         goto SPCRET;
     goto SPCNXT;
 SPCL:
-    if(b->tag != TAGO)
+    if(b->tag != TAG_O)
         goto SPCNXT;
     if(letter(b->info.infoc) == 1)
         goto SPCRET;
     goto SPCNXT;
 } /*             end      spc          */
 
-void link(x, y) linkcb *x, *y;
+void link(x, y) linkcb_t *x, *y;
 {
     x->next = y;
     y->prev = x;
 }
 
 void putjs(jsp, ab1, ab2, anel, avpc) struct jsw {
-    linkcb* jsb1;
-    linkcb* jsb2;
+    linkcb_t* jsb1;
+    linkcb_t* jsb2;
     int jsnel;
     char* jsvpc;
 } * jsp;
-linkcb** ab1;
-linkcb** ab2;
+linkcb_t** ab1;
+linkcb_t** ab2;
 int* anel;
 char** avpc;
 {
@@ -185,13 +185,13 @@ char** avpc;
 }
 
 void getjs(jsp, ab1, ab2, anel, avpc) struct _jsw {
-    linkcb* jsb1;
-    linkcb* jsb2;
+    linkcb_t* jsb1;
+    linkcb_t* jsb2;
     int jsnel;
     char* jsvpc;
 } * jsp;
-linkcb** ab1;
-linkcb** ab2;
+linkcb_t** ab1;
+linkcb_t** ab2;
 int* anel;
 char** avpc;
 {
@@ -202,11 +202,11 @@ char** avpc;
 }
 
 void putts(tsp, ax, ay, az) struct ts {
-    linkcb *ts0, *ts1, *ts2;
+    linkcb_t *ts0, *ts1, *ts2;
 } * tsp;
-linkcb** ax;
-linkcb** ay;
-linkcb** az;
+linkcb_t** ax;
+linkcb_t** ay;
+linkcb_t** az;
 {
     tsp->ts0 = *ax;
     tsp->ts1 = *ay;
@@ -214,9 +214,9 @@ linkcb** az;
 }
 
 void getts(tsp, ax, ay, az) struct _ts {
-    linkcb *ts0, *ts1, *ts2;
+    linkcb_t *ts0, *ts1, *ts2;
 } * tsp;
-linkcb **ax, **ay, **az;
+linkcb_t **ax, **ay, **az;
 {
     *ax = tsp->ts0;
     *ay = tsp->ts1;
@@ -237,7 +237,7 @@ char *pf, *pt;
 /* BLF 28.07.2004  - in case of macrodigit - shift -> 16 */
 /* void move(n,pf,pt) int n; char *pf,*pt; {
 int i;
-        if ( *pf == TAGN ) {
+        if ( *pf == TAG_N ) {
                 / two bytes without changes /
                 for ( i=0;i<2;i++ ){
                         *pt = *pf; pt++; pf++;

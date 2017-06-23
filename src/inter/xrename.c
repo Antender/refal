@@ -2,18 +2,18 @@
 /*           MO: file delete/rename        */
 /*      Last edition date : 15.12.91       */
 /*-----------------------------------------*/
-#include "../refal.def"
+#include "../refal.h"
 #include <stdio.h>
-extern REFAL refal;
+extern refalproc_t refal;
 
 static void unlnk_()
 {
-    linkcb* p;
+    linkcb_t* p;
     char namf[40];
     int i;
     p = refal.preva->next;
     for(i = 0; p != refal.nexta; i++) {
-        if((p->tag != TAGO) || (i >= 40))
+        if((p->tag != TAG_O) || (i >= 40))
             goto HEOT;
         else {
             namf[i] = p->info.infoc;
@@ -38,12 +38,12 @@ static void (*unlnk_1)() = unlnk_;
 
 static void renam_()
 {
-    linkcb* p;
+    linkcb_t* p;
     char namf[40], namt[40]; /* from => to */
     int i;
     p = refal.preva->next;
-    for(i = 0; p->tag != TAGO || p->info.infoc != ' '; i++) {
-        if((p->tag != TAGO) || (i >= 40))
+    for(i = 0; p->tag != TAG_O || p->info.infoc != ' '; i++) {
+        if((p->tag != TAG_O) || (i >= 40))
             goto HEOT;
         else {
             namf[i] = p->info.infoc;
@@ -53,7 +53,7 @@ static void renam_()
     namf[i] = '\0';
     p = p->next;
     for(i = 0; p != refal.nexta; i++) {
-        if((p->tag != TAGO) || (i >= 40))
+        if((p->tag != TAG_O) || (i >= 40))
             goto HEOT;
         else {
             namt[i] = p->info.infoc;

@@ -2,10 +2,7 @@
 /*     The second of two compiler files     */
 /*        Last edition date : 31.01.90      */
 /*------------------------------------------*/
-#include <stdio.h>
-#define TAG_O 0
-#define TAG_F 2
-#define TAG_N 4
+#include "../refal.h"
 /* the table of assembly language statement codes */
 #define n_sb1b2 '\003'
 #define n_lb '\014'
@@ -106,7 +103,6 @@ void jbyte();
 void gpev();
 void gopl();
 void gopnm();
-void pchosa();
 int ortgn();
 
 void isk_v()
@@ -159,16 +155,6 @@ SW2: /* right stoped brackets */
     return;
 GEN_SB:
     gopnm(n_sb1b2, (char)x[n1].q, (char)x[n2].p);
-}
-
-void pch303()
-{
-    pchosa("303 differents for variable ", v[i].ci);
-}
-
-void pch406()
-{
-    pchosa("406 in left part missing variable ", v[i].ci);
 }
 
 /*    attempt to extract left support group     */

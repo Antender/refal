@@ -3,8 +3,8 @@
 /*      Last edition date : 02.09.90        */
 /*------------------------------------------*/
 #include <stdio.h>
-#include "../refal.def"
-extern REFAL refal;
+#include "../refal.h"
+extern refalproc_t refal;
 
 #define d24 16777216l
 #define HMAX 4096L
@@ -28,7 +28,7 @@ extern REFAL refal;
 #define r2 r[1]
 
 static void norm(X, dl, j) /*  normaliz. posledov. makrocifr */
-    linkcb* X;
+    linkcb_t* X;
 int dl, j;
 { /*  X - ukaz. na konec            */
     long a, g, m, peren;
@@ -81,14 +81,14 @@ static void ymn(a, b) long *a, *b;
 static void gcd_()
 {
     int l[2], i, j, k, rez, la, lb, n;
-    linkcb *hd[2], *tl[2], *pr, *p[2], *px, *py, *Xt, *Yt;
+    linkcb_t *hd[2], *tl[2], *pr, *p[2], *px, *py, *Xt, *Yt;
     long a, a1, b, b1, c, A, B, AL, AH, BL, BH, RL, RH, x[2], y[2], xn, yn, Q;
     long s[2], r0, r[2], v1, v2, q, peren, J;
     long vs1, vs2, vs3, vs4;
 
     /*   sint. control */
     pr = refal.preva->next;
-    if(pr->tag != TAGLB)
+    if(pr->tag != TAG_LB)
         goto NEOT;
     p1 = pr;
     t1 = pr->info.codep;
@@ -96,12 +96,12 @@ static void gcd_()
     t2 = refal.nexta;
     for(i = 0; i < 2; i++) {
         pr = p[i]->next;
-        if((pr->tag == TAGO) && (pr->info.infoc == '+' || pr->info.infoc == '-'))
+        if((pr->tag == TAG_O) && (pr->info.infoc == '+' || pr->info.infoc == '-'))
             pr = pr->next;
         hd[i] = pr;
         l[i] = 0;
         while(pr != tl[i]) {
-            if(pr->tag != TAGN)
+            if(pr->tag != TAG_N)
                 goto NEOT;
             l[i]++;
             pr = pr->next;
@@ -188,12 +188,12 @@ M21:
         pr = refal.preva->next;
         v1 = A >> 24;
         if(v1 != 0l) {
-            pr->tag = TAGN;
+            pr->tag = TAG_N;
             pcoden(pr, v1);
             pr = pr->next;
             A = A & MASKA;
         }
-        pr->tag = TAGN;
+        pr->tag = TAG_N;
         pcoden(pr, A);
         pr = pr->next;
         rftpl(refal.prevr, refal.preva, pr);
@@ -211,13 +211,13 @@ M21:
     SHD:
         /*  delenie mnogih  cifr  */
         h1 = h1->prev;
-        h1->tag = TAGN;
+        h1->tag = TAG_N;
         pcoden(h1, 0l);
         l1++;
         for(i = 0, px = h1; i < l2; i++, px = px->next)
             ;
         py = h2->prev;
-        py->tag = TAGN;
+        py->tag = TAG_N;
         pcoden(py, 0l);
         if(l2 != 0) { /* wozmovna normalizacija */
             b = gcoden(h2);
@@ -387,7 +387,7 @@ M21:
     /*   vyravnivanie dlin  */
     if(l1 != l2) {
         h2 = h2->prev;
-        h2->tag = TAGN;
+        h2->tag = TAG_N;
         pcoden(h2, 0l);
         l2++;
     }

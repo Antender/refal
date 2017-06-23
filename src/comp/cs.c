@@ -2,46 +2,25 @@
 /*         Work with identifier table           */
 /*        Last edition date : 29.10.86          */
 /*----------------------------------------------*/
-#include <stdio.h>
-#include "../refal.def"
+#include "../refal.h"
 #define N_FAIL '\002'
 #define N_NIL '\030'
 #define N_SJUMP '\001'
 #define N_SWAP '\116'
 #define N_SETNOS '\121'
 
-struct refw {
-    struct refw* next;
-    int numb[6];
-};
-struct u { /* for comment see file named CLU.C */
-    union {
-        int infon;
-        struct u* infop;
-    } info;
-    char mode;
-    char type;
-    int l;
-    struct u* i;
-    struct u* j;
-    struct refw* last_ref;
-    struct refw ref;
-    int def;
-    char k;
-    char* id;
-};
-struct i_lbl {
+typedef struct i_lbl_t {
     union {
         int infoln;
-        struct i_lbl* infolp;
+        struct i_lbl_t* infolp;
     } infol;
     char model;
-};
-struct arr_lbl {
-    struct arr_lbl* nextl;
-    struct i_lbl lbl[16];
-};
-typedef struct arr_lbl T_ARR_LBL;
+} i_ibl_t;
+
+typedef struct arr_lbl_t {
+    struct arr_lbl_t* nextl;
+    struct i_lbl_t lbl[16];
+} arr_lbl_t;
 
 extern struct {
     unsigned source : 1;
@@ -60,21 +39,19 @@ extern struct {
     int curr_stmnmb;
 } scn_;
 
-struct u* lookup();
+identifier_t* lookup();
 
-static struct arr_lbl* first_arr_lbl = NULL;
+static arr_lbl_t* first_arr_lbl = NULL;
 static int n_lbl = 15;
-static struct i_lbl* pfail = NULL;    /* statememt FAIL label */
-static struct i_lbl* next_stm = NULL; /* next statement label */
-static struct i_lbl* next_nos = NULL; /* next halfword label with  */
-                                      /* a number of statements    */
+static i_ibl_t* pfail = NULL;    /* statememt FAIL label */
+static i_ibl_t* next_stm = NULL; /* next statement label */
+static i_ibl_t* next_nos = NULL; /* next halfword label with  */
+                                 /* a number of statements    */
 void func_end();
 void fnhead();
-void pchosh();
-void pchosj();
-void exit();
+extern void error_message();
+extern void error_message_label();
 #define gop(n) jbyte(n)
-/*void gop();*/
 void gopl();
 void jequ();
 void jbyte();
@@ -83,35 +60,16 @@ void jentry();
 void jlabel();
 unsigned jwhere();
 void ghw();
-void pchosx();
+void error_message_label();
 void through();
 void luterm();
-void free();
 
-static void p504(idp, lid) char* idp;
-int lid;
+i_ibl_t* alloc_lbl()
 {
-    pchosj("504 label", idp, lid, " is already defined");
-    return; /* eg */
-}
-static void p505(idp, lid) char* idp;
-int lid;
-{
-    pchosj("505 label", idp, lid, " is yet not defined");
-    return; /* eg */
-}
-static void p500()
-{
-    pchosh("500 no statement label");
-    return; /* eg */
-}
-
-struct i_lbl* alloc_lbl()
-{
-    struct arr_lbl* q;
-    struct i_lbl* p;
+    arr_lbl_t* q;
+    i_ibl_t* p;
     if(n_lbl == 15) {
-        q = calloc(1, sizeof(T_ARR_LBL));
+        q = calloc(1, sizeof(arr_lbl_t));
         if(q == NULL)
             Uns_sto();
         q->nextl = first_arr_lbl;
@@ -123,16 +81,16 @@ struct i_lbl* alloc_lbl()
     p->model = '\000';
     return (p);
 }
-struct i_lbl* genlbl()
+i_ibl_t* genlbl()
 {
-    struct i_lbl* p;
+    i_ibl_t* p;
     p = alloc_lbl();
     return (p);
 }
 void fndef(idp, lid) char* idp;
 int lid;
 {
-    struct u* p;
+    identifier_t* p;
     if(lid != 0) { /* new function */
         func_end();
         p = lookup(idp, lid);
@@ -140,7 +98,7 @@ int lid;
         next_stm = alloc_lbl();
         p->type = (p->type) | '\100';
         if((p->mode) & '\020')
-            p504(idp, lid);
+            error_message_label("504 label", idp, lid, " is already defined");
         else {
             fnhead(idp, lid);
             p->def = scn_.nomkar;
@@ -155,7 +113,7 @@ int lid;
         if(next_stm != NULL)
             jlabel(next_stm);
         else
-            p500();
+            error_message("500 no statement label");
         next_stm = alloc_lbl();
         gopl(N_SJUMP, next_stm);
     };
@@ -182,11 +140,11 @@ void func_end()
 void sempty(idp, lid) char* idp;
 int lid;
 {
-    struct u* p;
+    identifier_t* p;
     p = lookup(idp, lid);
     p->type = (p->type) | '\100';
     if(p->mode & '\020')
-        p504(idp, lid);
+        error_message_label("504 label", idp, lid, " is already defined");
     else {
         fnhead(idp, lid);
         p->def = scn_.nomkar;
@@ -198,12 +156,12 @@ int lid;
 void sswap(idp, lid) char* idp;
 int lid;
 {
-    struct u* p;
+    identifier_t* p;
     int l0, j0, k0, kk;
     p = lookup(idp, lid);
     p->type = (p->type) | '\100';
     if(p->mode & '\020')
-        p504(idp, lid);
+        error_message_label("504 label", idp, lid, " is already defined");
     else { /*  align box head on the word board */
         j0 = jwhere();
         if(options.extname == 1)
@@ -230,7 +188,7 @@ void sentry(idp, lidp, ide, lide) char* idp; /* internal name */
 char* ide;                                   /* external name */
 int lidp, lide;
 {
-    struct u* p;
+    identifier_t* p;
     p = lookup(idp, lidp);
     jentry(p, ide, lide);
     return; /* eg */
@@ -240,47 +198,48 @@ char* ide;                                   /* external name */
 int lidp, lide;
 {
     /*  int ind; */ /* eg */
-    struct u* p;
+    identifier_t* p;
     p = lookup(idp, lidp);
     if((p->mode) & '\020')
-        p504(idp, lidp);
+        error_message_label("504 label", idp, lidp, " is already defined");
     else {
         p->def = scn_.nomkar;
         jextrn(p, ide, lide);
     }
     return; /*  eg */
 }
-struct u* fnref(idp, lid) char* idp;
+identifier_t* fnref(idp, lid) char* idp;
 int lid;
 {
-    struct u* p;
+    identifier_t* p;
     p = lookup(idp, lid);
     p->type = (p->type) | '\100';
     return (p);
 }
-struct u* spref(idp, lid, d) char* idp;
+identifier_t* spref(idp, lid, d) char* idp;
 char d;
 int lid;
 {
-    struct u* p;
+    identifier_t* p;
     p = lookup(idp, lid);
     p->type = (p->type) | '\200';
-    if((d != ')') && (((p->mode) & '\020') != '\020'))
-        p505(idp, lid);
+    if((d != ')') && (((p->mode) & '\020') != '\020')) {
+        error_message_label("505 label", idp, lid, " is yet not defined");
+    }
     return (p);
 }
 void spdef(idp, lid) char* idp;
 int lid;
 {
-    struct u* p;
+    identifier_t* p;
     if(lid == 0)
-        p500();
+        error_message("500 no statement label");
     else { /* label exist */
         p = lookup(idp, lid);
         p->type = (p->type) | '\200';
-        if((p->mode) & '\020')
-            p504(idp, lid);
-        else {
+        if((p->mode) & '\020') {
+            error_message_label("504 label", idp, lid, " is already defined");
+        } else {
             p->def = scn_.nomkar;
             jlabel(p);
         }
@@ -290,10 +249,10 @@ int lid;
 void sequ(id1, lid1, id0, lid0) char *id1, *id0;
 int lid0, lid1;
 {
-    struct u *p0, *p1;
+    identifier_t *p0, *p1;
     p0 = lookup(id0, lid0);
     if(lid1 == 0) {
-        p500();
+        error_message("500 no statement label");
         return;
     }
     p1 = lookup(id1, lid1);
@@ -308,7 +267,7 @@ int lid0, lid1;
         p0->def = scn_.nomkar;
         jequ(p0, p1);
     } else
-        pchosh("501 both labels already defined ");
+        error_message("501 both labels already defined ");
     return; /* eg */
 }
 void fnhead(idp, lid) char* idp;
@@ -335,20 +294,20 @@ int lid;
     return; /* eg */
 }
 void check_id(pp) /* check identifier attributes on confirmness */
-    struct u* pp;
+    identifier_t* pp;
 {
-    struct u* q;
+    identifier_t* q;
     q = pp;
     /* printf("\nCHECK: pp=%lx q=%lx mode=%o$$$",pp,q,q->mode); */
     while(((q->mode) & '\300') == '\300')
         q = q->info.infop;
     if(((pp->mode) & '\300') == '\000') {
-        pchosx("512 label", pp->id, pp->l, " not defined");
+        error_message_label("512 label", pp->id, pp->l, " not defined");
     }
     if((((pp->mode) & '\040') == '\040') && (((pp->mode) & '\300') == '\200'))
-        pchosx("511 label", pp->id, pp->l, " both extern and entry");
+        error_message_label("511 label", pp->id, pp->l, " both extern and entry");
     if(((q->mode) & '\300') == '\300')
-        pchosx("502 label", pp->id, pp->l, " boht specifier and function");
+        error_message_label("502 label", pp->id, pp->l, " boht specifier and function");
 }
 void s_end()
 {
@@ -365,7 +324,7 @@ void s_init()
 }
 void s_term()
 { /* module termination */
-    struct arr_lbl *p, *p1;
+    arr_lbl_t *p, *p1;
     p = first_arr_lbl;
     while(p != NULL) {
         p1 = p->nextl;

@@ -2,46 +2,7 @@
 /*    AVL-tree construction for identifier table        */
 /*           Last edition date : 11.01.92               */
 /*------------------------------------------------------*/
-#include <stdio.h>
-#include "../refal.def"
-
-struct refw {
-    struct refw* next; /* on the next usage list */
-    int numb[6];       /* usage list element     */
-};
-typedef struct refw T_REFW;
-
-struct u {
-    union {
-        int infon;
-        struct u* infop;
-    } info;
-    char mode;
-    /* mode field :                      */
-    /*  00 - no defined;                          */
-    /*  01 - internal; infon = offset from start  */
-    /*  10 - external; infon = member or extern   */
-    /*       reference;                           */
-    /*  11 - equivalent; infop =  reference on    */
-    /*       other label;                         */
-    /*  xx1 - entry point;                        */
-    /*  xxx1 - too many definition;               */
-    /*                                            */
-    char type;             /* type field : 00 - unknown type  */
-                           /*              01 - function      */
-                           /*              10 - specifier     */
-    int l;                 /* identifier length */
-    struct u* i;           /* left reference */
-    struct u* j;           /* right reference */
-    struct refw* last_ref; /* on the end of using list */
-    struct refw ref;       /* where used */
-    int def;               /* where defined */
-    char k;                /* kren feature:      '00'B - kren no    */
-                           /*                    '01'B - left kren  */
-                           /*                    '10'B - right kren */
-    char* id;              /* identifier */
-};
-typedef struct u T_U;
+#include "../refal.h"
 
 extern struct {
     int nomkar;
@@ -50,22 +11,20 @@ extern struct {
     int curr_stmnmb;
 } scn_;
 
-static struct u* korenj = NULL; /* tree koren */
-extern void strncpy();
-extern int strncmp();
+static identifier_t* korenj = NULL; /* tree koren */
 void Uns_sto()
 {
     printf("\nNo memory for identifier table");
     exit(1);
 }
 
-T_U* nov_uzel(idp, lid) char* idp;
+identifier_t* nov_uzel(idp, lid) char* idp;
 int lid;
 {
     int m;
-    T_U* p;
+    identifier_t* p;
     char* q;
-    p = (T_U*)calloc(1, sizeof(T_U));
+    p = (identifier_t*)calloc(1, sizeof(identifier_t));
     if(p == NULL)
         Uns_sto();
     p->i = p->j = NULL;
@@ -87,15 +46,16 @@ int lid;
     return (p);
 }
 
-struct u* lookup(idp, lid) int lid; /* identifier length */
+identifier_t* lookup(idp, lid) int lid; /* identifier length */
 char* idp;
 {
-    struct refw *r1, *q1;
-    struct u *p, *q, *r, *isk_uz;
+    refw_t* r1;
+    refw_t* q1;
+    identifier_t *p, *q, *r, *isk_uz;
     int k;
-    struct u* verquz;
+    identifier_t* verquz;
     char kren, nruk;
-    struct u* adruz[36]; /* stack for tree work */
+    identifier_t* adruz[36]; /* stack for tree work */
     int otnuz[36];
     int tgld;            /* current  tree depth */
     if(korenj == NULL) { /* empty tree */
@@ -120,7 +80,7 @@ SHAG: /* search step */
                     /* it's free field in current item */
                     (*q1).numb[k + 1] = scn_.nomkar;
                 else { /* create new item */
-                    r1 = (T_REFW*)calloc(1, sizeof(T_REFW));
+                    r1 = (refw_t*)calloc(1, sizeof(refw_t));
                     if(r1 == NULL)
                         Uns_sto();
                     (*p).last_ref = (*q1).next = r1;
@@ -236,10 +196,10 @@ ISPRB: /* move up and correct */
     };
     return (isk_uz);
 }
-static void traverse(ptr, prog) struct u* ptr;
+static void traverse(ptr, prog) identifier_t* ptr;
 int (*prog)();
 {
-    struct u *q, *r;
+    identifier_t *q, *r;
     q = ptr;
     do {
         r = (*q).i;
@@ -256,10 +216,11 @@ void through(prog) int (*prog)();
         traverse(korenj, prog);
     return;
 }
-static void kil_tree(p) struct u* p;
+static void kil_tree(p) identifier_t* p;
 {
-    struct u *r, *q;
-    struct refw *r1, *r2;
+    identifier_t *r, *q;
+    refw_t* r1;
+    refw_t* r2;
     q = p;
     do {
         r = (*q).i;
@@ -287,4 +248,3 @@ void luterm()
     }
     return;
 }
-/*-----------  end of file CLU.C  ----------*/

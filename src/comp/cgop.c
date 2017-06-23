@@ -3,7 +3,7 @@
 /*          Last edition date : 11.11.2004 (BLF)      */
 /*----------------------------------------------------*/
 /* #define PRCODE */ /* BLF */
-#include "../refal.def"
+#include "../refal.h"
 struct linkti {
     short tagg;
     union {

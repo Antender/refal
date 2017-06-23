@@ -3,15 +3,15 @@
 /*       Last modification : 03.07.2004 (BLF) */
 /*--------------------------------------------*/
 #include <stdio.h>
-#include "../refal.def"
-extern REFAL refal;
+#include "../refal.h"
+extern refalproc_t refal;
 
 void (*dba)(st*) = NULL;
 
 static void appl_()
 {
     st *s_st, *upst;
-    linkcb *px, *pk, *pd;
+    linkcb_t *px, *pk, *pd;
     long l = (long)&s_st;
     /*   printf("\nl=%lx",l);*/
     if((l & 0xffffL) < 200L) { /* printf("\nStack overflow!");*/
@@ -32,9 +32,9 @@ static void appl_()
     pk = s_st->view->next;
     pd = pk->next;
     pk->info.codep = NULL;
-    pk->tag = TAGK;
+    pk->tag = TAG_K;
     pd->info.codep = pk;
-    pd->tag = TAGD;
+    pd->tag = TAG_D;
     s_st->dot = pd;
     rftpl(pk, refal.preva, refal.nexta);
     rftpl(s_st->store, upst->store, upst->store);

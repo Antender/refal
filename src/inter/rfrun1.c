@@ -3,9 +3,9 @@
 /*      Last edition date: 20.02.2005 (BLF)    */
 /*---------------------------------------------*/
 #include <stdio.h>
-#include "../refal.def"
+#include "../refal.h"
 
-extern REFAL refal;
+extern refalproc_t refal;
 
 /* for unlooping: */
 
@@ -23,20 +23,20 @@ extern REFAL refal;
     if(f == flhead) \
         goto LACK;
 
-static linkcb* et[256]; /* element table */
-static int nel;         /* adress of first free string in element table */
-struct wjs {            /* jump stack structure */
-    linkcb* jsb1;
-    linkcb* jsb2;
+static linkcb_t* et[256]; /* element table */
+static int nel;           /* adress of first free string in element table */
+struct wjs {              /* jump stack structure */
+    linkcb_t* jsb1;
+    linkcb_t* jsb2;
     int jsnel;
     char* jsvpc;
 };
 static struct wjs js[64]; /* jump stack and planning translation stack*/
 static struct wjs* jsp;   /* jump stack pointer*/
 struct ts {               /* translation stack structure*/
-    linkcb* ts0;
-    linkcb* ts1;
-    linkcb* ts2;
+    linkcb_t* ts0;
+    linkcb_t* ts1;
+    linkcb_t* ts2;
 };
 static struct ts* tsp; /*translation stack pointer*/
 static int tmmod;      /* timer state */
@@ -44,10 +44,10 @@ static long tmstart;   /* time at the start */
 static long tmstop;    /* time at the end    */
 struct sav_ {          /* save area for var-part of REFAL-block */
     int upshot_;
-    linkcb* preva_;
-    linkcb* nexta_;
-    linkcb* prevr_;
-    linkcb* nextr_;
+    linkcb_t* preva_;
+    linkcb_t* nexta_;
+    linkcb_t* prevr_;
+    linkcb_t* nextr_;
     st* currst_;
 };
 typedef struct sav_ sav;
@@ -64,10 +64,10 @@ static union { /* structure for pointer and integer aligning */
 /* definition of work variables and pointers*/
 static char opc;           /* current statement code */
 static unsigned char* vpc; /* virtual program counter */
-static linkcb* lastk;      /* last acted sign-k adress */
-static linkcb* lastb;      /* last generated left bracket*/
-static linkcb *b0, *b1, *b2;
-static linkcb *f0, *f1, *f;
+static linkcb_t* lastk;    /* last acted sign-k adress */
+static linkcb_t* lastb;    /* last generated left bracket*/
+static linkcb_t *b0, *b1, *b2;
+static linkcb_t *f0, *f1, *f;
 static char* vpca; /* additional vpc  */
 static char (*fptr)();
 static int i, n, m;
@@ -77,9 +77,9 @@ void rfrun(ast) st* ast; /* adress of current state table */
 {
     /* dynamic area DSA */
     sav* savecr;
-    linkcb quasik;  /* quasi-sign k */
-    linkcb* flhead; /* adress of free memory list head */
-    linkcb* nextr;  /* item adress followed by result */
+    linkcb_t quasik;  /* quasi-sign k */
+    linkcb_t* flhead; /* adress of free memory list head */
+    linkcb_t* nextr;  /* item adress followed by result */
     savecr = malloc(sizeof(sav));
     u.ii = 0;
     if(!lexist(ast))
@@ -333,7 +333,7 @@ EOSSN:
 /* EOS;       */
 EOS:
     lastk->info.codep = et[1]->info.codep;
-    lastk->tag = TAGK;
+    lastk->tag = TAG_K;
     nextr = f->next;
     /* execute planned transplantation */
     /* EOS1:    */
@@ -370,7 +370,7 @@ START:
     b0 = b2->info.codep;
     b1 = b0->next;
     vpc = b1->info.codef;
-    if(b1->tag != TAGF)
+    if(b1->tag != TAG_F)
         goto REF;
     /* here must be check on c-function */
     /* if (c) goto CFUNC;               */
@@ -421,18 +421,18 @@ CFLACK:
 
 /* symbol - reference execution */
 REF:
-    if(b1->tag != TAGR)
+    if(b1->tag != TAG_R)
         goto RCGIMP;
     et[1] = b0;
     et[2] = b2;
     et[3] = b1;
-    f = (linkcb*)vpc;
+    f = (linkcb_t*)vpc;
     goto SWAPREF;
 /* SWAP;   */
 /*  static box head is after operator code */
 SWAP:
     vpc = vpc + NMBL;
-    f = (linkcb*)vpc;
+    f = (linkcb_t*)vpc;
     if(f->prev != NULL)
         goto SWAPREF;
     link(f, f);
@@ -538,7 +538,7 @@ RBNIL:
     goto ADVANCE;
 /* LSCO(N); */
 LSCO:
-    SHB1 if(b1->tag != TAGO) goto FAIL;
+    SHB1 if(b1->tag != TAG_O) goto FAIL;
     if(b1->info.infoc != *(vpc + NMBL))
         goto FAIL;
     et[nel] = b1;
@@ -547,7 +547,7 @@ LSCO:
     goto NEXTOP;
 /* RSCO(N);  */
 RSCO:
-    SHB2 if(b2->tag != TAGO) goto FAIL;
+    SHB2 if(b2->tag != TAG_O) goto FAIL;
     if(b2->info.infoc != *(vpc + NMBL))
         goto FAIL;
     et[nel] = b2;
@@ -559,7 +559,7 @@ LTXT:
     n = (unsigned)*(vpc + NMBL);
     vpc = vpc + NMBL + NMBL;
 LTXT1:
-    SHB1 if(b1->tag != TAGO) goto FAIL;
+    SHB1 if(b1->tag != TAG_O) goto FAIL;
     if(b1->info.infoc != *vpc)
         goto FAIL;
     et[nel] = b1;
@@ -574,7 +574,7 @@ RTXT:
     n = (unsigned)*(vpc + NMBL);
     vpc = vpc + NMBL + NMBL;
 RTXT1:
-    SHB2 if(b2->tag != TAGO) goto FAIL;
+    SHB2 if(b2->tag != TAG_O) goto FAIL;
     if(b2->info.infoc != *vpc)
         goto FAIL;
     et[nel] = b2;
@@ -1048,7 +1048,7 @@ NS:
     goto NEXTOP;
 /* NSO(N);  */
 NSO:
-    SHF f->tag = TAGO;
+    SHF f->tag = TAG_O;
     f->info.codep = NULL;
     f->info.infoc = *(vpc + 1);
     vpc = vpc + NMBL + NMBL;
@@ -1059,7 +1059,7 @@ TEXT:
     /* printf("\n TEXT uc0=%x uii=%x  %d",u.c[0],u.ii,u.ii);*/
     vpc = vpc + NMBL + NMBL;
     for(i = 1; i <= n; i++) {
-        SHF f->tag = TAGO;
+        SHF f->tag = TAG_O;
         f->info.codep = NULL;
         f->info.infoc = *vpc;
         vpc = vpc + NMBL;
@@ -1074,9 +1074,9 @@ BL:
 BR:
     SHF f->info.codep = lastb;
     f1 = lastb->info.codep;
-    lastb->tag = TAGLB;
+    lastb->tag = TAG_LB;
     lastb->info.codep = f;
-    f->tag = TAGRB;
+    f->tag = TAG_RB;
     lastb = f1;
     goto ADVANCE;
 /* BLR;  */
@@ -1084,23 +1084,23 @@ BLR:
     SHF f1 = f;
     SHF f1->info.codep = f;
     f->info.codep = f1;
-    f1->tag = TAGLB;
-    f->tag = TAGRB;
+    f1->tag = TAG_LB;
+    f->tag = TAG_RB;
     goto ADVANCE;
 /* BLF(L);  */
 BLF:
     SHF f->info.codep = lastb;
     lastb = f;
     SHF move(LBLL, vpc + NMBL, &(f->info.codef));
-    f->tag = TAGF;
+    f->tag = TAG_F;
     vpc = vpc + NMBL + LBLL;
     goto NEXTOP;
 /* BRACT;    */
 BRACT:
     SHF f->info.codep = lastb;
-    f->tag = TAGD;
+    f->tag = TAG_D;
     lastk->info.codep = f;
-    lastk->tag = TAGK;
+    lastk->tag = TAG_K;
     lastk = lastb;
     lastb = lastb->info.codep;
     goto ADVANCE;
@@ -1108,9 +1108,9 @@ BRACT:
 ACT:
     n = (unsigned)*(vpc + NMBL);
     lastk->info.codep = et[n];
-    lastk->tag = TAGK;
+    lastk->tag = TAG_K;
     lastk = et[n]->info.codep;
-    et[n]->tag = TAGD;
+    et[n]->tag = TAG_D;
     vpc = vpc + NMBL + NMBL;
     goto NEXTOP;
 /* MULS;   */
@@ -1137,15 +1137,15 @@ MULE:
             /*               goto LACK;}                      */
             if((f0->tag & 0001) != 0)
         {
-            if(f0->tag != TAGRB) {
+            if(f0->tag != TAG_RB) {
                 f->info.codep = lastb;
                 lastb = f;
             } else {
                 f->info.codep = lastb;
-                f->tag = TAGRB;
+                f->tag = TAG_RB;
                 f1 = lastb->info.codep;
                 lastb->info.codep = f;
-                lastb->tag = TAGLB;
+                lastb->tag = TAG_LB;
                 lastb = f1;
             };
         }

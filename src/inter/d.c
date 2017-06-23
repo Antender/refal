@@ -2,13 +2,10 @@
 /*       REFAL-Debugger functions           */
 /*     Last edition date : 11.03.2005 (BLF) */
 /*------------------------------------------*/
-#include <stdio.h>
-#include "../refal.def"
+#include "../refal.h"
 #include "debug.def"
 
-extern REFAL refal;
-void print_parm();
-void parm_menue();
+extern refalproc_t refal;
 
 void rfdbg(s_st) st* s_st;
 {
@@ -303,7 +300,7 @@ static void dbapp(ss_st) st* ss_st;
 {
     int i;
     int c2;
-    linkcb *v1, *v2, *v3, *v4, *v6, *v7;
+    linkcb_t *v1, *v2, *v3, *v4, *v6, *v7;
     long v5;
     v1 = prevk;
     v2 = nextd;
@@ -517,7 +514,7 @@ static void pr_imres()
 }
 
 static void pr_finres(xstep, xprevk, xnextd) long xstep;
-linkcb *xprevk, *xnextd;
+linkcb_t *xprevk, *xnextd;
 {
     if((curr_step > s_upto) || (curr_step < s_from))
         return;
@@ -552,7 +549,7 @@ static void getpf(ss_st) st* ss_st;
     prevk = pk->prev;
     nextd = ss_st->dot->next;
     nextk = pk->next;
-    if(nextk->tag != TAGF) {
+    if(nextk->tag != TAG_F) {
         buff_id[0] = '%';
         buff_id[1] = '\0';
     } else {

@@ -29,22 +29,20 @@ BIN_DIR		=	bin
 SOURCES =			\
 		$(S)\ccst1.c 	\
 		$(S)\ccst2.c 	\
-		$(S)\cerr.c 	\
+		$(S)\comp.c 	\
 		$(S)\cgop.c 	\
 		$(S)\cj.c 	\
 		$(S)\clu.c 	\
-		$(S)\cs.c 	\
-		$(S)\refal.c
+		$(S)\cs.c 	
 
 OBJECTS =			\
 		$(S)\ccst1.o 	\
 		$(S)\ccst2.o 	\
-		$(S)\cerr.o 	\
+		$(S)\comp.o 	\
 		$(S)\cgop.o 	\
 		$(S)\cj.o 	\
 		$(S)\clu.o 	\
-		$(S)\cs.o 	\
-		$(S)\refal.o
+		$(S)\cs.o 	
 
 TARGET =	refal2
 
@@ -63,20 +61,16 @@ $(TARGET): $(OBJECTS)
 
 ####### Dependences
 
-$(S)\ccst1.o: $(S)\ccst1.c $(S)\..\refal.def
+$(S)\ccst1.o: $(S)\ccst1.c $(S)\..\refal.h
 
-$(S)\ccst2.o: $(S)\ccst2.c $(S)\..\refal.def
+$(S)\ccst2.o: $(S)\ccst2.c $(S)\..\refal.h
 
-$(S)\cerr.o: $(S)\cerr.c $(S)\..\refal.def
+$(S)\comp.o: $(S)\cerr.c $(S)\..\refal.h
 
-$(S)\cgop.o: $(S)\cgop.c $(S)\..\refal.def
+$(S)\cgop.o: $(S)\cgop.c $(S)\..\refal.h
 
-$(S)\cj.o: $(S)\cj.c $(S)\..\refal.def
+$(S)\cj.o: $(S)\cj.c $(S)\..\refal.h
 
-$(S)\clu.o: $(S)\clu.c $(S)\..\refal.def
+$(S)\clu.o: $(S)\clu.c $(S)\..\refal.h
 
-$(S)\cs.o: $(S)\cs.c $(S)\..\refal.def
-
-$(S)\refal.o: $(S)\refal.c $(S)\..\refal.def
-
-### End of Makefile
+$(S)\cs.o: $(S)\cs.c $(S)\..\refal.h

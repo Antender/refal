@@ -1,88 +1,36 @@
-/*-------------  file  --  CERR.C  ---------------*/
-/*               Print error file                 */
-/*        Last edition date : 14.07.89            */
-/*------------------------------------------------*/
-#include <stdio.h>
-#include "../refal.def"
+int kolosh;
+char tmp[255];
 
-extern void oshibka();
-extern FILE *sysprint, *systerm;
-
-void pchosh(s) char* s;
+void error(char* s)
 {
-    char tmp[255];
-    oshibka();
-    sprintf(tmp, "***** %s\n", s);
-    if(sysprint != NULL)
-        fputs(tmp, sysprint);
-    fputs(tmp, systerm);
+    pchk();
+    pchk_t();
+    kolosh++;
+    log("***** ");
+    log(s);
 }
 
-void pchosi(s, t) char *s, *t;
+void error_message(char* s)
 {
-    char tmp[255];
-    oshibka();
-    sprintf(tmp, "***** %s %s\n", s, t);
-    if(sysprint != NULL)
-        fputs(tmp, sysprint);
-    fputs(tmp, systerm);
+    error(s);
+    log("\n");
 }
 
-void pchosj(s, sid, lsid, s1) char *s, *sid, *s1;
-int lsid;
+void error_message_label(char* s, char* sid, int lsid, char* s1)
 {
-    char tmp[255];
-    char tmp1[255];
-    int i;
-    oshibka();
-    for(i = 0; i < lsid; i++)
-        tmp1[i] = *(sid + i);
-    tmp1[lsid] = '\0';
-    sprintf(tmp, "***** %s %s %s\n", s, tmp1, s1);
-    if(sysprint != NULL)
-        fputs(tmp, sysprint);
-    fputs(tmp, systerm);
+    error(s);
+    memcpy(tmp, sid, lsid);
+    tmp[lsid] = '\0';
+    log(tmp);
+    log(s1);
+    log("\n");
 }
 
-void pchosx(s, sid, lsid, s1) char *s, *sid, *s1;
-int lsid;
+void error_message_character(char* s, char c)
 {
-    char tmp[255];
-    char tmp1[255];
-    int i;
-    oshibka();
-    for(i = 0; i < lsid; i++)
-        tmp1[i] = *(sid + i);
-    tmp1[lsid] = '\0';
-    sprintf(tmp, "***** %s %s %s\n", s, tmp1, s1);
-    if(sysprint != NULL)
-        fputs(tmp, sysprint);
-    fputs(tmp, systerm);
+    error(s);
+    tmp[0] = c;
+    tmp[1] = '\0';
+    log(tmp);
+    log('\n');
 }
-
-void pchosa(s, c) char *s, c;
-{
-    char tmp[255];
-    oshibka();
-    sprintf(tmp, "***** %s %c\n", s, c);
-    if(sysprint != NULL)
-        fputs(tmp, sysprint);
-    fputs(tmp, systerm);
-}
-
-void pchose(s, t, lt) char *s, *t;
-int lt;
-{
-    char tmp[255];
-    char tmp1[255];
-    int i;
-    oshibka();
-    for(i = 0; i < lt; i++)
-        tmp1[i] = *(t + i);
-    tmp1[lt] = '\0';
-    sprintf(tmp, "***** %s %s\n", s, tmp1);
-    if(sysprint != NULL)
-        fputs(tmp, sysprint);
-    fputs(tmp, systerm);
-}
-/*--------  end  of  file  CERR.C  ---------*/

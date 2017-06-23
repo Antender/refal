@@ -2,9 +2,9 @@
 /*           MO: file input/output         */
 /*      Last edition date : 02.09.90       */
 /*-----------------------------------------*/
-#include "../refal.def"
+#include "../refal.h"
 #include <stdio.h>
-extern REFAL refal;
+extern refalproc_t refal;
 
 #define fmax 5
 
@@ -18,13 +18,13 @@ static long jl;
 
 static void opng_()
 {
-    linkcb* p;
+    linkcb_t* p;
     char namf[40];
     register i;
     for(i = 0; i < 40; i++)
         namf[i] = '\0';
     p = refal.preva->next;
-    if(p->tag != TAGN)
+    if(p->tag != TAG_N)
         jl = 0; /* jung zamenila na jl */
     else {
         jl = p->info.coden;
@@ -35,7 +35,7 @@ static void opng_()
     else
         jung = jl;
     for(i = 0; p != refal.nexta; i++)
-        if((p->tag != TAGO) || (i == 39))
+        if((p->tag != TAG_O) || (i == 39))
             goto HEOT;
         else {
             namf[i] = p->info.infoc;
@@ -61,7 +61,7 @@ static void (*opng_1)() = opng_;
 
 static void opnp_()
 {
-    linkcb* p;
+    linkcb_t* p;
     char namf[40];
     char* m;
     int i;
@@ -70,11 +70,11 @@ static void opnp_()
         namf[i] = '\0';
     p = refal.preva->next;
     m = "w";
-    if(p->tag == TAGO && p->info.infoc == '*') {
+    if(p->tag == TAG_O && p->info.infoc == '*') {
         m = "a";
         p = p->next;
     }
-    if(p->tag != TAGN)
+    if(p->tag != TAG_N)
         jl = 0;
     else {
         jl = p->info.coden;
@@ -84,7 +84,7 @@ static void opnp_()
         goto HEOT;
     junp = jl;
     for(i = 0; p != refal.nexta; i++)
-        if((p->tag != TAGO) || (i == 40))
+        if((p->tag != TAG_O) || (i == 40))
             goto HEOT;
         else {
             namf[i] = p->info.infoc;
@@ -110,9 +110,9 @@ static void (*opnp_1)() = opnp_;
 
 static void clsg_()
 {
-    linkcb* p;
+    linkcb_t* p;
     p = refal.preva->next;
-    if(p->tag != TAGN)
+    if(p->tag != TAG_N)
         jl = 0;
     else {
         jl = p->info.coden;
@@ -137,9 +137,9 @@ static void (*clsg_1)() = clsg_;
 
 static void clsp_()
 {
-    linkcb* p;
+    linkcb_t* p;
     p = refal.preva->next;
-    if(p->tag != TAGN)
+    if(p->tag != TAG_N)
         jl = 0;
     else {
         jl = p->info.coden;
@@ -164,12 +164,12 @@ static void (*clsp_1)() = clsp_;
 
 static void libg_()
 {
-    linkcb* p;
+    linkcb_t* p;
     char s[128];
     int i, j, c, new;
     p = refal.preva->next;
     new = 0;
-    if(p->tag != TAGN) {
+    if(p->tag != TAG_N) {
         jl = 0;
         new = 1;
     } else {
@@ -192,13 +192,13 @@ static void libg_()
             return;
         for(j = 0; j < i; j++) {
             p = p->next;
-            p->tag = TAGO;
+            p->tag = TAG_O;
             p->info.codep = NULL;
             p->info.infoc = s[j];
         }
         for(j = i; j < 80; j++) {
             p = p->next;
-            p->tag = TAGO;
+            p->tag = TAG_O;
             p->info.codep = NULL;
             p->info.infoc = ' ';
         }
@@ -220,10 +220,10 @@ WYW:
         p = p->next;
         p->info.codep = NULL;
         if(s[0] == EOF) {
-            p->tag = TAGN;
+            p->tag = TAG_N;
             return;
         }
-        p->tag = TAGO;
+        p->tag = TAG_O;
         p->info.infoc = s[i];
     }
     return;
@@ -238,11 +238,11 @@ static void (*libg_1)() = libg_;
 
 static void libp_()
 {
-    linkcb* p;
+    linkcb_t* p;
     char s[81];
     int i, c;
     p = refal.preva->next;
-    if(p->tag != TAGN)
+    if(p->tag != TAG_N)
         jl = 0;
     else {
         jl = p->info.coden;
@@ -254,7 +254,7 @@ static void libp_()
         junp = jl;
     inw = uniput[junp];
     for(i = 0; p != refal.nexta; i++) {
-        if((p->tag != TAGO) && (p->tag != TAGLB) && (p->tag != TAGRB)) {
+        if((p->tag != TAG_O) && (p->tag != TAG_LB) && (p->tag != TAG_RB)) {
         HEOT:
             refal.upshot = 2;
             return;
@@ -265,10 +265,10 @@ static void libp_()
             i = 0;
         }
         switch(p->tag) {
-        case TAGLB:
+        case TAG_LB:
             c = '(';
             break;
-        case TAGRB:
+        case TAG_RB:
             c = ')';
             break;
         default:
@@ -289,7 +289,7 @@ static void (*libp_1)() = libp_;
 
 static void card_()
 {
-    linkcb* p;
+    linkcb_t* p;
     char c;
     if(refal.preva->next != refal.nexta) /* refal.upshot = 2; */
         rfpex("", refal.preva, refal.nexta);
@@ -300,10 +300,10 @@ static void card_()
         p = p->next;
         p->info.codep = NULL;
         if(c == EOF) {
-            p->tag = TAGN;
+            p->tag = TAG_N;
             return;
         }
-        p->tag = TAGO;
+        p->tag = TAG_O;
         p->info.infoc = c;
     }
     return;

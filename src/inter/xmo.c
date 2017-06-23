@@ -5,15 +5,15 @@
 /*      Last edition date : 02.09.90        */
 /*------------------------------------------*/
 #include <stdio.h>
-#include "../refal.def"
-extern REFAL refal;
+#include "../refal.h"
+extern refalproc_t refal;
 
 static void p1_()
 {
-    linkcb* p;
+    linkcb_t* p;
     long l;
     p = refal.preva->next;
-    if((p->next != refal.nexta) || (p->tag != TAGN)) {
+    if((p->next != refal.nexta) || (p->tag != TAG_N)) {
     NEOT:
         refal.upshot = 2;
         return;
@@ -31,10 +31,10 @@ static void (*p1_1)() = p1_;
 
 static void m1_()
 {
-    linkcb* p;
+    linkcb_t* p;
     long l;
     p = refal.preva->next;
-    if((p->next != refal.nexta) || (p->tag != TAGN)) {
+    if((p->next != refal.nexta) || (p->tag != TAG_N)) {
     NEOT:
         refal.upshot = 2;
         return;
@@ -54,23 +54,23 @@ long atol();
 
 static void numb_()
 {
-    linkcb *p, *pz, *p1;
+    linkcb_t *p, *pz, *p1;
     char str[12], zn;
     register i;
     long l;
     p = refal.preva->next;
     zn = p->info.infoc;
     pz = p;
-    if((p->tag == TAGO) && ((zn == '-') || (zn == '+'))) {
+    if((p->tag == TAG_O) && ((zn == '-') || (zn == '+'))) {
         p = p->next;
         if(zn == '+')
             pz = p;
     }
     p1 = p;
-    while((p->tag == TAGO) && (p->info.infoc == '0'))
+    while((p->tag == TAG_O) && (p->info.infoc == '0'))
         p = p->next;
     for(i = 0; p != refal.nexta; i++) {
-        if((p->tag != TAGO) || (i == 11)) {
+        if((p->tag != TAG_O) || (i == 11)) {
         NEOT:
             refal.upshot = 2;
             return;
@@ -91,11 +91,11 @@ static void numb_()
         pz = p1;
     }
     l = atol(str);
-    p1->tag = TAGN;
+    p1->tag = TAG_N;
     if(l > 16777215l) {
         pcoden(p1, l >> 24);
         p1 = p1->next;
-        p1->tag = TAGN;
+        p1->tag = TAG_N;
         l = l & 0xffffffL;
     }
     pcoden(p1, l);
@@ -108,7 +108,7 @@ static void (*numb_1)() = numb_;
 
 static void symb_()
 {
-    linkcb *p, *pz, *p1;
+    linkcb_t *p, *pz, *p1;
     char str[12], zn;
     register i;
     long l;
@@ -116,16 +116,16 @@ static void symb_()
     p = refal.preva->next;
     zn = p->info.infoc;
     pz = p;
-    if((p->tag == TAGO) && ((zn == '-') || (zn == '+'))) {
+    if((p->tag == TAG_O) && ((zn == '-') || (zn == '+'))) {
         p = p->next;
         if(zn == '+')
             pz = p;
     }
     p1 = p;
-    while((p->tag == TAGN) && (gcoden(p) == 0l))
+    while((p->tag == TAG_N) && (gcoden(p) == 0l))
         p = p->next;
     for(i = 0; p != refal.nexta; i++, p = p->next)
-        if((p->tag != TAGN) || (i == 2))
+        if((p->tag != TAG_N) || (i == 2))
             goto NEOT;
     p = p->prev;
     if((i == 2) && (gcoden(p1) >= 128)) {
@@ -156,7 +156,7 @@ static void symb_()
         p1 = pz;
     }
     for(i = 0, p = p1; i < j; i++, p = p->next) {
-        p->tag = TAGO;
+        p->tag = TAG_O;
         p->info.codep = NULL;
         p->info.infoc = str[i];
     }
@@ -169,11 +169,11 @@ static void (*symb_1)() = symb_;
 
 static void first_()
 {
-    linkcb *p, *pn;
+    linkcb_t *p, *pn;
     int k;
     long n; /*eg*/
     pn = refal.preva->next;
-    if((pn == refal.nexta) || (pn->tag != TAGN)) {
+    if((pn == refal.nexta) || (pn->tag != TAG_N)) {
         refal.upshot = 2;
         return;
     }; /* FAIL */
@@ -184,17 +184,17 @@ static void first_()
         if(p == refal.nexta) {
             pn->info.codep = NULL;
             pn->info.infoc = '*';
-            pn->tag = TAGO;
+            pn->tag = TAG_O;
             rftpl(refal.prevr, refal.preva, refal.nexta);
             return;
         }
-        if(p->tag == TAGLB)
+        if(p->tag == TAG_LB)
             p = p->info.codep;
     }
     p = p->next;
-    refal.preva->tag = TAGLB;
+    refal.preva->tag = TAG_LB;
     refal.preva->info.codep = pn;
-    pn->tag = TAGRB;
+    pn->tag = TAG_RB;
     pn->info.codep = refal.preva;
     rftpl(refal.preva, pn, p);
     rftpl(refal.prevr, refal.nextr, refal.nexta);
@@ -206,11 +206,11 @@ static void (*first_1)() = first_;
 
 static void last_()
 {
-    linkcb *pn, *p;
+    linkcb_t *pn, *p;
     int k;
     long n; /*eg*/
     pn = refal.preva->next;
-    if((pn == refal.nexta) || (pn->tag != TAGN)) {
+    if((pn == refal.nexta) || (pn->tag != TAG_N)) {
         refal.upshot = 2;
         return;
     }; /* FAIL */
@@ -219,7 +219,7 @@ static void last_()
     for(k = 1; k <= n; k++) {
         p = p->prev;
         if(p == pn) {
-            pn->tag = TAGO;
+            pn->tag = TAG_O;
             pn->info.codep = NULL;
             pn->info.infoc = '*';
             rftpl(refal.prevr, pn, refal.nexta);
@@ -227,13 +227,13 @@ static void last_()
             rftpl(p, refal.preva, refal.nexta);
             return;
         }
-        if(p->tag == TAGRB)
+        if(p->tag == TAG_RB)
             p = p->info.codep;
     }
     p = p->prev;
-    refal.preva->tag = TAGLB;
+    refal.preva->tag = TAG_LB;
     refal.preva->info.codep = pn;
-    pn->tag = TAGRB;
+    pn->tag = TAG_RB;
     pn->info.codep = refal.preva;
     rftpl(refal.preva, p, refal.nexta);
     rftpl(refal.prevr, pn, refal.nexta);
@@ -247,7 +247,7 @@ static void (*last_1)() = last_;
 
 static void lengr_()
 {
-    linkcb* p;
+    linkcb_t* p;
     long n; /* kras */
     n = 0l;
     p = refal.preva->next;
@@ -255,7 +255,7 @@ static void lengr_()
         n++;
         p = p->next;
     }
-    refal.preva->tag = TAGN;
+    refal.preva->tag = TAG_N;
     pcoden(refal.preva, n);
     rftpl(refal.prevr, refal.nextr, refal.nexta);
     return;
@@ -266,17 +266,17 @@ static void (*lengr_1)() = lengr_;
 
 static void lengw_()
 {
-    linkcb* p;
+    linkcb_t* p;
     long n; /* kras  */
     n = 0l;
     p = refal.preva->next;
     while(p != refal.nexta) {
         n++;
-        if(p->tag == TAGLB)
+        if(p->tag == TAG_LB)
             p = p->info.codep;
         p = p->next;
     }
-    refal.preva->tag = TAGN;
+    refal.preva->tag = TAG_N;
     pcoden(refal.preva, n);
     rftpl(refal.prevr, refal.nextr, refal.nexta);
     return;
@@ -287,10 +287,10 @@ static void (*lengw_1)() = lengw_;
 
 static void multe_()
 {
-    linkcb *p, *pn, *q;
+    linkcb_t *p, *pn, *q;
     long n, k;
     pn = refal.preva->next;
-    if((pn == refal.nexta) || (pn->tag != TAGN)) {
+    if((pn == refal.nexta) || (pn->tag != TAG_N)) {
         refal.upshot = 2;
         return;
     }; /* FAIL */
@@ -327,7 +327,7 @@ static void (*multe_1)() = multe_;
 
 static void delf_()
 {
-    linkcb *dot, *dot1, *sk, *nd;
+    linkcb_t *dot, *dot1, *sk, *nd;
     if(refal.preva->next != refal.nexta) {
         refal.upshot = 2;
         return;
@@ -362,9 +362,9 @@ static void (*delf_1)() = delf_;
 static void crel_()
 {
     char c;
-    linkcb *p, *p1, *q, *q1;
+    linkcb_t *p, *p1, *q, *q1;
     p = refal.preva->next;
-    if(p->tag != TAGLB)
+    if(p->tag != TAG_LB)
         goto FAIL;
     p1 = p->info.codep;
     p = p->next;
@@ -372,14 +372,14 @@ static void crel_()
     q1 = refal.nexta;
     c = '=';
     for(; c == '=' && p != p1 && q != q1; p = p->next, q = q->next) {
-        if(p->tag == TAGLB) {
-            if(q->tag != TAGLB)
+        if(p->tag == TAG_LB) {
+            if(q->tag != TAG_LB)
                 goto FAIL;
             else
                 break;
         }
-        if(p->tag == TAGRB) {
-            if(q->tag != TAGRB)
+        if(p->tag == TAG_RB) {
+            if(q->tag != TAG_RB)
                 goto FAIL;
             else
                 break;
@@ -394,13 +394,13 @@ static void crel_()
     if(q == q1 && p != p1)
         c = '>';
     for(; p != p1; p = p->next)
-        if(p->tag == TAGLB)
+        if(p->tag == TAG_LB)
             goto FAIL;
     for(; q != q1; q = q->next)
-        if(q->tag == TAGLB)
+        if(q->tag == TAG_LB)
             goto FAIL;
     p = refal.preva->next;
-    p->tag = TAGO;
+    p->tag = TAG_O;
     p->info.codep = NULL;
     p->info.infoc = c;
     q = p->next;

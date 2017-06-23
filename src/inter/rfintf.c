@@ -2,13 +2,13 @@
 /*           C-interface functions                  */
 /*        Last modification : 17.07.2004 (BLF)      */
 /*--------------------------------------------------*/
-#include "../refal.def"
+#include "../refal.h"
 
-REFAL refal;
-static linkcb* last_block = NULL;
+refalproc_t refal;
+static linkcb_t* last_block = NULL;
 static int rf_init = 1;
 static int curr_size = 0;
-static linkcb hd;
+static linkcb_t hd;
 
 void rflist();
 void rfpexm();
@@ -21,8 +21,8 @@ void rfabe(amsg) char* amsg;
 
 lincrm()
 {
-    linkcb *first_free, *p;
-    linkcb* new_block;
+    linkcb_t *first_free, *p;
+    linkcb_t* new_block;
     int was_coll, n;
     if(last_block != NULL) {
         first_free = refal.flhead->next;
@@ -38,7 +38,7 @@ lincrm()
                 return (true);
         }
     }
-    new_block = malloc(1001 * sizeof(linkcb)); /* kras 06.12.88 */
+    new_block = malloc(1001 * sizeof(linkcb_t)); /* kras 06.12.88 */
     if(new_block == NULL)
         return (false);
     new_block->prev = last_block;
@@ -51,7 +51,7 @@ lincrm()
 /*  check a number of items in free items list */
 lrqlk(l) int l;
 {
-    linkcb* p;
+    linkcb_t* p;
     int n;
     p = refal.flhead;
     for(n = 0; n < l; n++) {
@@ -62,11 +62,11 @@ lrqlk(l) int l;
     return (true);
 }
 
-lins(p, l) linkcb* p;
+lins(p, l) linkcb_t* p;
 int l;
 {
     int n;
-    linkcb *p1, *q, *q1, *r;
+    linkcb_t *p1, *q, *q1, *r;
     if(l < 1)
         return (1);
     q1 = refal.flhead;
@@ -74,7 +74,7 @@ int l;
         q1 = q1->next;
         if(q1 == refal.flhead)
             return (false);
-        q1->tag = TAGO;
+        q1->tag = TAG_O;
         q1->info.codep = NULL;
     }
     r = q1->next;
@@ -89,7 +89,7 @@ int l;
     return (true);
 }
 
-slins(p, k) linkcb* p;
+slins(p, k) linkcb_t* p;
 int k;
 {
     while(!lrqlk(k)) {
@@ -104,7 +104,7 @@ int k;
 linskd(ast, f) st* ast;
 char* f;
 {
-    linkcb *p, *q, *r;
+    linkcb_t *p, *q, *r;
     if(!lexist(ast))
         rfabe("Linskd: process doesn't exist still");
     if(ast->dot != NULL)
@@ -114,11 +114,11 @@ char* f;
     p = ast->view->next;
     r = p->next;
     q = ast->view->prev;
-    p->tag = TAGK;
-    q->tag = TAGD;
+    p->tag = TAG_K;
+    q->tag = TAG_D;
     q->info.codep = p;
-    r->tag = TAGF;
-    r->info.codep = (linkcb*)f;
+    r->tag = TAG_F;
+    r->info.codep = (linkcb_t*)f;
     ast->dot = q;
     return (true);
 }
@@ -130,8 +130,8 @@ char rfcnv(cm) char cm;
 
 void rfinit()
 {
-    REFAL* p;
-    linkcb* phd;
+    refalproc_t* p;
+    linkcb_t* phd;
     rf_init = 0;
     p = &refal;
     p->crprev = (st*)&refal;
@@ -154,7 +154,7 @@ void rfinit()
 
 void rfcanc(ast) st* ast;
 {
-    linkcb *flhead1, *view1, *store1;
+    linkcb_t *flhead1, *view1, *store1;
     if(rf_init)
         rfinit();
     if(!lexist(ast))
@@ -175,9 +175,9 @@ void rfcanc(ast) st* ast;
 }
 
 /*    delete part of list and add it to free memory list */
-void rfdel(p, q) linkcb *p, *q;
+void rfdel(p, q) linkcb_t *p, *q;
 {
-    linkcb *p1, *q1, *r;
+    linkcb_t *p1, *q1, *r;
     p1 = p->next;
     if(p1 == q)
         return;
@@ -193,7 +193,7 @@ void rfdel(p, q) linkcb *p, *q;
 
 void rftermm()
 {
-    linkcb* new_block;
+    linkcb_t* new_block;
     while(last_block != NULL) {
         new_block = last_block;
         last_block = new_block->prev;
@@ -205,7 +205,7 @@ void rfexec(func) char* func;
 {
 
     /* BLF 17.07.2004 */
-    linkcb *prevk, *nextd, *pk;
+    linkcb_t *prevk, *nextd, *pk;
 
     st s_st;
     if(rf_init == 1)
@@ -284,12 +284,12 @@ LACK:
 }
 
 void rfpexm(pt, pr, pn) char* pt;
-linkcb *pr, *pn;
+linkcb_t *pr, *pn;
 {
     char* f;
     unsigned char c;
     int l, k, fr;
-    linkcb* pr1;
+    linkcb_t* pr1;
 
     fr = 0;
     printf("\n%s", pt);
@@ -298,7 +298,7 @@ linkcb *pr, *pn;
         pr = pr->next;
         if(pr->prev != pr1)
             rfabe("rfpexm: list structure violation");
-        if(pr->tag == TAGO) {
+        if(pr->tag == TAG_O) {
             if(fr == 0) {
                 fr = 1;
                 putchar('\'');
@@ -309,17 +309,17 @@ linkcb *pr, *pn;
                 fr = 0;
                 putchar('\'');
             };
-            if(pr->tag == TAGK)
+            if(pr->tag == TAG_K)
                 putchar('k');
-            else if(pr->tag == TAGD)
+            else if(pr->tag == TAG_D)
                 putchar('.');
-            else if(pr->tag == TAGLB)
+            else if(pr->tag == TAG_LB)
                 putchar('(');
-            else if(pr->tag == TAGRB)
+            else if(pr->tag == TAG_RB)
                 putchar(')');
-            else if(pr->tag == TAGN)
+            else if(pr->tag == TAG_N)
                 printf("/%ld/", gcoden(pr));
-            else if(pr->tag == TAGF) {
+            else if(pr->tag == TAG_F) {
                 putchar('/');
                 f = pr->info.codef - 1;
                 c = *f;
@@ -328,7 +328,7 @@ linkcb *pr, *pn;
                 for(k = 1; k <= l; k++, f++)
                     putchar(rfcnv(*f));
                 putchar('/');
-            } else if(pr->tag == TAGR)
+            } else if(pr->tag == TAG_R)
                 printf("/%%%lx/", pr->info.codep);
             else if((pr->tag & 0001) != 0)
                 rfabe("rfpexm: unknown bracket type ");
@@ -341,9 +341,9 @@ linkcb *pr, *pn;
     return;
 }
 
-void rftpl(r, p, q) linkcb *p, *r, *q;
+void rftpl(r, p, q) linkcb_t *p, *r, *q;
 {
-    linkcb *r1, *q1, *p1;
+    linkcb_t *r1, *q1, *p1;
     p1 = p->next;
     if(p1 == q)
         return;
@@ -358,9 +358,9 @@ void rftpl(r, p, q) linkcb *p, *r, *q;
 }
 
 /*  copy expression and add it to nessecary place  */
-lcopy(r, p, q) linkcb* r, *p, *q;
+lcopy(r, p, q) linkcb_t* r, *p, *q;
 {
-    linkcb *r1, *f, *f0, *f1, *lastb = NULL;
+    linkcb_t *r1, *f, *f0, *f1, *lastb = NULL;
     f = refal.flhead;
     f0 = p->next;
     while(f0 != q) {
@@ -368,16 +368,16 @@ lcopy(r, p, q) linkcb* r, *p, *q;
         if(f == refal.flhead)
             return (false);
         switch(f0->tag) {
-        case TAGLB:
+        case TAG_LB:
             f->info.codep = lastb;
             lastb = f;
             break;
-        case TAGRB:
+        case TAG_RB:
             f->info.codep = lastb;
-            f->tag = TAGRB;
+            f->tag = TAG_RB;
             f1 = lastb->info.codep;
             lastb->info.codep = f;
-            lastb->tag = TAGLB;
+            lastb->tag = TAG_LB;
             lastb = f1;
             break;
         default:
@@ -402,11 +402,11 @@ lcopy(r, p, q) linkcb* r, *p, *q;
 
 lexist(ast) st* ast;
 {
-    REFAL* p;
+    refalproc_t* p;
     p = &refal;
     do {
-        p = (REFAL*)(p->crnext);
-        if(p == (REFAL*)ast)
+        p = (refalproc_t*)(p->crnext);
+        if(p == (refalproc_t*)ast)
             return (true);
     } while(p != &refal);
     return (false);
@@ -415,7 +415,7 @@ lexist(ast) st* ast;
 lcre(ast) st* ast;
 {
     st* q;
-    linkcb* flhead1;
+    linkcb_t* flhead1;
     if(rf_init == 1)
         rfinit();
     if(lexist(ast))
@@ -445,15 +445,15 @@ lcre(ast) st* ast;
     return (true);
 }
 
-static void mark(root) linkcb* root;
+static void mark(root) linkcb_t* root;
 {
-    linkcb *h, *p, *q, *r;
+    linkcb_t *h, *p, *q, *r;
     h = p = root;
 MRK:
     if(p->next == h)
         goto UP;
     p = p->next;
-    if(p->tag != TAGR)
+    if(p->tag != TAG_R)
         goto MRK;
     q = p->info.codep;
     if(q->tag != 0)
@@ -471,7 +471,7 @@ UP:
     r = h;
     h = q->info.codep;
     q->info.codep = r;
-    q->tag = TAGR;
+    q->tag = TAG_R;
     p = q;
     goto MRK;
 }
@@ -480,7 +480,7 @@ lgcl()
 {
     st* p;
     int was_coll;
-    linkcb *pzero, *q, *r, *flhead1, *p1, hdvar, *hd;
+    linkcb_t *pzero, *q, *r, *flhead1, *p1, hdvar, *hd;
     hd = &hdvar;
     if(refal.dvar == NULL)
         return (0);
@@ -529,10 +529,10 @@ lgcl()
     return (was_coll);
 }
 
-void rflist(par, n) linkcb* par;
+void rflist(par, n) linkcb_t* par;
 int n;
 {
-    linkcb *p, *q;
+    linkcb_t *p, *q;
     int k;
     if(rf_init != 0)
         rfinit();
@@ -552,31 +552,31 @@ int n;
 }
 
 void rfpex(pt, pr, pn) char* pt;
-linkcb *pr, *pn;
+linkcb_t *pr, *pn;
 {
     char* f;
     unsigned char c;
     int l, k;
-    linkcb* pr1;
+    linkcb_t* pr1;
     printf("\n%s", pt);
     while(pr != pn->prev) {
         pr1 = pr;
         pr = pr->next;
         if(pr1 != pr->prev)
             rfabe("rfpex: list structure violation");
-        if(pr->tag == TAGO)
+        if(pr->tag == TAG_O)
             putchar(pr->info.infoc);
-        else if(pr->tag == TAGK)
+        else if(pr->tag == TAG_K)
             putchar('k');
-        else if(pr->tag == TAGD)
+        else if(pr->tag == TAG_D)
             putchar('.');
-        else if(pr->tag == TAGLB)
+        else if(pr->tag == TAG_LB)
             putchar('(');
-        else if(pr->tag == TAGRB)
+        else if(pr->tag == TAG_RB)
             putchar(')');
-        else if(pr->tag == TAGN)
+        else if(pr->tag == TAG_N)
             printf("'%ld'", gcoden(pr));
-        else if(pr->tag == TAGF) {
+        else if(pr->tag == TAG_F) {
             putchar('\'');
             f = pr->info.codef - 1;
             c = *f;
@@ -585,7 +585,7 @@ linkcb *pr, *pn;
             for(k = 1; k <= l; k++, f++)
                 putchar(rfcnv(*f));
             putchar('\'');
-        } else if(pr->tag == TAGR)
+        } else if(pr->tag == TAG_R)
             printf("'%%%lx'", pr->info.codep);
         else if((pr->tag & 0001) != 0)
             rfabe("rfpex: unknown bracket type ");
@@ -595,16 +595,16 @@ linkcb *pr, *pn;
     return;
 }
 
-linkcb *lldupl(p, q, u) linkcb *p, *q, *u;
+linkcb_t *lldupl(p, q, u) linkcb_t *p, *q, *u;
 {
-    linkcb *x, *y;
+    linkcb_t *x, *y;
     x = p->next;
     y = u->next;
     while(x != q) {
         if(x->tag != y->tag)
             return (0);
         if(x->info.codef != y->info.codef)
-            if((x->tag != TAGLB) && (x->tag != TAGRB))
+            if((x->tag != TAG_LB) && (x->tag != TAG_RB))
                 return (0);
         x = x->next;
         y = y->next;

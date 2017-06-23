@@ -3,8 +3,8 @@
 /*       Last modification : 02.09.90       */
 /*------------------------------------------*/
 #include <stdio.h>
-#include "../refal.def"
-extern REFAL refal;
+#include "../refal.h"
+extern refalproc_t refal;
 
 #define fmax 5
 
@@ -15,18 +15,18 @@ static FILE* uniget[fmax] = { NULL, NULL, NULL, NULL, NULL };
 
 static void open_()
 {
-    linkcb* p;
+    linkcb_t* p;
     short j;
     char namf[41], c, s[2];
     register i;
     for(i = 0; i < 40; i++)
         namf[i] = '\0';
     p = refal.preva->next;
-    if(p->tag != TAGO)
+    if(p->tag != TAG_O)
         goto NEOT;
     c = p->info.infoc;
     p = p->next;
-    if(p->tag != TAGN)
+    if(p->tag != TAG_N)
         goto NEOT;
     else {
         j = (short)p->info.coden;
@@ -42,7 +42,7 @@ static void open_()
     else
         goto NEOT;
     for(i = 0; p != refal.nexta; i++)
-        if((p->tag != TAGO) || (i == 40))
+        if((p->tag != TAG_O) || (i == 40))
             goto NEOT;
         else {
             namf[i] = p->info.infoc;
@@ -69,15 +69,15 @@ static void (*open_1)() = open_;
 
 static void close_()
 {
-    linkcb* p;
+    linkcb_t* p;
     char c;
     short j;
     p = refal.preva->next;
-    if(p->tag != TAGO)
+    if(p->tag != TAG_O)
         goto NEOT;
     c = p->info.infoc;
     p = p->next;
-    if(p->tag != TAGN)
+    if(p->tag != TAG_N)
         goto NEOT;
     j = (short)p->info.coden;
     if(j >= fmax)
@@ -104,11 +104,11 @@ static void (*close_1)() = close_;
 
 static void get_()
 {
-    linkcb* p;
+    linkcb_t* p;
     short i, j;
     char c, namf[11];
     p = refal.preva->next;
-    if(p->tag != TAGN)
+    if(p->tag != TAG_N)
         goto NEOT;
     j = (short)p->info.coden;
     if(j >= fmax)
@@ -130,10 +130,10 @@ static void get_()
         p = p->next;
         p->info.codep = NULL;
         if(c == EOF || c == '\032') {
-            p->tag = TAGN;
+            p->tag = TAG_N;
             return;
         }
-        p->tag = TAGO;
+        p->tag = TAG_O;
         p->info.infoc = c;
     }
     return;
@@ -149,12 +149,12 @@ static void (*get_1)() = get_;
 
 static void put_()
 {
-    linkcb* p;
+    linkcb_t* p;
     short j;
     int i, cc;
     char namf[11];
     p = refal.preva->next;
-    if(p->tag != TAGN)
+    if(p->tag != TAG_N)
         goto NEOT;
     j = (short)p->info.coden;
     p = p->next;
@@ -171,12 +171,12 @@ static void put_()
         uniput[j] = f;
     }
     while(p != refal.nexta) {
-        if(p->tag != TAGO) {
-            if((p->tag != TAGLB) && (p->tag != TAGRB)) {
+        if(p->tag != TAG_O) {
+            if((p->tag != TAG_LB) && (p->tag != TAG_RB)) {
                 refal.upshot = 2;
                 return;
             } else {
-                if(p->tag == TAGLB)
+                if(p->tag == TAG_LB)
                     cc = '(';
                 else
                     cc = ')';

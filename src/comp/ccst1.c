@@ -2,10 +2,8 @@
 /*    The first of two compiler files       */
 /*      Last edition date : 31.01.90        */
 /*------------------------------------------*/
-#include <stdio.h>
-#define TAG_O 0
-#define TAG_F 2
-#define TAG_N 4
+#include "../refal.h"
+extern void error_message_character(char* s, char* c);
 
 struct linkti {
     short tag;
@@ -188,9 +186,7 @@ short lrbxy;      /* stoped bracket flag */
 #define n_eossn '\120'
 #define n_setnos '\121'
 void scan();
-void pchosh();
-void pch303();
-void pch406();
+void error_message();
 void fndef();
 void isk_v();
 void gops();
@@ -264,7 +260,7 @@ LPE2: /*left bracket*/
     goto NEXT_LPE;
 LPE3: /*right bracket*/
     if(lastb == 0) {
-        pchosh("302 too many ')' in left part");
+        error_message("302 too many ')' in left part");
         n--;
     } else {
         nel++;
@@ -285,7 +281,7 @@ LPE4: /*s-varyable */
         ++(v[i].rem); /*next position*/
         break;
     default: /*invalid type pointer*/
-        pch303();
+        error_message_character("303 differents for variable ", v[i].ci);
         n--;
     }
     nel++;
@@ -301,7 +297,7 @@ LPE5: /* w-varyable*/
         ++(v[i].rem); /*next position*/
         break;
     default: /*invalid type pointer*/
-        pch303();
+        error_message_character("303 differents for variable ", v[i].ci);
         n--;
     }
     nel += 2;
@@ -315,37 +311,37 @@ LPE6: /*e- or v-varyable*/
         ++(v[i].rem);
     else /*invalid type pointer*/
         {
-        pch303();
+        error_message_character("303 differents for variable ", v[i].ci);
         n--;
     };
     nel += 2;
     goto NEXT_LPE;
 LPE7: /*sign 'k'*/
-    pchosh("306 sign 'k' in left part");
+    error_message("306 sign 'k' in left part");
     n--;
     goto NEXT_LPE;
 LPE8: /*sign '.'*/
-    pchosh("307 sign '.' in left part");
+    error_message("307 sign '.' in left part");
     n--;
     goto NEXT_LPE;
 LPE9: /*left part end*/
     if(lastb == 0)
         goto RCG;
-    pchosh("301 too many '(' in left part");
+    error_message("301 too many '(' in left part");
     goto OSH300;
 LPE10: /*sentence end*/
-    pchosh("304 under left part default sign '=' ");
+    error_message("304 under left part default sign '=' ");
     fndef(lbl, lblleng);
     return;
 NEXT_LPE: /* end of element processing */
     if(nel <= 252)
         goto GET_LPE;
-    pchosh("305 very large left part");
+    error_message("305 very large left part");
     goto OSH300;
 OSH300:
     fndef(lbl, lblleng);
 RP_OSH300:
-    pchosh("300 sentence is't scanned");
+    error_message("300 sentence is't scanned");
     return;
 /*--------------------------------------------*/
 /*         left part compilation              */
@@ -1081,7 +1077,7 @@ RPE2: /* left bracket */
 RPE3: /* right bracket */
     gop(n_br);
     if(kol_skob[ur_skob] == 0)
-        pchosh("402 too many ')' in right part");
+        error_message("402 too many ')' in right part");
     else
         kol_skob[ur_skob]--;
     goto GET_RPE;
@@ -1089,20 +1085,20 @@ RPE4: /* s - varyable */
     isk_v();
     switch(v[i]._t) {
     case 0:
-        pch406();
+        error_message_character("406 in left part missing variable ", v[i].ci);
         break;
     case 1:
         gopn(n_muls, v[i]._q);
         break;
     default:
-        pch303();
+        error_message_character("303 differents for variable ", v[i].ci);
     };
     goto GET_RPE;
 RPE5: /* w - varyable */
     isk_v();
     switch(v[i]._t) {
     case 0:
-        pch406();
+        error_message_character("406 in left part missing variable ", v[i].ci);
         break;
     case 2:
         n = v[i].last;
@@ -1114,13 +1110,13 @@ RPE5: /* w - varyable */
         };
         break;
     default:
-        pch303();
+        error_message_character("303 differents for variable ", v[i].ci);
     };
     goto GET_RPE;
 RPE6: /* e- or v-varyable */
     isk_v();
     if(v[i]._t == 0)
-        pch406();
+        error_message_character("406 in left part missing variable ", v[i].ci);
     else if((v[i]._t == 3) && (v[i]._v == scn_e.v_)) {
         n = v[i].last;
         if(n == 0)
@@ -1134,11 +1130,11 @@ RPE6: /* e- or v-varyable */
             v[i].last = x[n].next;
         };
     } else
-        pch303();
+        error_message_character("303 differents for variable ", v[i].ci);
     goto GET_RPE;
 RPE7: /* sign "k" */
     if(ur_skob > 511) {
-        pchosh("407 including of the signs 'k' > 511");
+        error_message("407 including of the signs 'k' > 511");
         goto RP_OSH300;
     };
     kol_skob[++ur_skob] = 0;
@@ -1154,16 +1150,16 @@ RPE7: /* sign "k" */
     };
 RPE8: /* sign '.' */
     if(ur_skob == 1)
-        pchosh("404 too many sign '.' in right part");
+        error_message("404 too many sign '.' in right part");
     else {
         if(kol_skob[ur_skob] != 0)
-            pchosh("401 too many '(' in right part");
+            error_message("401 too many '(' in right part");
         gop(n_bract);
         ur_skob--;
     };
     goto GET_RPE;
 RPE9: /* sign '=' in right part */
-    pchosh("405 sign '=' in right part");
+    error_message("405 sign '=' in right part");
     goto GET_RPE;
 RPE10: /* sentence end */
     scn_.curr_stmnmb++;
@@ -1173,8 +1169,8 @@ RPE10: /* sentence end */
     } else
         gop(n_eos);
     if(ur_skob != 1)
-        pchosh("403 too many signs 'k' in right part");
+        error_message("403 too many signs 'k' in right part");
     if(kol_skob[ur_skob] != 0)
-        pchosh("401 too many '(' in right part");
+        error_message("401 too many '(' in right part");
 }
 /*-----------  end of file CCST1.C  -----------*/

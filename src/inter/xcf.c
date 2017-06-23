@@ -3,8 +3,8 @@
 /*       Last edition date : 02.09.90       */
 /*------------------------------------------*/
 #include <stdio.h>
-#include "../refal.def"
-extern REFAL refal;
+#include "../refal.h"
+extern refalproc_t refal;
 
 typedef char* adr;
 short func_n = 0;
@@ -17,11 +17,11 @@ static void ftochar_()
         char b[2];
         short w;
     } d;
-    linkcb* p;
+    linkcb_t* p;
     char* u;
     short i;
     p = refal.preva->next;
-    if(p->tag != TAGF)
+    if(p->tag != TAG_F)
         goto HEOT;
     u = p->info.codef - 1;
     d.b[0] = *u;
@@ -37,7 +37,7 @@ static void ftochar_()
     lins(p, d.w);
     for(i = 0; i < d.w; i++) {
         p = p->next;
-        p->tag = TAGO;
+        p->tag = TAG_O;
         p->info.codep = NULL;
         p->info.infoc = *(u + i);
     }
@@ -53,11 +53,11 @@ static void (*ftochar_1)() = ftochar_;
 
 static void functab_()
 {
-    linkcb* p;
+    linkcb_t* p;
     char* u;
     short i;
     p = refal.preva->next;
-    if(p->tag != TAGF)
+    if(p->tag != TAG_F)
         goto HEOT;
     u = p->info.codef;
     for(i = 0; i < func_n; i++)
@@ -85,14 +85,14 @@ static void chartof_()
         char b[2];
         short w;
     } d;
-    linkcb* p;
+    linkcb_t* p;
     char *u, *j;
     short i, k;
     p = refal.preva->next;
     if(p == refal.nexta)
         goto HEOT;
     for(i = 0; p != refal.nexta; i++, p = p->next)
-        if(p->tag != TAGO)
+        if(p->tag != TAG_O)
             goto HEOT;
     if(i > 255)
         goto HEOT;
@@ -110,7 +110,7 @@ static void chartof_()
             /* identificator iz tablicy ne preobr. w zaglawnye!!! */
             /* poetomu w m.o. imja d.b. napisano zaglawnymi!      */
             p = refal.preva->next;
-            p->tag = TAGF;
+            p->tag = TAG_F;
             p->info.codef = func_f[k];
             if(p->next != refal.nexta)
                 rfdel(p, refal.nexta);
@@ -126,7 +126,7 @@ static void chartof_()
     func_f[func_n] = j;
     func_n++;
     p = refal.preva->next;
-    p->tag = TAGF;
+    p->tag = TAG_F;
     p->info.codef = j;
     if(p->next != refal.nexta)
         rfdel(p, refal.nexta);

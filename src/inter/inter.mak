@@ -86,32 +86,32 @@ $(REFLIB): $(OBJECTS)
 
 ####### Dependences
 
-$(S)\d.o:	$(S)\d.c $(S)\..\refal.def $(S)\debug.def
+$(S)\d.o:	$(S)\d.c $(S)\..\refal.h $(S)\debug.def
 
 $(S)\mainrf.o: 	$(S)\mainrf.c
 
-$(S)\rfdbg.o:	$(S)\rfdbg.c $(S)\..\refal.def
+$(S)\rfdbg.o:	$(S)\rfdbg.c $(S)\..\refal.h
 
-$(S)\rfintf.o: 	$(S)\rfintf.c $(S)\..\refal.def
+$(S)\rfintf.o: 	$(S)\rfintf.c $(S)\..\refal.h
 
-$(S)\rfrun1.o: 	$(S)\rfrun1.c $(S)\..\refal.def
+$(S)\rfrun1.o: 	$(S)\rfrun1.c $(S)\..\refal.h
 
-$(S)\rfrun2.o: 	$(S)\rfrun2.c $(S)\..\refal.def
+$(S)\rfrun2.o: 	$(S)\rfrun2.c $(S)\..\refal.h
 
-$(S)\xapply.o: 	$(S)\xapply.c $(S)\..\refal.def
+$(S)\xapply.o: 	$(S)\xapply.c $(S)\..\refal.h
 
-$(S)\xar.o: 	$(S)\xar.c $(S)\..\refal.def
+$(S)\xar.o: 	$(S)\xar.c $(S)\..\refal.h
 
-$(S)\xcf.o: 	$(S)\xcf.c $(S)\..\refal.def   
+$(S)\xcf.o: 	$(S)\xcf.c $(S)\..\refal.h   
 
-$(S)\xgcd.o: 	$(S)\xgcd.c $(S)\..\refal.def
+$(S)\xgcd.o: 	$(S)\xgcd.c $(S)\..\refal.h
 
-$(S)\xjak.o: 	$(S)\xjak.c $(S)\..\refal.def
+$(S)\xjak.o: 	$(S)\xjak.c $(S)\..\refal.h
 
-$(S)\xmo.o: 	$(S)\xmo.c $(S)\..\refal.def
+$(S)\xmo.o: 	$(S)\xmo.c $(S)\..\refal.h
 
-$(S)\xrename.o: $(S)\xrename.c $(S)\..\refal.def
+$(S)\xrename.o: $(S)\xrename.c $(S)\..\refal.h
 
-$(S)\xvv.o: 	$(S)\xvv.c $(S)\..\refal.def
+$(S)\xvv.o: 	$(S)\xvv.c $(S)\..\refal.h
 
-$(S)\xvv5.o: 	$(S)\xvv5.c $(S)\..\refal.def
+$(S)\xvv5.o: 	$(S)\xvv5.c $(S)\..\refal.h

@@ -1,10 +1,3 @@
-/*-----------  file  --  REFAL.C -------------*/
-/*      The main file of refal compiler       */
-/*       Last modification : 29.05.2005 (BLF) */
-/*--------------------------------------------*/
-#include <stdio.h>
-#include "../refal.def"
-
 #define EH                                \
     if(m != 71) {                         \
         m++;                              \
@@ -20,16 +13,12 @@
     }           \
     }
 int qindex;
-void exit();
 void lblkey();
 void gsymbol();
 void s_init();
-void pchosh();
 void pch130();
 void blout();
 void jstart();
-/*void strcat();*/
-/*void strcpy();*/
 void trprev();
 void cst();
 void ilm();
@@ -47,17 +36,9 @@ void s_term();
 void pchzkl();
 void rdline();
 void translate();
-void pchk();
-void pchk_t();
-void pchosa();
 void gsp();
 void scan();
-void oshibka();
-void strncpy();
 void sfop_w();
-int strncmp();
-int strlen();
-int atoi();
 int specif();
 int get_id();
 int get_idm();
@@ -70,8 +51,8 @@ FILE* fopen();
 char* fnref();
 unsigned jwhere();
 /* the recovery of the next element of sentence   */
-char* genlbl(); /* kras: wmesto struct u */
-char* spref();  /* kras: wmesto struct u */
+char* genlbl();
+char* spref();
 
 struct linkt {
     int tagg;
@@ -81,24 +62,6 @@ struct linkt {
         char chinf[2];
     } infoo;
 };
-
-struct {
-    unsigned was_72 : 1;
-    unsigned uzhe_krt : 1;
-    unsigned was_err : 1;
-    unsigned uzhe_zgl : 1;
-    unsigned uzhekrt_t : 1;
-} flags;
-
-struct {
-    unsigned source : 1;
-    unsigned mincomp : 1;
-    unsigned stm_nmb : 1;
-    unsigned extname : 1;
-    unsigned multmod : 1;
-    unsigned asmb : 1;
-    unsigned names : 1;
-} options;
 
 struct {
     int nomkar;
@@ -117,11 +80,8 @@ struct {     /* current statement element */
 
 typedef char* adr;
 
-FILE* sysin;
-FILE* sysprint;
-FILE* syslin;     /* for assem */
 extern long sysl; /* for obj   */
-FILE* systerm;
+
 FILE* systxt; /* for module names */
 
 short m; /* current symbol number */
@@ -137,14 +97,10 @@ char vers_i[] = "Refal-2  version 0.2.3-20050529 (c) Refal-2 Team";
 
 char mod_i[13]; /* 8+4+1 (xxxxxxxx.yyy0) */
 int lbl_leng;
-short empcard;        /* flags for empty card  */
-static char card[81]; /* card buffer (input) */
-char* card72 = card;
+short empcard; /* flags for empty card  */
 
-static int cdnumb; /* card number */ /* kras */
-static int cardl;                    /* card length without tail blanks */
-static short dir;                    /* L,R - flag */
-static int kolosh;
+static int cardl; /* card length without tail blanks */
+static short dir; /* L,R - flag */
 static char ns_b = '\6';
 static char ns_cll = '\0';
 static char ns_d = '\13';
@@ -171,7 +127,7 @@ static short fixm;                          /* start sentence position */
 static char mod_name[9]; /* module name */  /* kras */
 static long mod_length; /* module length */ /* kras */
 static short again;                         /* next module processing feature */
-static int _eoj; /* "sysin" end flag */     /* kras */
+
 static int cur;
 
 static void de()
@@ -351,7 +307,7 @@ START_OF_MODULE:
         goto END_OF_SYSIN;
     s_init();
     if((strncmp(stmkey, "start", 5) != 0) && (strncmp(stmkey, "START", 5) != 0) && (strncmp(stmkey, "CTAPT", 5) != 0)) {
-        pchosh("001 START-directive missing");
+        error_message("001 START-directive missing");
         scn_.modnmlen = 0;
         jstart(mod_name, 0);
         goto KEYS;
@@ -376,7 +332,7 @@ KEYS:
         cst(dir, stmlbl, lbl_leng);
     } else if((strncmp(stmkey, "start", 5) == 0) || (strncmp(stmkey, "START", 5) == 0) ||
         (strncmp(stmkey, "CTAPT", 5) == 0))
-        pchosh("002 too many start-directive");
+        error_message("002 too many start-directive");
     else if((strncmp(stmkey, "end", 3) == 0) || (strncmp(stmkey, "END", 3) == 0) ||
         (strncmp(stmkey, "H", 5) == 0)) {
         if(prevlb[0] != '\0')
@@ -419,8 +375,7 @@ KEYS:
     if(_eoj != 1)
         goto NEXT_STM;
 END_IS_MISSING:
-    pchosh("003 end directive missing");
-    kolosh++;
+    error_message("003 end directive missing");
     again = 0;
 END_STATEMENT:
     s_end();
@@ -551,8 +506,9 @@ RDCARD1:
     cardl++;
     flags.uzhe_krt = 0;
     flags.uzhekrt_t = 0;
-    if(options.source == 1)
+    if(options.source == 1) {
         pchk();
+    }
 
     if((flags.was_72 == 0) && komm())
         goto RDCARD1;
@@ -580,7 +536,7 @@ void lblkey(pr) int pr;
         if(c[0] == ' ')
             lbl_leng = 0;
         else if(get_id(stmlbl, &lbl_leng) == 0) {
-            pchosh("120 the first symbol is not letter or blank");
+            error_message("120 the first symbol is not letter or blank");
             goto LK1;
         }
     }
@@ -701,7 +657,7 @@ STATE0:; /* among elements */
         goto DSCN;
     default:;
     }
-    pchosa("100 illegal symbol", c[m]);
+    error_message_character("100 illegal symbol", c[m]);
 SCNERR:
     scn_e.t = 0;
     goto SCNRET;
@@ -798,7 +754,7 @@ STATE1: /*within letter chain */
     scn_state = 0;
     goto STATE0;
 SCNCHR:
-    scn_e.code.tagg = TAGO;
+    scn_e.code.tagg = TAG_O;
     scn_e.code.infoo.pinf = NULL;
     if(c[m] == '\\') { /* control symbols */
         switch(c[++m]) {
@@ -888,16 +844,16 @@ SABBR:
     EH ROMA;
     goto SCNVI;
 OSH101:
-    pchosh("101 default of left apostroph");
+    error_message("101 default of left apostroph");
     goto SCNERR;
 OSH102:
-    pchosh("102 identifier index is't letter or digit");
+    error_message("102 identifier index is't letter or digit");
     goto SCNERR;
 SOSH203:
-    pchosh("203 sign ':' followed by no letter");
+    error_message("203 sign ':' followed by no letter");
     goto SCNERR;
 SOSH204:
-    pchosh("204 default last ':' within specifier");
+    error_message("204 default last ':' within specifier");
     goto SCNERR;
 SCNGCR:
     EH ROMA;
@@ -971,12 +927,12 @@ SPCPRC:
         goto SPCED;
     default:;
     }
-    pchosa("201 within specifier invalid symbol ", c[m]);
+    error_message_character("201 within specifier invalid symbol ", c[m]);
     goto OSH200;
 SPCFF:
     gsp(ns_ngw);
     if(neg == 1)
-        pchosh("207 within specifier default ')' ");
+        error_message("207 within specifier default ')' ");
     if(tail == ')')
         goto OSH206;
     return (1);
@@ -1025,7 +981,7 @@ SPCSP:
     if(get_id(id, &lid) == 0)
         goto OSH203;
     if(strncmp(stmlbl, id, lid) == 0 && stmlbl[lid] == ' ')
-        pchosh("209 specifier is defined through itself");
+        error_message("209 specifier is defined through itself");
     p = spref(id, lid, tail);
     gsp(ns_cll);
     if(left_part == 1)
@@ -1150,58 +1106,26 @@ SPCGC:
     EH ROMA0; /* kras  */
     goto SPCBLO;
 OSH200:
-    pchosh("200 specifier is't scaned");
+    error_message("200 specifier is't scaned");
     return (0);
 OSH202:
-    pchosh("202 specifier has too many '(' ");
+    error_message("202 specifier has too many '(' ");
     goto OSH200;
 OSH203:
-    pchosh("203 sign ':' followed by no letter within specifier ");
+    error_message("203 sign ':' followed by no letter within specifier ");
     goto OSH200;
 OSH204:
-    pchosh("204 within specifier default last :");
+    error_message("204 within specifier default last :");
     goto OSH200;
 OSH205:
-    pchosh("205 within specifier default last apostroph");
+    error_message("205 within specifier default last apostroph");
     goto OSH200;
 OSH206:
-    pchosh("206 default ')'in the specifier end ");
+    error_message("206 default ')'in the specifier end ");
     goto OSH200;
 OSH208:
-    pchosh("208 within specifier too many )");
+    error_message("208 within specifier too many )");
     goto OSH200;
-}
-void pchk()
-{ /* writing of card into sysprint */
-    int i;
-    char tmpstr[80];
-    if(flags.uzhe_krt == 0 && sysprint != NULL) {
-        flags.uzhe_krt = 1;
-        card[72] = '\0';
-        if(_eoj == 0) {
-            sprintf(tmpstr, "%4d %s", cdnumb, card);
-            for(i = 76; i > 4; i--)
-                if(tmpstr[i] != ' ')
-                    break;
-            i++;
-            tmpstr[i] = '\n';
-            i++;
-            tmpstr[i] = '\0';
-            fputs(tmpstr, sysprint);
-        }
-    }
-}
-void pchk_t()
-{ /* card writing into systerm */
-    char tmpstr[80];
-    if(flags.uzhekrt_t == 0) {
-        flags.uzhekrt_t = 1;
-        card[72] = '\0';
-        if(_eoj == 0) {
-            sprintf(tmpstr, "%4d %s\n", cdnumb, card);
-            fputs(tmpstr, systerm);
-        }
-    }
 }
 
 void il(prog) /* treatment of directives having 'EMPTY' type */
@@ -1275,7 +1199,7 @@ EQU1:
 }
 void pch130()
 {
-    pchosh("130 invalid record format");
+    error_message("130 invalid record format");
 }
 get_csmb(code, id, lid) /* procedure read multiple symbol */
     struct linkt* code;
@@ -1292,10 +1216,10 @@ int* lid;
     if(get_id(id, lid) == 0)
         goto OSH112;
     code->infoo.pinf = fnref(id, *lid);
-    code->tagg = TAGF;
+    code->tagg = TAG_F;
     goto CSMBEND;
 CSMBN:
-    code->tagg = TAGN;
+    code->tagg = TAG_N;
     code->infoo.intinf = 0;
     k = c[m] - '0';
 CSMBN1:
@@ -1310,20 +1234,20 @@ CSMBN2:
     EH ROMA0; /* kras */
     if(class[m] == 'D')
         goto CSMBN2;
-    pchosh("111 symbol-number > 16777215");
+    error_message("111 symbol-number > 16777215");
     goto CSMBEND;
 CSMBN3:
-    code->tagg = TAGN;
+    code->tagg = TAG_N;
     code->infoo.intinf = k;
 CSMBEND:
     if(c[m] != '/')
         goto OSH113;
     return (1);
 OSH112:
-    pchosh("112 unknown type of the multiple symbol ");
+    error_message("112 unknown type of the multiple symbol ");
     return (0);
 OSH113:
-    pchosh("113 default '/' under multiple symbol ");
+    error_message("113 default '/' under multiple symbol ");
     return (0);
 }
 char convert(cm) char cm;
@@ -1401,22 +1325,11 @@ void pchzkl()
 { /* print conclusion */
     char pr_line[180];
     sprintf(pr_line, "mod_name = %-8s    mod_length(lines) = %d\n", mod_name, cdnumb);
-    if(options.source == 1)
-        fputs(pr_line, sysprint);
-    fputs(pr_line, systerm);
+    log(pr_line);
     cdnumb = 0;
     if(kolosh != 0)
         sprintf(pr_line, "errors   = %-3d         obj_length(bytes) = %ld\n", kolosh, mod_length);
     else
         sprintf(pr_line, "                       obj_length(bytes) = %ld\n", mod_length);
-    if(options.source == 1)
-        fputs(pr_line, sysprint);
-    fputs(pr_line, systerm);
+    log(pr_line);
 }
-void oshibka()
-{
-    pchk();
-    pchk_t();
-    kolosh++;
-}
-/*----------  end of file REFAL.C  -------------------*/

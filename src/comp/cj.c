@@ -7,44 +7,13 @@
 /* BLF - changes was made for Windows - COFF or GNU and
         for  Unix - ELF or GNU format */
 
-#include <stdio.h>
-#include "../refal.def"
+#include "../refal.h"
 
-/* BLF - for renaming add,sub,mul,div */
-char* oper_add;
-char* oper_sub;
-char* oper_mul;
-char* oper_div;
-char* oper_rp;
-char* oper_ptr;
-
-struct refw {
-    struct refw* next;
-    int numb[6];
-};
-
-struct u {
-    union {
-        unsigned infon;
-        struct u* infop;
-    } info;
-
-    char mode;
-    char type;
-    int l;
-    struct u* i;
-    struct u* j;
-    struct refw* last_ref;
-    struct refw ref;
-    int def;
-    char k;
-    char* id;
-};
-typedef struct u T_U;
+extern FILE* syslin;
 
 struct ent { /* entry table element */
     struct ent* next;
-    struct u* p;
+    identifier_t* p;
     char e[8];
     int le;
 };
@@ -52,7 +21,7 @@ typedef struct ent T_ENT;
 
 struct ext { /* external pointer table element */
     struct ext* next;
-    struct u* p;
+    identifier_t* p;
     char e[8];
     int le;
     int noms;
@@ -60,7 +29,7 @@ struct ext { /* external pointer table element */
 typedef struct ext T_EXT;
 
 typedef struct T_RL {
-    T_U* point;
+    identifier_t* point;
     int delta;
 } T_RL;
 
@@ -82,7 +51,6 @@ static union {
 extern char parm_i[]; /* sourse file name */
 extern char vers_i[]; /* compiler version */
 extern char mod_i[];  /* module name      */
-extern FILE* syslin;  /* asm file */
 extern FILE* systxt;  /* module names */
 extern short nommod;
 
@@ -132,16 +100,7 @@ static T_RL rl;
 static int k;
 static int delta;
 
-FILE* fopen();
-void free();
-void pchose();
-void exit();
-void pchosh();
-/*void strcat	 ();*/
-void strncpy();
-/*void strcpy	 ();*/
-int strncmp();
-/*int  strlen	 ();*/
+extern void error_message(char* s);
 
 static void oshi1()
 {
@@ -495,7 +454,7 @@ void jbyte(char bb)
     curr_addr++;
 }
 
-void j3addr(pp) T_U* pp;
+void j3addr(pp) identifier_t* pp;
 {
     rl.point = pp;
     rl.delta = delta;
@@ -504,18 +463,17 @@ void j3addr(pp) T_U* pp;
     curr_addr += 4;
 }
 
-void jentry(pp, ee, ll) struct u* pp;
+void jentry(pp, ee, ll) identifier_t* pp;
 char* ee; /*  label  */
 int ll;
 {
     /* label length  */
     /*if( (lnmmod==ll) && (strncmp(mod_name, ee, ll < lnmmod ? ll : lnmmod)==0) )
-    pchosh("520 entry point name is equal module name");*/
+    error_message("520 entry point name is equal module name");*/
     r = first_ent;
     while(r != last_ent) {
         r = r->next;
         if((r->le == ll) && (strncmp(r->e, ee, ll < r->le ? ll : r->le) == 0)) {
-            /*pchose("521 two entry points has single name ", ee, ll);*/
             return;
         }
     }
@@ -530,7 +488,7 @@ int ll;
     pp->mode |= '\040';
 } /*jentry*/
 
-void jextrn(pp, ee, ll) struct u* pp;
+void jextrn(pp, ee, ll) identifier_t* pp;
 char* ee; /*  label  */
 int ll;
 {
@@ -552,14 +510,14 @@ int ll;
     pp->info.infon = n_ext;
 } /*jextrn*/
 
-void jlabel(pp) struct u* pp;
+void jlabel(pp) identifier_t* pp;
 {
     pp->mode |= '\120';
     pp->info.infon = curr_addr;
 }
 
-void jequ(pp, qq) struct u* pp;
-struct u* qq;
+void jequ(pp, qq) identifier_t* pp;
+identifier_t* qq;
 {
     pp->info.infop = qq;
     pp->mode |= '\320';
@@ -579,7 +537,7 @@ static void zakon()
 
 void jend()
 {
-    struct u *p, *pp;
+    identifier_t *p, *pp;
     char bufs[81];
     int i;
     zakon();
@@ -840,7 +798,7 @@ static void golowa(len, typ) int len, typ;
 
 void jendo()
 {
-    struct u *p, *pp;
+    identifier_t *p, *pp;
     T_EXT *qxn, *qxk;
     int i, nomsim, smes;
     zakon();

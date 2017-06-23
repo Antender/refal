@@ -2,7 +2,7 @@
 /*          Standard REFAL-Debugger         */
 /*        Last modification : 14.09.91      */
 /*------------------------------------------*/
-#include "../refal.def"
+#include "../refal.h"
 
 static st s_st;
 extern char rgo();
