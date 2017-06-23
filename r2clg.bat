@@ -13,7 +13,7 @@ rem *******************************************************************
 
 
 set REFALROOT="D:\sys\refal"
-%REFALROOT%\bin\refal2 %cd%\%1.ref > %cd%\%1.log
+%REFALROOT%\bin\refal2 %cd%\%1.ref (mm) > %cd%\%1.log
 as -o %cd%\%1.o %cd%\%1.asm >> %cd%\%1.log
 gcc -o %cd%\%1.exe %REFALROOT%\lib\r2objects\mainrf.o %cd%\%1.o -Wl,-L%REFALROOT%\lib -Wl,-lrefal2,-lr2user >> %cd%\%1.log
 %cd%\%1.exe

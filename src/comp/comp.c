@@ -15,6 +15,7 @@ typedef struct parser_flags_t {
 
 parser_flags_t flags;
 
+char parm[40];
 #include "main.c"
 
 void log(char* message)

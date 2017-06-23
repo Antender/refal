@@ -525,10 +525,21 @@ void jend()
     int i;
     zakon();
     if(options.multmod == 1) {
-        strcat(mod_i, ".asm");
-        syslin = fopen(mod_i, "w");
+        char tmp[256];
+        strcpy(tmp, parm_i);
+        char* pos = strrchr(tmp,'/');
+        if (pos == NULL) {
+            pos = strrchr(tmp,'\\');
+        }
+        if (pos == NULL) {
+            pos = tmp - 1;
+        }
+        *(pos + 1) = '\0';
+        strcat(tmp,mod_i);
+        strcat(tmp, ".asm");
+        syslin = fopen(tmp, "w");
         if(syslin == NULL) {
-            printf("Can't open %s\n", mod_i);
+            printf("Can't open %s\n", tmp);
             exit(8);
         }
     }

@@ -1,5 +1,0 @@
-empty start
- entry go
- extrn prout
-go = <prout 'Empty!'>
- end

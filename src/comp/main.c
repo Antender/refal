@@ -28,7 +28,6 @@ long mod_length;
 
 int main(int argc,char* argv[])
 {
-    char parm[40];
     int i, j, temp;
 
     systerm = NULL;
@@ -136,8 +135,10 @@ int main(int argc,char* argv[])
         ;
     parm[i] = '\0';
     if(options.multmod == 1) {
-        strcat(parm, ".txt");
-        systxt = fopen(parm, "w");
+        char tmp[256];
+        strcpy(tmp,parm);
+        strcat(tmp, ".txt");
+        systxt = fopen(tmp, "w");
         if(systxt == NULL) {
             printf("Can't open %s\n", parm);
             exit(8);
