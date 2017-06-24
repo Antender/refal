@@ -24,9 +24,11 @@ int lid;
     int m;
     identifier_t* p;
     char* q;
-    p = (identifier_t*)calloc(1, sizeof(identifier_t));
-    if(p == NULL)
-        Uns_sto();
+    p = e_calloc(1, sizeof(identifier_t));
+    if(p == NULL) {
+        printf("\nNo memory for identifier table");
+        exit(1);
+    }
     p->i = p->j = NULL;
     p->k = '\000';
     p->mode = '\000';
@@ -37,9 +39,11 @@ int lid;
         p->ref.numb[m] = 0;
     p->ref.numb[0] = scn_.nomkar;
     p->def = 0;
-    q = calloc(1, lid);
-    if(q == NULL)
-        Uns_sto();
+    q = e_calloc(1, lid);
+    if(q == NULL) {
+        printf("\nNo memory for identifier table");
+        exit(1);
+    }
     p->id = q;
     strncpy(q, idp, lid);
     p->l = lid;
@@ -80,9 +84,11 @@ SHAG: /* search step */
                     /* it's free field in current item */
                     (*q1).numb[k + 1] = scn_.nomkar;
                 else { /* create new item */
-                    r1 = (refw_t*)calloc(1, sizeof(refw_t));
-                    if(r1 == NULL)
-                        Uns_sto();
+                    r1 = e_calloc(1, sizeof(refw_t));
+                    if(r1 == NULL) {
+                        printf("\nNo memory for identifier table");
+                        exit(1);
+                    }
                     (*p).last_ref = (*q1).next = r1;
                     (*r1).next = NULL;
                     for(k = 0; k <= 5; k++)
