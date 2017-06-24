@@ -3,7 +3,6 @@ fact	start
 	extrn NUMB,SYMB,CVD,FIRST 
 	extrn MUL
 	extrn PROUT,CARD,M1
-	extrn empty
 
 go	= <fact <numb <prout ' give a number: '> <card>>> 
 
@@ -25,9 +24,3 @@ pr1 (e1)e2 = <prout e1> <pr e2>
     '*' e1 = <prout e1>
 
 	end
-
-empty start
- entry empty
- extrn prout
-empty = <prout 'Empty!'>
- end

@@ -1,4 +1,4 @@
-cv start
+xcv start
    entry CVB,cvd
    extrn NUMB,SYMB
    extrn ADD,MUL,DR,DRn

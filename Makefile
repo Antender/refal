@@ -18,14 +18,14 @@ all:
 # Make the compiler from refal-2 language, 
 # result bin\refal2 executable module
 	
-	$(MAKE) -f src\comp\comp.mak
+	$(MAKE) -j -f src\comp\comp.mak
 
 # PHASE II:
 # Make the interpreter from "jazyk sborki",  
 # result lib/librefal2.a - set of object modules.
 # Empty  lib/libr2user.a also created.
 	
-	$(MAKE) -f src\inter\inter.mak
+	$(MAKE) -j -f src\inter\inter.mak
 
 clean:
 	cd  src\comp

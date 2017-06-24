@@ -11,3 +11,4 @@ obj/
 *.exe
 *.workspace
 *.project
+.txt
