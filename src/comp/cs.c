@@ -313,7 +313,7 @@ void s_end()
 {
     func_end();
     if(korenj != NULL) {
-        traverse(check_id);
+        traverse(korenj, check_id);
     }
 }
 void s_init()
