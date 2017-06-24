@@ -601,15 +601,11 @@ static int get_det()
         }
         det_table = det_table->det_next;
     }
-    if((det_table = (DET_TAB*)malloc(sizeof(DET_TAB))) == NULL) {
-    AB:
-        printf("\nREFAL debugger: no storage");
-        exit(1);
-    }
-    if((det_table->det_id = malloc(l_arg + 1)) == NULL)
-        goto AB;
-    for(i = 0; i < l_arg; i++)
+    det_table = e_malloc(sizeof(DET_TAB));
+    det_table->det_id = e_malloc(l_arg + 1);
+    for(i = 0; i < l_arg; i++) {
         *(det_table->det_id + i) = *(arg + i);
+    }
     *(det_table->det_id + l_arg) = '\0';
     det_table->det_next = last_det;
     last_det = det_table;

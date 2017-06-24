@@ -156,54 +156,21 @@ static void osher2()
     exit(8);
     return;
 }
-void oshex()
-{
-    fputs("\nOSHEX: no memory!!!", stdout);
-    exit(1);
-}
 
 static void ksmn();
 
-void sfop_w(s, b) char* s;
-BU* b;
+void sfop_w(char* s, BU* b)
 {
-    unsigned un;
-    long lon;
     if(b->nam != NULL) {
         free(b->nam);
     }
-    if((b->nam = (char*)malloc(strlen(s) + 1)) == NULL)
-        oshex();
+    b->nam = e_malloc(strlen(s) + 1);
     strcpy(b->nam, s);
     if(b->buf == NULL) {
-        if(options.mincomp == 1) {
-            if(b == &sysut2)
-                un = 2040; /* 2040=340*6  */
-            else
-                un = 2040; /* 2040=2048-8 */
-        } else {
-            if(b == &sysut2)
-                un = 49152; /* 8192*6  */
-            else
-                un = 65528; /* 65536-8 (for bc mojno - 4) */
-        }
-        while(true) {
-            if((b->buf = (char*)malloc(un)) != NULL) {
-                break;
-            } else {
-                lon = un;
-                if(b == &sysut2)
-                    lon /= 2;
-                else
-                    lon = (lon + 8) / 2 - 8;
-                un = lon;
-                if(un < 16)
-                    oshex();
-            }
-        } /*while*/
+        b->buf = e_malloc(b->len);
     }
+    b->len = 65536;
     b->tek = 0;
-    b->len = un;
     b->fil = NULL;
 }
 
@@ -229,6 +196,8 @@ void sfcl(b) BU* b;
             printf("Write i/o error in %s\n", b->nam);
             exit(8);
         }
+        fputs("Buffer closed", stdout);
+        fputs(b->nam, stdout);
         fclose(b->fil);
     }
 }
@@ -236,14 +205,12 @@ void sfcl(b) BU* b;
 void sfclr(b) BU* b;
 {
     if(b->fil != NULL)
-        unlink(b->nam);
+        remove(b->nam);
     free(b->nam);
     free(b->buf);
     b->nam = NULL;
     b->buf = NULL;
 }
-
-
 
 void sfwr2()
 {
@@ -269,9 +236,7 @@ void sfwr2()
     } /*while*/
 } /*sfwr2*/
 
-void sfwr(c, n, b) char* c;
-unsigned n;
-BU* b;
+void sfwr(char* c, unsigned n, BU* b)
 {
     unsigned ost;
     while(true) {
@@ -385,25 +350,22 @@ void sfobmen(n) int n;
     } /*while*/
 } /*sfomen*/
 
-void jstart(ee, ll) char* ee;
-int ll;
+void jstart(char* ee, int ll)
 {
-    delta = 0; /* kras */
+    delta = 0;
     strncpy(mod_name, ee, ll);
     lnmmod = ll;
     sfop_w("sysut1.rf", &sysut1);
     sfop_w("sysut2.rf", &sysut2);
-    if((first_ent = (T_ENT*)malloc(sizeof(T_ENT))) == NULL)
-        oshex();
+    first_ent = e_malloc(sizeof(T_ENT));
     last_ent = first_ent;
     first_ent->next = NULL;
-    if((first_ext = (T_EXT*)malloc(sizeof(T_EXT))) == NULL)
-        oshex();
+    first_ext = e_malloc(sizeof(T_EXT));
     last_ext = first_ext;
     first_ext->next = NULL;
     curr_addr = 0;
     n_ext = 1;
-} /*jstart*/
+}
 
 unsigned jwhere()
 {
@@ -446,13 +408,8 @@ void j3addr(pp) identifier_t* pp;
     curr_addr += 4;
 }
 
-void jentry(pp, ee, ll) identifier_t* pp;
-char* ee; /*  label  */
-int ll;
+void jentry(identifier_t* pp, char* ee, int ll)
 {
-    /* label length  */
-    /*if( (lnmmod==ll) && (strncmp(mod_name, ee, ll < lnmmod ? ll : lnmmod)==0) )
-    error_message("520 entry point name is equal module name");*/
     r = first_ent;
     while(r != last_ent) {
         r = r->next;
@@ -460,8 +417,7 @@ int ll;
             return;
         }
     }
-    if((r = (T_ENT*)malloc(sizeof(T_ENT))) == NULL)
-        oshex();
+    r = e_malloc(sizeof(T_ENT));
     last_ent->next = r;
     last_ent = r;
     r->p = pp;
@@ -469,29 +425,21 @@ int ll;
     r->le = 8 < ll ? 8 : ll;
     strncpy(r->e, ee, r->le);
     pp->mode |= '\040';
-} /*jentry*/
+}
 
-void jextrn(pp, ee, ll) identifier_t* pp;
-char* ee; /*  label  */
-int ll;
+void jextrn(identifier_t* pp, char* ee, int ll)
 {
-    /*  label length  */
-    if((rx = (T_EXT*)malloc(sizeof(T_EXT))) == NULL)
-        oshex();
+    rx = e_malloc(sizeof(T_EXT));
     last_ext->next = rx;
     last_ext = rx;
     rx->p = pp;
     rx->next = NULL;
     rx->le = 8 < ll ? 8 : ll;
-    if(strncmp(ee, "DIV", 3) == 0 && (rx->le == 3)) {
-        strcpy(rx->e, "DIV_");
-        rx->le = 4;
-    } else
-        strncpy(rx->e, ee, rx->le);
+    strncpy(rx->e, ee, rx->le);
     pp->mode |= '\220';
     n_ext++;
     pp->info.infon = n_ext;
-} /*jextrn*/
+}
 
 void jlabel(pp) identifier_t* pp;
 {
@@ -524,24 +472,23 @@ void jend()
     char bufs[81];
     int i;
     zakon();
-    if(options.multmod == 1) {
-        char tmp[256];
-        strcpy(tmp, parm_i);
-        char* pos = strrchr(tmp,'/');
-        if (pos == NULL) {
-            pos = strrchr(tmp,'\\');
-        }
-        if (pos == NULL) {
-            pos = tmp - 1;
-        }
-        *(pos + 1) = '\0';
-        strcat(tmp,mod_i);
-        strcat(tmp, ".asm");
-        syslin = fopen(tmp, "w");
-        if(syslin == NULL) {
-            printf("Can't open %s\n", tmp);
-            exit(8);
-        }
+    char tmp[256];
+    strcpy(tmp, parm_i);
+    fputs(tmp, systxt);
+    char* pos = strrchr(tmp, '/');
+    if(pos == NULL) {
+        pos = strrchr(tmp, '\\');
+    }
+    if(pos == NULL) {
+        pos = tmp - 1;
+    }
+    *(pos + 1) = '\0';
+    strcat(tmp, mod_i);
+    strcat(tmp, ".asm");
+    syslin = fopen(tmp, "w");
+    if(syslin == NULL) {
+        printf("Can't open %s\n", tmp);
+        exit(8);
     }
     d.w = 0;
 
@@ -589,7 +536,7 @@ GEN_TXT:
         while(((p->mode) & '\300') == '\300')
             p = p->info.infop;
         if(((p->mode) & '\300') != '\200') {
-            /*    nonexternal label   */
+            /*    internal label   */
 
             sprintf(bufs, "\t.long\t_d%d$+%u\n", nommod, p->info.infon);
             fputs(bufs, syslin);
@@ -664,7 +611,7 @@ JTERM:
             fputs(mod_i, systxt);
         } else {
             nommod--;
-            unlink(mod_i);
+            remove(mod_i);
         }
     }
     q = first_ent;
@@ -788,253 +735,4 @@ static void golowa(len, typ) int len, typ;
     d.w = len;
     sfwr(&d, 2, &sysl);
     ksum();
-}
-
-void jendo()
-{
-    identifier_t *p, *pp;
-    T_EXT *qxn, *qxk;
-    int i, nomsim, smes;
-    zakon();
-    if(options.multmod == 1) {
-        strcat(mod_i, ".obj");
-        sfop_w(mod_i, &sysl);
-    }
-    stm.ww = 0;
-    ksm.ww = 0;
-    nomsim = 1;
-    smes = 0;
-
-    /* heading generating  */
-    golowa(2 + strlen(parm_i), 0x80);
-    imja(parm_i, strlen(parm_i));
-    zakr();
-
-    /* version number  */
-    k = strlen(vers_i);
-    golowa(3 + k, 0x88);
-    i = 0;
-    sfwr(&i, 2, &sysl);
-    sfwr(vers_i, k, &sysl);
-    ksmn(vers_i, k);
-    zakr();
-
-    /* names */
-    golowa(9 + lnmmod, 0x96);
-    c = '\0';
-    sfwrc();
-    imja("CODE", 4);
-    imj_a(mod_name, lnmmod);
-    zakr();
-
-    /* segment definition */
-    golowa(7, 0x98);
-    c = 0x48;
-    sfwrc();
-    ksmb(c);
-    d.w = curr_addr;
-    sfwr(&d.w, 2, &sysl);
-    ksum();
-    c = 3;
-    sfwrc();
-    c = 2;
-    sfwrc();
-    c = 1;
-    sfwrc();
-    ksmb('\006');
-    zakr();
-
-    /* external names */
-    qx = first_ext->next;
-    while(qx != NULL) {
-        qxn = qx;
-        for(i = 0; (i < 1000) && (qx != NULL); qx = qx->next)
-            i += (qx->le + 3);
-        qxk = qx;
-        golowa(i + 1, 0x8C);
-        for(qx = qxn; qx != qxk; qx = qx->next) {
-            imj_a(qx->e, qx->le);
-            c = '\0';
-            sfwrc();
-            qx->noms = nomsim++;
-        }
-        zakr();
-    }
-
-    /* entry labels */
-    q = first_ent->next;
-    while(q != NULL) {
-        golowa(8 + q->le, 0x90);
-        c = 0;
-        sfwrc();
-        c = 1;
-        sfwrc();
-        imj_a(q->e, q->le);
-        pp = q->p;
-        while(((pp->mode) & '\300') == '\300')
-            pp = pp->info.infop;
-        d.w = pp->info.infon;
-        sfwr(&d, 2, &sysl);
-        d.w++;
-        ksum();
-        c = 0;
-        sfwrc();
-        zakr();
-        q = q->next;
-    }
-
-    /*  empty module test    */
-    if(mod_length == 0)
-        goto JTERM;
-
-    /* text generation */
-    sfop_r(&sysut1);
-    sfop_r(&sysut2);
-
-GEN_TXT:
-    sfrd2();
-    delta = rl.delta;
-    while(delta > 1020) {
-        delta -= 1020;
-        golowa(1024, 0xA0);
-        c = 1;
-        sfwrc();
-        d.w = smes;
-        sfwr(&d, 2, &sysl);
-        d.w++;
-        ksum();
-        smes += 1020;
-        sfobmen(1020);
-        zakr();
-    }
-    p = rl.point;
-    if(p != NULL)
-        golowa(8 + delta, 0xA0);
-    else
-        golowa(4 + delta, 0xA0);
-    c = 1;
-    sfwrc();
-    d.w = smes;
-    sfwr(&d, 2, &sysl);
-    d.w++;
-    ksum();
-    smes += (delta + 4);
-    sfobmen(delta);
-    if(p != NULL) {
-        c = 0;
-        for(i = 0; i < 4; i++)
-            sfwrc();
-    }
-    zakr();
-    if(p != NULL) {
-        while(((p->mode) & '\300') == '\300')
-            p = p->info.infop;
-        if(((p->mode) & '\300') != '\200') {
-            /* nonexternal label */
-            golowa(8, 0x9C);
-            d.w = delta;
-            c = d.b[1];
-            d.b[1] = d.b[0];
-            d.b[0] = c | '\314';
-            sfwr(&d, 2, &sysl);
-            ksum();
-            c = 0;
-            sfwrc();
-            c = 1;
-            sfwrc();
-            c = 1;
-            sfwrc();
-            d.w = p->info.infon;
-            sfwr(&d, 2, &sysl);
-            d.w += 2;
-            ksum();
-        } else {
-            /* external   label */
-            qx = first_ext;
-            for(i = 1; i < p->info.infon; i++)
-                qx = qx->next;
-            if(qx->noms < 128)
-                golowa(6, 0x9C);
-            else
-                golowa(8, 0x9C);
-            d.w = delta;
-            c = d.b[1];
-            d.b[1] = d.b[0];
-            d.b[0] = c | '\314';
-            sfwr(&d, 2, &sysl);
-            ksum();
-            c = 0x26;
-            sfwrc();
-            c = qx->noms;
-            if(qx->noms < 128) {
-                sfwrc();
-                sfwrc();
-                d.w = (c * 2 + 0x26);
-                ksum();
-            } else {
-                /* >127 */
-                d.b[1] = c;
-                d.b[0] = (qx->noms >> 8) | 0x80;
-                sfwr(&d, 2, &sysl);
-                sfwr(&d, 2, &sysl);
-                ksum();
-                ksum();
-                ksmb(0x26);
-            }
-        }
-        zakr();
-        goto GEN_TXT;
-    } /*if*/
-
-/* termination */
-
-JTERM:
-    golowa(2, 0x8A);
-    c = 0;
-    imja(&c, 0);
-    zakr();
-    sfclr(&sysut1);
-    sfclr(&sysut2);
-    if(options.multmod == 1) {
-//FIX: maybe not necessary cause options.asmb is no longer
-        BU* b = &sysl;
-        if(b->fil == NULL) {
-            if((b->fil = fopen(b->nam, "wb")) == NULL) {
-                printf("Can't open for write %s\n", b->nam);
-                exit(8);
-            }
-        }
-        if(fwrite(b->buf, b->tek, 1, b->fil) <= 0) {
-            printf("Write i/o error in %s\n", b->nam);
-            exit(8);
-        }
-        fclose(b->fil);
-        free(b->nam);
-        free(b->buf);
-        b->nam = NULL;
-        b->buf = NULL;
-//FIX: maybe not necessary END
-        if(mod_length != 0) {
-            if(nommod != 1)
-                fputs("&\n", systxt);
-            fputs("-+", systxt);
-            fputs(mod_i, systxt);
-            fputc(' ', systxt);
-        } else {
-            nommod--;
-            unlink(mod_i);
-        }
-    }
-    q = first_ent;
-    while(q != NULL) {
-        r = q->next;
-        free(q);
-        q = r;
-    }
-    qx = first_ext;
-    while(qx != NULL) {
-        rx = qx->next;
-        free(qx);
-        qx = rx;
-    }
 }

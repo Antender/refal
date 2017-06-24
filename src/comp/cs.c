@@ -39,6 +39,7 @@ extern struct {
     int curr_stmnmb;
 } scn_;
 
+extern identifier_t* korenj;
 identifier_t* lookup();
 
 static arr_lbl_t* first_arr_lbl = NULL;
@@ -61,7 +62,6 @@ void jlabel();
 extern unsigned jwhere();
 void ghw();
 void error_message_label();
-void through();
 void luterm();
 
 i_ibl_t* alloc_lbl()
@@ -70,8 +70,10 @@ i_ibl_t* alloc_lbl()
     i_ibl_t* p;
     if(n_lbl == 15) {
         q = calloc(1, sizeof(arr_lbl_t));
-        if(q == NULL)
-            Uns_sto();
+        if(q == NULL) {
+            printf("\nNo memory for identifier table label");
+            exit(1);
+        }
         q->nextl = first_arr_lbl;
         first_arr_lbl = q;
         n_lbl = -1;
@@ -312,7 +314,9 @@ void check_id(pp) /* check identifier attributes on confirmness */
 void s_end()
 {
     func_end();
-    through(check_id);
+    if(korenj != NULL) {
+        traverse(korenj,check_id);
+    }
 }
 void s_init()
 { /* module initiation  */
@@ -331,6 +335,9 @@ void s_term()
         free(p);
         p = p1;
     }
-    luterm();
+    if(korenj != NULL) {
+        kil_tree(korenj);
+        korenj = NULL;
+    }
     return; /* eg */
 }

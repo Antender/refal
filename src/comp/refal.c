@@ -116,10 +116,10 @@ static char* sarr[7]; /* abbreviated specifier table */
 static char stmlbl[40];
 static char prevlb[40];
 static char stmkey[6];
-static short fixm;                          /* start sentence position */
-static char mod_name[9]; /* module name */  /* kras */
- /* module length */ /* kras */
-static short again;                         /* next module processing feature */
+static short fixm;                         /* start sentence position */
+static char mod_name[9]; /* module name */ /* kras */
+/* module length */                        /* kras */
+static short again;                        /* next module processing feature */
 
 static int cur;
 

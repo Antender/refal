@@ -22,7 +22,7 @@ static void unlnk_()
     }
     namf[i] = '\0';
     /*   printf("\nUnlnk, namf=%s",namf);*/
-    if(unlink(namf) == -1) {
+    if(remove(namf) != 0) {
         printf("\nUnlnk: error");
         exit(1);
     } else

@@ -2,15 +2,12 @@
 
 typedef struct options_t {
     bool source : 1;
-    bool mincomp : 1;
-    bool stm_nmb : 1;
     bool extname : 1;
     bool multmod : 1;
     bool names : 1;
 } options_t;
 options_t options;
 
-FILE* systerm;
 FILE* sysprint;
 FILE* syslin;
 FILE* sysin;
@@ -26,11 +23,9 @@ char parm_i[40];
 short nommod;
 long mod_length;
 
-int main(int argc,char* argv[])
+int main(int argc, char* argv[])
 {
     int i, j, temp;
-
-    systerm = NULL;
 
     /*
        printf ("qindex =%d\n", qindex);
@@ -49,7 +44,6 @@ int main(int argc,char* argv[])
         printf("\n   nn  no_function_names");
         printf("\n   ns  no_source_listing");
         printf("\n   fn  full_names");
-        printf("\n   cm  minimal_memory_for_compiler");
         printf("\n\n"); /* BLF */
         exit(1);
     };
@@ -68,15 +62,12 @@ int main(int argc,char* argv[])
         printf("Can't open %s\n", parm);
         exit(1);
     };
-    systerm = stdout;
     sysprint = NULL;
 
     options.source = 1;
-    options.stm_nmb = 0;
     options.extname = 0;
     options.multmod = 0;
     options.names = 1;
-    options.mincomp = 0;
     for(j = 2; j < argc; ++j) {
         for(i = 0; (parm[i] = *(argv[j] + i)) != '\0'; i++)
             ;
@@ -88,8 +79,6 @@ int main(int argc,char* argv[])
                     options.source = 0;
                 else if(strncmp((parm + i), "fn", 2) == 0)
                     options.extname = 1;
-                else if(strncmp((parm + i), "cm", 2) == 0)
-                    options.mincomp = 1;
                 else if(*(parm + i) == 'm')
                     options.multmod = 1;
                 else {
@@ -99,7 +88,7 @@ int main(int argc,char* argv[])
                     if(*(parm + temp) == ')')
                         *(parm + temp) = '\0';
                     printf("Unknown option: %s\n", (parm + i));
-                    printf("Options may be: ns,nn,as,mm,fn,cm\n");
+                    printf("Options may be: ns,nn,mm,fn\n");
                     exit(1);
                 }
                 temp = i;
@@ -136,39 +125,35 @@ int main(int argc,char* argv[])
     parm[i] = '\0';
     if(options.multmod == 1) {
         char tmp[256];
-        strcpy(tmp,parm);
+        strcpy(tmp, parm);
         strcat(tmp, ".txt");
         systxt = fopen(tmp, "w");
         if(systxt == NULL) {
             printf("Can't open %s\n", parm);
             exit(8);
         }
-    } else {
-        strcat(parm, ".asm");
-        syslin = fopen(parm, "w");
-        if(syslin == NULL) {
-            printf("Can't open %s\n", parm);
-            exit(8);
-        }
     }
     int return_code = main_loop();
+    if(return_code != 0) {
+        return return_code;
+    }
     fclose(sysin);
-    if(options.source == 1)
+    if(sysprint != NULL) {
         fclose(sysprint);
+    }
     if(options.multmod == 0) {
         mod_length = jwhere();
         fclose(syslin);
         if((mod_length == 0) || (flags.was_err != 0))
-            unlink(parm);
+            remove(parm);
     }
     if(flags.was_err != 0) {
         if(options.multmod == 1)
-            unlink(parm);
+            remove(parm);
         exit(1);
     } else {
         if(nommod <= 1 && options.multmod == 1)
-            unlink(parm); /* for multimod. */
+            remove(parm); /* for multimod. */
         exit(0);
     }
-    return return_code;
 }

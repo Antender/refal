@@ -5,22 +5,13 @@
 #include "../refal.h"
 extern void error_message_character(char* s, char* c);
 
-struct linkti {
-    short tag;
-    union {
-        char* pinf;
-        /*      long   intinf;*/
-        char chinf[2];
-    } info;
-};
-
 /* left part buffer elements */
 struct {
     short p, q, t, i;
-    struct linkti code;
+    linkti_t code;
     short next;
     short pair;
-    struct linkti spec;
+    linkti_t spec;
     short v;
     short eoemrk;
     short e_level;
@@ -65,8 +56,8 @@ extern struct {
     short t_;
     char ci_;
     int v_;
-    struct linkti _code;
-    struct linkti _spec;
+    linkti_t _code;
+    linkti_t _spec;
 } scn_e;
 
 short t_sc = 1;
@@ -78,14 +69,14 @@ short t_e = 6;
 short t_k = 7;
 short t_p = 8;
 
-struct linkti xncode;  /* work structure */
-struct linkti funcptr; /* work pointer */
-short n, n1, n2;       /* left part element pointers */
-short i, ie;           /* element index */
-short nel;             /* current element number */
-short lastb, lastb1;   /* variables for brackets linkage  */
-short kol_lit;         /* counter of the symbol number */
-short e_level;         /* counter of the longing levels */
+linkti_t xncode;     /* work structure */
+linkti_t funcptr;    /* work pointer */
+short n, n1, n2;     /* left part element pointers */
+short i, ie;         /* element index */
+short nel;           /* current element number */
+short lastb, lastb1; /* variables for brackets linkage  */
+short kol_lit;       /* counter of the symbol number */
+short e_level;       /* counter of the longing levels */
 short diff_e_level;
 short not_nil;     /* working variables */
 int kol_skob[100]; /* stack for counting of the brackets balance */
@@ -185,6 +176,21 @@ short lrbxy;      /* stoped bracket flag */
 #define n_blf '\117'
 #define n_eossn '\120'
 #define n_setnos '\121'
+#define n_sb1b2 '\003'
+#define n_lb '\014'
+#define n_lby '\015'
+#define n_rb '\016'
+#define n_rby '\017'
+#define n_plv '\036'
+#define n_prv '\041'
+#define n_plespc '\067'
+#define n_lespc '\070'
+#define n_prespc '\071'
+#define n_respc '\072'
+
+void gopl();
+void gopnm();
+int ortgn();
 void scan();
 void error_message();
 void fndef();
@@ -1173,4 +1179,204 @@ RPE10: /* sentence end */
     if(kol_skob[ur_skob] != 0)
         error_message("401 too many '(' in right part");
 }
-/*-----------  end of file CCST1.C  -----------*/
+
+void isk_v()
+{
+    for(i = 1; i <= kol_per; i++)
+        if(v[i].ci == scn_e.ci_)
+            return;
+    i = ++kol_per;
+    v[i].ci = scn_e.ci_;
+    v[i]._t = 0;
+    v[i].rem = 1;
+    v[i].last = 0;
+    v[i]._v = scn_e.v_;
+}
+
+/*   generation of stoped brackets and setting boards   */
+void gen_bsb()
+{
+    switch(lrbxy) {
+    case 0:
+        goto SW0;
+    case 1:
+        goto SW1;
+    case 2:
+        goto SW2;
+    };
+SW0: /* no stoped brackets */
+    if(nh != nh_x)
+        goto GEN_SB;
+    return;
+SW1: /* left stoped brackets */
+    if(nh == nh_x)
+        gop(n_lb);
+    else if(nh == nh_y)
+        gop(n_lby);
+    else {
+        gop(n_lb);
+        goto GEN_SB;
+    };
+    return;
+SW2: /* right stoped brackets */
+    if(nh == nh_x)
+        gop(n_rb);
+    else if(nh == nh_y)
+        gop(n_rby);
+    else {
+        gop(n_rb);
+        goto GEN_SB;
+    };
+    return;
+GEN_SB:
+    gopnm(n_sb1b2, (char)x[n1].q, (char)x[n2].p);
+}
+
+/*    attempt to extract left support group     */
+lsg_p()
+{
+LSG_:
+    n++;
+    if(n == n2)
+        goto GEN_LE;
+    if(x[n].t != t_lb)
+        goto LSG1;
+    n = x[n].pair;
+    goto LSG_;
+LSG1:
+    if(x[n].t != t_e)
+        goto LSG_;
+    i = x[n].i;
+    if((i == ie) || (v[i].last != 0))
+        goto LSG_;
+    if((x[n].spec.info.pinf != NULL) || (v[i].rem != 1))
+        goto GEN_LE;
+    if(ortgn(n1, n) == 0)
+        goto GEN_LE;
+    x[n].eoemrk = 1;
+    x[n].e_level = e_level;
+GEN_LE:
+    n1++;
+    n = n1;
+    i = x[n].i;
+    v[i]._q = nel + 1;
+    x[n].next = v[i].last;
+    v[i].last = n;
+    (v[i].rem)--;
+    x[n].p = nel;
+    x[n].q = nel + 1;
+    nel += 2;
+    e_level++;
+    not_nil = x[n].v;
+    if(x[n].spec.info.pinf == NULL)
+        return 1;
+    gpev(n_plespc, n_plv);
+    gopl(n_lespc, x[n].spec.info.pinf);
+    return 0;
+}
+
+/*        attempt to extract right support group     */
+rsg_p()
+{
+RSG_:
+    n--;
+    if(n == n1)
+        goto GEN_RE;
+    if(x[n].t != t_rb)
+        goto RSG1;
+    n = x[n].pair;
+    goto RSG_;
+RSG1:
+    if(x[n].t != t_e)
+        goto RSG_;
+    i = x[n].i;
+    if((i == ie) || (v[i].last != 0))
+        goto RSG_;
+    if((x[n].spec.info.pinf != NULL) || (v[i].rem != 1))
+        goto GEN_RE;
+    if(ortgn(n, n2) == 0)
+        goto GEN_RE;
+    x[n].eoemrk = 1;
+    x[n].e_level = e_level;
+GEN_RE:
+    n2--;
+    n = n2;
+    i = x[n].i;
+    v[i]._q = nel + 1;
+    x[n].next = v[i].last;
+    v[i].last = n;
+    (v[i].rem)--;
+    x[n].p = nel;
+    x[n].q = nel + 1;
+    nel += 2;
+    e_level++;
+    not_nil = x[n].v;
+    if(x[n].spec.info.pinf == NULL)
+        return 1;
+    gpev(n_prespc, n_prv);
+    gopl(n_respc, x[n].spec.info.pinf);
+    return 0;
+}
+
+/*    check ortogonality of this sentence against left part */
+
+ortgn(n1, n2) short n1, n2;
+{
+    short n;
+    short i;
+    int res;
+    n = n1;
+ORT1:
+    n++;
+    if(n == n2)
+        goto ORT1E;
+    if(x[n].t <= 3)
+        goto ORT1;
+ORT1V:
+    i = x[n].i;
+    if(v[i].last != 0)
+        goto ORT1;
+    (v[i].rem)--;
+    goto ORT1;
+ORT1E:
+    res = 1;
+    n = n1;
+ORT2:
+    n++;
+    if(n == n2)
+        goto ORT2E;
+    if(x[n].t <= 3)
+        goto ORT2;
+ORT2V:
+    i = x[n].i;
+    if(v[i].last != 0)
+        goto ORT2;
+    if(v[i].rem == 0)
+        goto ORT2;
+    res = 0;
+ORT2E:
+    n = n1;
+ORT3:
+    n++;
+    if(n == n2)
+        goto ORT3E;
+    if(x[n].t <= 3)
+        goto ORT3;
+ORT3V:
+    i = x[n].i;
+    if(v[i].last != 0)
+        goto ORT3;
+    (v[i].rem)++;
+    goto ORT3;
+ORT3E:
+    return (res);
+}
+
+void gpev(op1, op2) char op1, op2;
+{
+    if(not_nil)
+        gop(op2);
+    else
+        gop(op1);
+    return;
+}

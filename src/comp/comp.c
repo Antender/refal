@@ -1,7 +1,5 @@
 #include "../refal.h"
 
-
-
 int _eoj; /* "sysin" end flag */ /* kras */
 int cdnumb; /* card number */    /* kras */
 
@@ -23,7 +21,7 @@ void log(char* message)
     if(options.source == 1) {
         fputs(message, sysprint);
     }
-    fputs(message, systerm);
+    fputs(message, stdout);
 }
 
 char card[81]; /* card buffer (input) */
@@ -50,14 +48,14 @@ void pchk()
     }
 }
 void pchk_t()
-{ /* card writing into systerm */
+{
     char tmpstr[80];
     if(flags.uzhekrt_t == 0) {
         flags.uzhekrt_t = 1;
         card[72] = '\0';
         if(_eoj == 0) {
             sprintf(tmpstr, "%4d %s\n", cdnumb, card);
-            fputs(tmpstr, systerm);
+            fputs(tmpstr, stdout);
         }
     }
 }

@@ -1,15 +1,15 @@
+#ifndef REFAL_H
+#define REFAL_H
+
 #include <stdbool.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-typedef enum tags_t { TAG_O = 0, TAG_LB, TAG_F, TAG_RB, TAG_N, TAG_K, TAG_R, TAG_D } tags_t;
+#include "lib.h"
 
-typedef struct refw_t {
-    struct refw_t* next;
-    int numb[6];
-} refw_t;
+typedef enum tags_t { TAG_O = 0, TAG_LB, TAG_F, TAG_RB, TAG_N, TAG_K, TAG_R, TAG_D } tags_t;
 
 typedef struct linkcb_t {
     struct linkcb_t* prev;
@@ -34,34 +34,42 @@ typedef struct st {
     int state;
 } st;
 
+typedef struct refw_t {
+    struct refw_t* next;
+    int numb[6];
+} refw_t;
+
+/* mode field :                      */
+/*  00 - no defined;                          */
+/*  01 - internal; infon = offset from start  */
+/*  10 - external; infon = member or extern   */
+/*       reference;                           */
+/*  11 - equivalent; infop =  reference on    */
+/*       other label;                         */
+/*  xx1 - entry point;                        */
+/*  xxx1 - too many definition;               */
+/*                                            */
+/* type field : 00 - unknown type  */
+/*              01 - function      */
+/*              10 - specifier     */
+/* kren feature:      '00'B - kren no    */
+/*                    '01'B - left kren  */
+/*                    '10'B - right kren */
+
 typedef struct identifier_t {
     union {
         int infon;
         struct identifier_t* infop;
     } info;
     char mode;
-    /* mode field :                      */
-    /*  00 - no defined;                          */
-    /*  01 - internal; infon = offset from start  */
-    /*  10 - external; infon = member or extern   */
-    /*       reference;                           */
-    /*  11 - equivalent; infop =  reference on    */
-    /*       other label;                         */
-    /*  xx1 - entry point;                        */
-    /*  xxx1 - too many definition;               */
-    /*                                            */
-    char type;              /* type field : 00 - unknown type  */
-                            /*              01 - function      */
-                            /*              10 - specifier     */
+    char type;
     int l;                  /* identifier length */
-    struct identifier_t* i; /* left reference */
-    struct identifier_t* j; /* right reference */
-    refw_t* last_ref;       /* on the end of using list */
-    refw_t ref;             /* where used */
-    int def;                /* where defined */
-    char k;                 /* kren feature:      '00'B - kren no    */
-                            /*                    '01'B - left kren  */
-                            /*                    '10'B - right kren */
+    struct identifier_t* i; /* internal, left reference */
+    struct identifier_t* j; /* internal, right reference */
+    refw_t* last_ref;       /* internal, on the end of using list */
+    refw_t ref;             /* internal, where used */
+    int def;                /* card number, where it is defined*/
+    char k;                 /* internal */
     char* id;               /* identifier */
 } identifier_t;
 
@@ -83,6 +91,24 @@ typedef struct refalproc_t {
     int tmmode;
 } refalproc_t;
 
+typedef struct linkti_t {
+    short tag;
+    union {
+        char* pinf;
+        /*      long   intinf;*/
+        char chinf[2];
+    } info;
+} linkti_t;
+
+typedef struct linkti2_t {
+    short tagg;
+    union {
+        char infoc;
+        /*      long coden;*/
+        char* codef;
+    } infoo;
+} linkti2_t;
+
 /* BLF - DBLF for prokrutka - trace debug mode, see rfintf.c */
 /*#define DBLF*/
 
@@ -95,3 +121,5 @@ typedef struct refalproc_t {
 #define SMBL (sizeof(long) + sizeof(void*))
 
 #define G_L_B
+
+#endif
