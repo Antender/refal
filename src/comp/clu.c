@@ -11,12 +11,12 @@ extern struct {
     int curr_stmnmb;
 } scn_;
 
-static identifier_t* korenj = NULL; /* tree koren */
 void Uns_sto()
 {
     printf("\nNo memory for identifier table");
     exit(1);
 }
+identifier_t* korenj = NULL; /* tree koren */
 
 identifier_t* nov_uzel(idp, lid) char* idp;
 int lid;
@@ -196,8 +196,8 @@ ISPRB: /* move up and correct */
     };
     return (isk_uz);
 }
-static void traverse(ptr, prog) identifier_t* ptr;
-int (*prog)();
+
+void traverse(identifier_t* ptr, int (*prog)())
 {
     identifier_t *q, *r;
     q = ptr;
@@ -210,13 +210,8 @@ int (*prog)();
     } while(q != NULL);
     return;
 }
-void through(prog) int (*prog)();
-{
-    if(korenj != NULL)
-        traverse(korenj, prog);
-    return;
-}
-static void kil_tree(p) identifier_t* p;
+
+void kil_tree(identifier_t* p)
 {
     identifier_t *r, *q;
     refw_t* r1;
@@ -237,14 +232,5 @@ static void kil_tree(p) identifier_t* p;
         free(q);
         q = r;
     } while(q != NULL);
-    return;
-}
-
-void luterm()
-{
-    if(korenj != NULL) {
-        kil_tree(korenj);
-        korenj = NULL;
-    }
     return;
 }
