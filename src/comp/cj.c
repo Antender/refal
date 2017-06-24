@@ -161,40 +161,19 @@ static void ksmn();
 
 void sfop_w(char* s, BU* b)
 {
+    long un;
+    long lon;
     if(b->nam != NULL) {
         free(b->nam);
     }
     b->nam = e_malloc(strlen(s) + 1);
     strcpy(b->nam, s);
+    b->len = 0;
     if(b->buf == NULL) {
-        if(options.mincomp == 1) {
-            if(b == &sysut2)
-                un = 2040; /* 2040=340*6  */
-            else
-                un = 2040; /* 2040=2048-8 */
-        } else {
-            if(b == &sysut2)
-                un = 49152; /* 8192*6  */
-            else
-                un = 65528; /* 65536-8 (for bc mojno - 4) */
-        }
-        while(true) {
-            if((b->buf = (char*)malloc(un)) != NULL) {
-                break;
-            } else {
-                lon = un;
-                if(b == &sysut2)
-                    lon /= 2;
-                else
-                    lon = (lon + 8) / 2 - 8;
-                un = lon;
-                if(un < 16)
-                    oshex();
-            }
-        } /*while*/
+        b->len = 65536;
+        b->buf = (char*)malloc(b->len);
     }
     b->tek = 0;
-    b->len = un;
     b->fil = NULL;
 }
 
