@@ -161,15 +161,18 @@ static void ksmn();
 
 void sfop_w(char* s, BU* b)
 {
+    long un;
+    long lon;
     if(b->nam != NULL) {
         free(b->nam);
     }
     b->nam = e_malloc(strlen(s) + 1);
     strcpy(b->nam, s);
+    b->len = 0;
     if(b->buf == NULL) {
-        b->buf = e_malloc(b->len);
+        b->len = 65536;
+        b->buf = (char*)malloc(b->len);
     }
-    b->len = 65536;
     b->tek = 0;
     b->fil = NULL;
 }
@@ -196,8 +199,6 @@ void sfcl(b) BU* b;
             printf("Write i/o error in %s\n", b->nam);
             exit(8);
         }
-        fputs("Buffer closed", stdout);
-        fputs(b->nam, stdout);
         fclose(b->fil);
     }
 }

@@ -69,7 +69,7 @@ i_ibl_t* alloc_lbl()
     arr_lbl_t* q;
     i_ibl_t* p;
     if(n_lbl == 15) {
-        q = calloc(1, sizeof(arr_lbl_t));
+        q = e_calloc(1, sizeof(arr_lbl_t));
         if(q == NULL) {
             printf("\nNo memory for identifier table label");
             exit(1);
