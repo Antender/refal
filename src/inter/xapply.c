@@ -21,8 +21,7 @@ static void appl_()
     if(!slins(refal.prevr, 1))
         return;
     px = refal.prevr->next;
-    if((s_st = malloc(sizeof(st))) == NULL)
-        goto LACK;
+    s_st = e_malloc(sizeof(st));
     if(!lcre(s_st))
         goto LACK;
     if(!lins(s_st->view, 2)) {

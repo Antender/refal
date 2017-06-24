@@ -80,7 +80,7 @@ void rfrun(ast) st* ast; /* adress of current state table */
     linkcb_t quasik;  /* quasi-sign k */
     linkcb_t* flhead; /* adress of free memory list head */
     linkcb_t* nextr;  /* item adress followed by result */
-    savecr = malloc(sizeof(sav));
+    savecr = e_malloc(sizeof(sav));
     u.ii = 0;
     if(!lexist(ast))
         rfabe("rfrun: attempt to run unexisting process");

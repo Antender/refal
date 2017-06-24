@@ -64,9 +64,9 @@ static void functab_()
         if(u == func_f[i])
             return;
     if(func_n == 0)
-        func_f = (adr*)malloc(sizeof(adr));
+        func_f = e_malloc(sizeof(adr));
     else
-        func_f = (adr*)realloc(func_f, (func_n + 1) * sizeof(adr));
+        func_f = e_realloc(func_f, (func_n + 1) * sizeof(adr));
     func_f[func_n] = u;
     func_n++;
     return;
@@ -97,7 +97,7 @@ static void chartof_()
     if(i > 255)
         goto HEOT;
     p = refal.preva->next;
-    u = (char*)malloc(i + 2);
+    u = e_malloc(i + 2);
     for(i = 0; p != refal.nexta; i++, p = p->next)
         u[i] = rfcnv(p->info.infoc);
     u[i] = i++;
@@ -120,9 +120,9 @@ static void chartof_()
         }
     }
     if(func_n == 0)
-        func_f = (adr*)malloc(sizeof(adr));
+        func_f = e_malloc(sizeof(adr));
     else
-        func_f = (adr*)realloc(func_f, (func_n + 1) * sizeof(adr));
+        func_f = e_realloc(func_f, (func_n + 1) * sizeof(adr));
     func_f[func_n] = j;
     func_n++;
     p = refal.preva->next;

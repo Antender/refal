@@ -38,14 +38,12 @@ lincrm()
                 return (true);
         }
     }
-    new_block = malloc(1001 * sizeof(linkcb_t)); /* kras 06.12.88 */
-    if(new_block == NULL)
-        return (false);
+    new_block = e_malloc(1001 * sizeof(linkcb_t));
     new_block->prev = last_block;
     last_block = new_block;
-    curr_size = curr_size + 1000; /* kras 06.12.88 */
-    rflist(new_block + 1, 1000);  /* kras 06.12.88 */
-    return (true);
+    curr_size = curr_size + 1000;
+    rflist(new_block + 1, 1000);
+    return true;
 }
 
 /*  check a number of items in free items list */

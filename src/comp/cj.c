@@ -156,24 +156,15 @@ static void osher2()
     exit(8);
     return;
 }
-void oshex()
-{
-    fputs("\nOSHEX: no memory!!!", stdout);
-    exit(1);
-}
 
 static void ksmn();
 
-void sfop_w(s, b) char* s;
-BU* b;
+void sfop_w(char* s, BU* b)
 {
-    unsigned un;
-    long lon;
     if(b->nam != NULL) {
         free(b->nam);
     }
-    if((b->nam = (char*)malloc(strlen(s) + 1)) == NULL)
-        oshex();
+    b->nam = e_malloc(strlen(s) + 1);
     strcpy(b->nam, s);
     if(b->buf == NULL) {
         if(options.mincomp == 1) {
@@ -267,9 +258,7 @@ void sfwr2()
     } /*while*/
 } /*sfwr2*/
 
-void sfwr(c, n, b) char* c;
-unsigned n;
-BU* b;
+void sfwr(char* c, unsigned n, BU* b)
 {
     unsigned ost;
     while(true) {
@@ -383,25 +372,22 @@ void sfobmen(n) int n;
     } /*while*/
 } /*sfomen*/
 
-void jstart(ee, ll) char* ee;
-int ll;
+void jstart(char* ee, int ll)
 {
-    delta = 0; /* kras */
+    delta = 0;
     strncpy(mod_name, ee, ll);
     lnmmod = ll;
     sfop_w("sysut1.rf", &sysut1);
     sfop_w("sysut2.rf", &sysut2);
-    if((first_ent = (T_ENT*)malloc(sizeof(T_ENT))) == NULL)
-        oshex();
+    first_ent = e_malloc(sizeof(T_ENT));
     last_ent = first_ent;
     first_ent->next = NULL;
-    if((first_ext = (T_EXT*)malloc(sizeof(T_EXT))) == NULL)
-        oshex();
+    first_ext = e_malloc(sizeof(T_EXT));
     last_ext = first_ext;
     first_ext->next = NULL;
     curr_addr = 0;
     n_ext = 1;
-} /*jstart*/
+}
 
 unsigned jwhere()
 {
@@ -444,13 +430,8 @@ void j3addr(pp) identifier_t* pp;
     curr_addr += 4;
 }
 
-void jentry(pp, ee, ll) identifier_t* pp;
-char* ee; /*  label  */
-int ll;
+void jentry(identifier_t* pp, char* ee, int ll)
 {
-    /* label length  */
-    /*if( (lnmmod==ll) && (strncmp(mod_name, ee, ll < lnmmod ? ll : lnmmod)==0) )
-    error_message("520 entry point name is equal module name");*/
     r = first_ent;
     while(r != last_ent) {
         r = r->next;
@@ -458,8 +439,7 @@ int ll;
             return;
         }
     }
-    if((r = (T_ENT*)malloc(sizeof(T_ENT))) == NULL)
-        oshex();
+    r = e_malloc(sizeof(T_ENT));
     last_ent->next = r;
     last_ent = r;
     r->p = pp;
@@ -467,29 +447,21 @@ int ll;
     r->le = 8 < ll ? 8 : ll;
     strncpy(r->e, ee, r->le);
     pp->mode |= '\040';
-} /*jentry*/
+}
 
-void jextrn(pp, ee, ll) identifier_t* pp;
-char* ee; /*  label  */
-int ll;
+void jextrn(identifier_t* pp, char* ee, int ll)
 {
-    /*  label length  */
-    if((rx = (T_EXT*)malloc(sizeof(T_EXT))) == NULL)
-        oshex();
+    rx = e_malloc(sizeof(T_EXT));
     last_ext->next = rx;
     last_ext = rx;
     rx->p = pp;
     rx->next = NULL;
     rx->le = 8 < ll ? 8 : ll;
-    if(strncmp(ee, "DIV", 3) == 0 && (rx->le == 3)) {
-        strcpy(rx->e, "DIV_");
-        rx->le = 4;
-    } else
-        strncpy(rx->e, ee, rx->le);
+    strncpy(rx->e, ee, rx->le);
     pp->mode |= '\220';
     n_ext++;
     pp->info.infon = n_ext;
-} /*jextrn*/
+}
 
 void jlabel(pp) identifier_t* pp;
 {

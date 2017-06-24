@@ -11,11 +11,6 @@ extern struct {
     int curr_stmnmb;
 } scn_;
 
-void Uns_sto()
-{
-    printf("\nNo memory for identifier table");
-    exit(1);
-}
 identifier_t* korenj = NULL; /* tree koren */
 
 identifier_t* nov_uzel(idp, lid) char* idp;
