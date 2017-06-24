@@ -4,14 +4,7 @@
 /*----------------------------------------------------*/
 /* #define PRCODE */ /* BLF */
 #include "../refal.h"
-struct linkti {
-    short tagg;
-    union {
-        char infoc;
-        /*      long coden;*/
-        char* codef;
-    } infoo;
-};
+
 struct _TAG {
     char b1;
     char b2;
@@ -54,7 +47,7 @@ void gopl(k, l) char k, *l;
     jbyte(k);
     j3addr(l);
 }
-void gsymbol(code) struct linkti* code;
+void gsymbol(code) linkti2_t* code;
 {
     struct _TAG* q;
     char* r;
@@ -78,7 +71,7 @@ void gsymbol(code) struct linkti* code;
     return;
 }
 void gops(k, code) char k;
-struct linkti* code;
+linkti2_t* code;
 {
 #ifdef PRCODE
     prcode(k);

@@ -91,6 +91,24 @@ typedef struct refalproc_t {
     int tmmode;
 } refalproc_t;
 
+typedef struct linkti_t {
+    short tag;
+    union {
+        char* pinf;
+        /*      long   intinf;*/
+        char chinf[2];
+    } info;
+} linkti_t;
+
+typedef struct linkti2_t {
+    short tagg;
+    union {
+        char infoc;
+        /*      long coden;*/
+        char* codef;
+    } infoo;
+} linkti2_t;
+
 /* BLF - DBLF for prokrutka - trace debug mode, see rfintf.c */
 /*#define DBLF*/
 
