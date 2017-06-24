@@ -27,22 +27,22 @@ BIN_DIR		=	bin
 ####### Files
 
 SOURCES =			\
-		$(S)\ccst1.c 	\
-		$(S)\ccst2.c 	\
+		$(S)\ccst.c 	\
 		$(S)\comp.c 	\
 		$(S)\cgop.c 	\
 		$(S)\cj.c 	\
 		$(S)\clu.c 	\
-		$(S)\cs.c 	
+		$(S)\cs.c 	\
+		$(S)\..\lib.c
 
 OBJECTS =			\
-		$(S)\ccst1.o 	\
-		$(S)\ccst2.o 	\
+		$(S)\ccst.o 	\
 		$(S)\comp.o 	\
 		$(S)\cgop.o 	\
 		$(S)\cj.o 	\
 		$(S)\clu.o 	\
-		$(S)\cs.o 	
+		$(S)\cs.o 	\
+		$(S)\..\lib.o
 
 TARGET =	refal2
 
@@ -61,16 +61,14 @@ $(TARGET): $(OBJECTS)
 
 ####### Dependences
 
-$(S)\ccst1.o: $(S)\ccst1.c $(S)\..\refal.h
+$(S)\ccst.o: $(S)\ccst.c $(S)\..\lib.c
 
-$(S)\ccst2.o: $(S)\ccst2.c $(S)\..\refal.h
+$(S)\comp.o: $(S)\cerr.c $(S)\..\lib.c
 
-$(S)\comp.o: $(S)\cerr.c $(S)\..\refal.h
+$(S)\cgop.o: $(S)\cgop.c $(S)\..\lib.c
 
-$(S)\cgop.o: $(S)\cgop.c $(S)\..\refal.h
+$(S)\cj.o: $(S)\cj.c $(S)\..\lib.c
 
-$(S)\cj.o: $(S)\cj.c $(S)\..\refal.h
+$(S)\clu.o: $(S)\clu.c $(S)\..\lib.c
 
-$(S)\clu.o: $(S)\clu.c $(S)\..\refal.h
-
-$(S)\cs.o: $(S)\cs.c $(S)\..\refal.h
+$(S)\cs.o: $(S)\cs.c $(S)\..\lib.c

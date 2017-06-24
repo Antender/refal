@@ -44,7 +44,8 @@ SOURCES =		\
 	$(S)\xrename.c 	\
 	$(S)\xvv.c 	\
 	$(S)\xvv5.c 	\
-	$(S)\xcv.ref
+	$(S)\xcv.ref	\
+	$(S)\..\lib.c
 
 OBJECTS =		\
 	$(S)\d.o 	\
@@ -62,7 +63,8 @@ OBJECTS =		\
 	$(S)\xmo.o 	\
 	$(S)\xrename.o 	\
 	$(S)\xvv.o 	\
-	$(S)\xvv5.o
+	$(S)\xvv5.o     \
+	$(S)\..\lib.o
 
 ####### Implicit rules
 
@@ -90,28 +92,28 @@ $(S)\d.o:	$(S)\d.c $(S)\..\refal.h $(S)\debug.def
 
 $(S)\mainrf.o: 	$(S)\mainrf.c
 
-$(S)\rfdbg.o:	$(S)\rfdbg.c $(S)\..\refal.h
+$(S)\rfdbg.o:	$(S)\rfdbg.c $(S)\..\refal.h $(S)\..\lib.c
 
-$(S)\rfintf.o: 	$(S)\rfintf.c $(S)\..\refal.h
+$(S)\rfintf.o: 	$(S)\rfintf.c $(S)\..\refal.h $(S)\..\lib.c
 
-$(S)\rfrun1.o: 	$(S)\rfrun1.c $(S)\..\refal.h
+$(S)\rfrun1.o: 	$(S)\rfrun1.c $(S)\..\refal.h $(S)\..\lib.c
 
-$(S)\rfrun2.o: 	$(S)\rfrun2.c $(S)\..\refal.h
+$(S)\rfrun2.o: 	$(S)\rfrun2.c $(S)\..\refal.h $(S)\..\lib.c
 
-$(S)\xapply.o: 	$(S)\xapply.c $(S)\..\refal.h
+$(S)\xapply.o: 	$(S)\xapply.c $(S)\..\refal.h $(S)\..\lib.c
 
-$(S)\xar.o: 	$(S)\xar.c $(S)\..\refal.h
+$(S)\xar.o: 	$(S)\xar.c $(S)\..\refal.h $(S)\..\lib.c
 
-$(S)\xcf.o: 	$(S)\xcf.c $(S)\..\refal.h   
+$(S)\xcf.o: 	$(S)\xcf.c $(S)\..\refal.h $(S)\..\lib.c  
 
-$(S)\xgcd.o: 	$(S)\xgcd.c $(S)\..\refal.h
+$(S)\xgcd.o: 	$(S)\xgcd.c $(S)\..\refal.h $(S)\..\lib.c
 
-$(S)\xjak.o: 	$(S)\xjak.c $(S)\..\refal.h
+$(S)\xjak.o: 	$(S)\xjak.c $(S)\..\refal.h $(S)\..\lib.c
 
-$(S)\xmo.o: 	$(S)\xmo.c $(S)\..\refal.h
+$(S)\xmo.o: 	$(S)\xmo.c $(S)\..\refal.h $(S)\..\lib.c
 
-$(S)\xrename.o: $(S)\xrename.c $(S)\..\refal.h
+$(S)\xrename.o: $(S)\xrename.c $(S)\..\refal.h $(S)\..\lib.c
 
-$(S)\xvv.o: 	$(S)\xvv.c $(S)\..\refal.h
+$(S)\xvv.o: 	$(S)\xvv.c $(S)\..\refal.h $(S)\..\lib.c
 
-$(S)\xvv5.o: 	$(S)\xvv5.c $(S)\..\refal.h
+$(S)\xvv5.o: 	$(S)\xvv5.c $(S)\..\refal.h $(S)\..\lib.c
